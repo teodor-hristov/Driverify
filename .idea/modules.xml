@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DoNotSleep.iml" filepath="$PROJECT_DIR$/DoNotSleep.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/openCVLibrary343/openCVLibrary343.iml" filepath="$PROJECT_DIR$/openCVLibrary343/openCVLibrary343.iml" />
+      <module fileurl="file://$PROJECT_DIR$/openCVLibrary346/openCVLibrary346.iml" filepath="$PROJECT_DIR$/openCVLibrary346/openCVLibrary346.iml" />
     </modules>
   </component>
 </project>

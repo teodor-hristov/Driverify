@@ -1,263 +1,275 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ll"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fcfcfc"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="10dp"
-    tools:context="com.demotxt.droidsrce.homedashboard.Home">
+    android:layout_height="match_parent" >
 
-    <LinearLayout
+    <org.opencv.android.JavaCameraView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:id="@+id/color_blob_detection_activity_surface_view" />
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/bankcardId"
-            android:layout_width="160dp"
-            android:layout_height="190dp"
-            android:layout_margin="10dp"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground">
+</FrameLayout>
+<!--    <?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--xmlns:tools="http://schemas.android.com/tools"-->
+<!--android:id="@+id/ll"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="match_parent"-->
+<!--android:background="#fcfcfc"-->
+<!--android:gravity="center"-->
+<!--android:orientation="vertical"-->
+<!--android:padding="10dp"-->
+<!--tools:context="com.demotxt.droidsrce.homedashboard.Home">-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+<!--<LinearLayout-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:clipToPadding="false"-->
+<!--    android:gravity="center"-->
+<!--    android:orientation="horizontal">-->
 
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:background="@drawable/cerclebackgroundpurple"
-                    android:padding="10dp"
-                    android:src="@drawable/speedometer" />
+<!--    <android.support.v7.widget.CardView-->
+<!--        android:id="@+id/bankcardId"-->
+<!--        android:layout_width="160dp"-->
+<!--        android:layout_height="190dp"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:clickable="true"-->
+<!--        android:foreground="?android:attr/selectableItemBackground">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Карай"
-                    android:textStyle="bold" />
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical">-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="10dp"
-                    android:background="@color/lightgray" />
+<!--            <ImageView-->
+<!--                android:layout_width="64dp"-->
+<!--                android:layout_height="64dp"-->
+<!--                android:background="@drawable/cerclebackgroundpurple"-->
+<!--                android:padding="10dp"-->
+<!--                android:src="@drawable/speedometer" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="Нагласи устройството и шофирай."
-                    android:textColor="@android:color/darker_gray" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:text="Карай"-->
+<!--                android:textStyle="bold" />-->
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+<!--            <View-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_margin="10dp"-->
+<!--                android:background="@color/lightgray" />-->
 
-        <android.support.v7.widget.CardView
-            android:layout_width="160dp"
-            android:layout_height="190dp"
-            android:layout_margin="10dp"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground">
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:padding="5dp"-->
+<!--                android:text="Нагласи устройството и шофирай."-->
+<!--                android:textColor="@android:color/darker_gray" />-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+<!--        </LinearLayout>-->
+<!--    </android.support.v7.widget.CardView>-->
 
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:background="@drawable/cerclebackgroundpink"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_info_outline_black_24dp" />
+<!--    <android.support.v7.widget.CardView-->
+<!--        android:layout_width="160dp"-->
+<!--        android:layout_height="190dp"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:clickable="true"-->
+<!--        android:foreground="?android:attr/selectableItemBackground">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Информация"
-                    android:textStyle="bold" />
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical">-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="10dp"
-                    android:background="@color/lightgray" />
+<!--            <ImageView-->
+<!--                android:layout_width="64dp"-->
+<!--                android:layout_height="64dp"-->
+<!--                android:background="@drawable/cerclebackgroundpink"-->
+<!--                android:padding="10dp"-->
+<!--                android:src="@drawable/ic_info_outline_black_24dp" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="Информация за потребителя и за превозното средство."
-                    android:textColor="@android:color/darker_gray" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:text="Информация"-->
+<!--                android:textStyle="bold" />-->
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+<!--            <View-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_margin="10dp"-->
+<!--                android:background="@color/lightgray" />-->
 
-    </LinearLayout>
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:padding="5dp"-->
+<!--                android:text="Информация за потребителя и за превозното средство."-->
+<!--                android:textColor="@android:color/darker_gray" />-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:gravity="center"
-        android:orientation="horizontal">
+<!--        </LinearLayout>-->
+<!--    </android.support.v7.widget.CardView>-->
 
-        <android.support.v7.widget.CardView
-            android:layout_width="160dp"
-            android:layout_height="190dp"
-            android:layout_margin="10dp"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground">
+<!--</LinearLayout>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+<!--<LinearLayout-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:clipToPadding="false"-->
+<!--    android:gravity="center"-->
+<!--    android:orientation="horizontal">-->
 
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:background="@drawable/cerclebackgroundgreen"
-                    android:padding="15dp"
-                    android:src="@drawable/graph" />
+<!--    <android.support.v7.widget.CardView-->
+<!--        android:layout_width="160dp"-->
+<!--        android:layout_height="190dp"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:clickable="true"-->
+<!--        android:foreground="?android:attr/selectableItemBackground">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Насоки"
-                    android:textStyle="bold" />
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical">-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="10dp"
-                    android:background="@color/lightgray" />
+<!--            <ImageView-->
+<!--                android:layout_width="64dp"-->
+<!--                android:layout_height="64dp"-->
+<!--                android:background="@drawable/cerclebackgroundgreen"-->
+<!--                android:padding="15dp"-->
+<!--                android:src="@drawable/graph" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="Графики, насоки и безопастно шофиране."
-                    android:textColor="@android:color/darker_gray" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:text="Насоки"-->
+<!--                android:textStyle="bold" />-->
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+<!--            <View-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_margin="10dp"-->
+<!--                android:background="@color/lightgray" />-->
 
-        <android.support.v7.widget.CardView
-            android:layout_width="160dp"
-            android:layout_height="190dp"
-            android:layout_margin="10dp"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground">
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:padding="5dp"-->
+<!--                android:text="Графики, насоки и безопастно шофиране."-->
+<!--                android:textColor="@android:color/darker_gray" />-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+<!--        </LinearLayout>-->
+<!--    </android.support.v7.widget.CardView>-->
 
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:background="@drawable/cerclebackgroundyello"
-                    android:padding="10dp"
-                    android:src="@drawable/biohazard" />
+<!--    <android.support.v7.widget.CardView-->
+<!--        android:layout_width="160dp"-->
+<!--        android:layout_height="190dp"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:clickable="true"-->
+<!--        android:foreground="?android:attr/selectableItemBackground">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Черна кутия"
-                    android:textStyle="bold" />
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical">-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="10dp"
-                    android:background="@color/lightgray" />
+<!--            <ImageView-->
+<!--                android:layout_width="64dp"-->
+<!--                android:layout_height="64dp"-->
+<!--                android:background="@drawable/cerclebackgroundyello"-->
+<!--                android:padding="10dp"-->
+<!--                android:src="@drawable/biohazard" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="Информация, която може да се използва при ПТП."
-                    android:textColor="@android:color/darker_gray" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:text="Черна кутия"-->
+<!--                android:textStyle="bold" />-->
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+<!--            <View-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_margin="10dp"-->
+<!--                android:background="@color/lightgray" />-->
 
-    </LinearLayout>
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:padding="5dp"-->
+<!--                android:text="Информация, която може да се използва при ПТП."-->
+<!--                android:textColor="@android:color/darker_gray" />-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:gravity="center"
-        android:orientation="horizontal">
+<!--        </LinearLayout>-->
+<!--    </android.support.v7.widget.CardView>-->
 
-        <android.support.v7.widget.CardView
-            android:layout_width="340dp"
-            android:layout_height="150dp"
-            android:layout_margin="10dp"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground">
+<!--</LinearLayout>-->
 
-            <LinearLayout
+<!--<LinearLayout-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:clipToPadding="false"-->
+<!--    android:gravity="center"-->
+<!--    android:orientation="horizontal">-->
 
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+<!--    <android.support.v7.widget.CardView-->
+<!--        android:layout_width="340dp"-->
+<!--        android:layout_height="150dp"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:clickable="true"-->
+<!--        android:foreground="?android:attr/selectableItemBackground">-->
 
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:background="@drawable/cerclebackgroundpurple"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_computer_black_24dp" />
+<!--        <LinearLayout-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Грешки"
-                    android:textStyle="bold" />
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical">-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="10dp"
-                    android:background="@color/lightgray" />
+<!--            <ImageView-->
+<!--                android:layout_width="64dp"-->
+<!--                android:layout_height="64dp"-->
+<!--                android:background="@drawable/cerclebackgroundpurple"-->
+<!--                android:padding="10dp"-->
+<!--                android:src="@drawable/ic_computer_black_24dp" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="Проверка за грешки на автомобила."
-                    android:textColor="@android:color/darker_gray" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:text="Грешки"-->
+<!--                android:textStyle="bold" />-->
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+<!--            <View-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_margin="10dp"-->
+<!--                android:background="@color/lightgray" />-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:padding="5dp"-->
+<!--                android:text="Проверка за грешки на автомобила."-->
+<!--                android:textColor="@android:color/darker_gray" />-->
+
+<!--        </LinearLayout>-->
+<!--    </android.support.v7.widget.CardView>-->
 
 
-    </LinearLayout>
-</LinearLayout>
+<!--</LinearLayout>-->
+<!--</LinearLayout>-->
