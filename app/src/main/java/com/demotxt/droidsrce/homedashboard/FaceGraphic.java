@@ -20,6 +20,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
+import android.view.View;
 
 import com.demotxt.droidsrce.homedashboard.Drive;
 import com.demotxt.droidsrce.homedashboard.ui.camera.GraphicOverlay;
@@ -122,8 +123,6 @@ class FaceGraphic extends GraphicOverlay.Graphic {
 
 
     public void checkIfSleepy(Canvas canvas) {
-        mp = MediaPlayer.create(Drive.getAppContext(), R.raw.beep);
-        //mp.setLooping(true);
         Face face = mFace;
         if (face == null) {
             return;
@@ -137,17 +136,46 @@ class FaceGraphic extends GraphicOverlay.Graphic {
             timer = 0;
         }
         if(timer >= 10){
-            if(!mp.isPlaying())
-                mp.start();
+                play();
 
            canvas.drawText("SLEEPY", x - ID_X_OFFSET * 2, y - ID_Y_OFFSET * 2 - 40, mIdPaint);
         }
         else{
-            mp.stop();
-
+            pause();
             canvas.drawText("NOT SLEEPY", x - ID_X_OFFSET * 2, y - ID_Y_OFFSET * 2 - 40, mIdPaint);
         }
         canvas.drawText(Integer.toString(timer),x - ID_X_OFFSET * 2, y - ID_Y_OFFSET * 2 - 60, mIdPaint);
     }
 
+    public void play(){
+        if(mp == null){
+            mp = MediaPlayer.create(Drive.getAppContext(), R.raw.beep);
+            mp.setLooping(true);
+            mp.setVolume(1,1);
+            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    stopPlayer();
+                }
+            });
+        }
+        mp.start();
+    }
+
+    public void pause() {
+        if (mp != null) {
+            mp.reset();
+            mp.pause();
+        }
+    }
+    public void stop(){
+        stopPlayer();
+    }
+
+    private void stopPlayer(){
+        if(mp != null)  {
+            mp.release();
+            mp = null;
+        }
+    }
 }

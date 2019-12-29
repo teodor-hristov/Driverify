@@ -158,6 +158,7 @@ public final class Drive extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mPreview.stop();
+
     }
 
     /**
