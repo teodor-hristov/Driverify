@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:background="@color/loginBackgroundColor"
+    android:background="@color/icons"
     tools:context="com.demotxt.droidsrce.homedashboard.LoginActivity"
     android:weightSum="1">
 

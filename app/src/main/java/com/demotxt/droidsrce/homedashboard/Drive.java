@@ -16,19 +16,30 @@
 package com.demotxt.droidsrce.homedashboard;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+
+import com.google.android.gms.vision.text.Line;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview;
 import com.demotxt.droidsrce.homedashboard.ui.camera.GraphicOverlay;
@@ -147,7 +158,6 @@ public final class Drive extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         startCameraSource();
     }
 
@@ -318,5 +328,22 @@ public final class Drive extends AppCompatActivity {
     public static Context getAppContext() {
         return appContext;
     }
+    public void rpm(){
+        ProgressBar rpm = findViewById(R.id.rpm);
+        int progress;
 
+        while (true){
+            try {
+                wait(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            progress = rpm.getProgress();
+           progress += 3;
+           if(progress == 80)
+               progress = 0;
+           rpm.setProgress(progress);
+        }
+
+    }
 }

@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/topLayout"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/accent"
     android:keepScreenOn="true">
 
     <com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview
         android:id="@+id/preview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="18dp"
+        android:layout_height="16dp"
+        android:background="@color/primary_dark"
         android:focusable="auto"
         android:visibility="visible">
 
@@ -21,12 +22,27 @@
             android:layout_height="match_parent"
             android:visibility="visible" />
 
-        <LinearLayout
+    </com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/accent"
+        android:orientation="horizontal">
+
+        <ProgressBar
+            android:id="@+id/rpm"
+            style="?android:progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:background="@android:color/white">
-            
-        </LinearLayout>
-    </com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview>
-</LinearLayout>
+            android:progress="40"
+            android:progressDrawable="@drawable/circle"
+            android:rotation="126"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <!--            edno delenie = 0.3-->
+    </LinearLayout>
+
+</RelativeLayout>
