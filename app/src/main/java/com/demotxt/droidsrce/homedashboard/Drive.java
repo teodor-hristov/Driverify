@@ -328,22 +328,22 @@ public final class Drive extends AppCompatActivity {
     public static Context getAppContext() {
         return appContext;
     }
-    public void rpm(){
-        ProgressBar rpm = findViewById(R.id.rpm);
-        int progress;
-
-        while (true){
-            try {
-                wait(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            progress = rpm.getProgress();
-           progress += 3;
-           if(progress == 80)
-               progress = 0;
-           rpm.setProgress(progress);
-        }
-
-    }
+//    public void rpm(){
+//        ProgressBar rpm = findViewById(R.id.rpm);
+//        int progress;
+//
+//        while (true){
+//            try {
+//                wait(100);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            progress = rpm.getProgress();
+//           progress += 3;
+//           if(progress == 80)
+//               progress = 0;
+//           rpm.setProgress(progress);
+//        }
+//
+//    }
 }
