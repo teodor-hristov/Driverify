@@ -32,7 +32,7 @@
 
     </com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview>
 
-<LinearLayout
+    <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
@@ -106,6 +106,7 @@
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -142,6 +143,7 @@
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

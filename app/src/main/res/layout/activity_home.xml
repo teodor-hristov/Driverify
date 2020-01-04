@@ -43,7 +43,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Карай"
+                    android:text="@string/homeDrive"
                     android:textStyle="bold" />
 
                 <View
@@ -57,7 +57,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Нагласи устройството и шофирай."
+                    android:text="@string/homeDriveInfo"
                     android:textColor="@android:color/darker_gray" />
 
             </LinearLayout>
@@ -87,7 +87,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Информация"
+                    android:text="@string/homeInfo"
                     android:textStyle="bold" />
 
                 <View
@@ -101,7 +101,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Информация за потребителя и за превозното средство."
+                    android:text="@string/homeInfoInfo"
                     android:textColor="@android:color/darker_gray" />
 
             </LinearLayout>
@@ -140,7 +140,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Насоки"
+                    android:text="@string/homeTips"
                     android:textStyle="bold" />
 
                 <View
@@ -154,7 +154,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Графики, насоки и безопастно шофиране."
+                    android:text="@string/homeTipsInfo"
                     android:textColor="@android:color/darker_gray" />
 
             </LinearLayout>
@@ -184,7 +184,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Черна кутия"
+                    android:text="@string/homeBlackBox"
                     android:textStyle="bold" />
 
                 <View
@@ -198,7 +198,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Информация, която може да се използва при ПТП."
+                    android:text="@string/homeBlackBoxInfo"
                     android:textColor="@android:color/darker_gray" />
 
             </LinearLayout>
@@ -238,7 +238,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Грешки"
+                    android:text="@string/homeFaultCodes"
                     android:textStyle="bold" />
 
                 <View
@@ -252,7 +252,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Проверка за грешки на автомобила."
+                    android:text="@string/homeFaultCodesInfo"
                     android:textColor="@android:color/darker_gray" />
 
             </LinearLayout>

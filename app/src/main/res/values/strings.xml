@@ -6,6 +6,19 @@
     <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
     <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
 
+<!--    HOME-->
+    <string name="homeDrive">Drive</string>
+    <string name="homeDriveInfo">Get ready for driving. This monitors car info, drowsiness detection.</string>
+    <string name="homeInfo">Info</string>
+    <string name="homeInfoInfo">Information about the driver and the car.</string>
+    <string name="homeTips">Tips</string>
+    <string name="homeTipsInfo">Graphs and tips for safe and economical driving.</string>
+    <string name="homeBlackBox">Black box</string>
+    <string name="homeBlackBoxInfo">The information stored in this can be used by police in case of crash.</string>
+    <string name="homeFaultCodes">Fault codes</string>
+    <string name="homeFaultCodesInfo">Information about fault codes in the vehicle.</string>
+
+<!--    DRIVE-->
     <string name="rpmText">Engine RPM</string>
     <string name="coolantText">Coolant temperature (C)</string>
     <string name="fuelText">Fuel (l)</string>
