@@ -20,8 +20,11 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.media.MediaPlayer;
@@ -31,6 +34,7 @@ import com.google.android.gms.vision.text.Line;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -40,6 +44,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview;
 import com.demotxt.droidsrce.homedashboard.ui.camera.GraphicOverlay;
@@ -52,6 +57,7 @@ import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Activity for the face tracker app.  This app detects faces with the rear facing camera, and draws
@@ -59,14 +65,19 @@ import java.io.IOException;
  */
 public final class Drive extends AppCompatActivity {
     private static final String TAG = "FaceTracker";
+    private static final String DIALOGUE_TAG = "bluetoothDevices";
+
+    private static final int REQUEST_ENABLE_BT = 1;
+    private static final int RC_HANDLE_GMS = 9001;
+    private static final int RC_HANDLE_CAMERA_PERM = 2;
+
     private static Context appContext;
     private CameraSource mCameraSource = null;
-
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
-    private static final int RC_HANDLE_GMS = 9001;
-    // permission request codes need to be < 256
-    private static final int RC_HANDLE_CAMERA_PERM = 2;
+    private BluetoothDialog deviceDialogue;
+    private BluetoothAdapter btAdapter;
+
 
     //==============================================================================================
     // Activity Methods
@@ -79,6 +90,8 @@ public final class Drive extends AppCompatActivity {
         appContext = getApplicationContext();
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
+        deviceDialogue = new BluetoothDialog();
 
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
@@ -88,6 +101,9 @@ public final class Drive extends AppCompatActivity {
         } else {
             requestCameraPermission();
         }
+
+        bluetoothPermission(btAdapter);
+
     }
 
     private void requestCameraPermission() {
@@ -150,6 +166,19 @@ public final class Drive extends AppCompatActivity {
                 .setFacing(CameraSource.CAMERA_FACING_FRONT)
                 .setRequestedFps(30.0f)
                 .build();
+    }
+
+    @Override
+    public void onActivityResult (int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ENABLE_BT) {
+            if (btAdapter != null && btAdapter.isEnabled()) {
+                deviceDialogue = new BluetoothDialog();
+                deviceDialogue.show(getSupportFragmentManager(), DIALOGUE_TAG);
+            } else {
+                Toast toast = Toast.makeText(getApplicationContext(),"NAH", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        }
     }
 
     /**
@@ -328,22 +357,11 @@ public final class Drive extends AppCompatActivity {
     public static Context getAppContext() {
         return appContext;
     }
-//    public void rpm(){
-//        ProgressBar rpm = findViewById(R.id.rpm);
-//        int progress;
-//
-//        while (true){
-//            try {
-//                wait(100);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            progress = rpm.getProgress();
-//           progress += 3;
-//           if(progress == 80)
-//               progress = 0;
-//           rpm.setProgress(progress);
-//        }
-//
-//    }
+
+    private void bluetoothPermission(BluetoothAdapter btAdapter){
+        if (btAdapter != null && !btAdapter.isEnabled()) {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+        }
+    }
 }

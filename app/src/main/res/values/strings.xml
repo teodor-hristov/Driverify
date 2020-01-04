@@ -6,6 +6,10 @@
     <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
     <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
 
+<!--    Bluetooth dialog-->
+    <string name="dialogHead">Choose bluetooth device!</string>
+    <string name="error">"Your device is not supporting bluetooth."</string>
+    
 <!--    HOME-->
     <string name="homeDrive">Drive</string>
     <string name="homeDriveInfo">Get ready for driving. This monitors car info, drowsiness detection.</string>

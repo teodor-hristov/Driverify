@@ -40,7 +40,7 @@
         <androidx.cardview.widget.CardView
         android:id="@+id/rpmOverylay"
         android:layout_width="120dp"
-        android:layout_height="150dp"
+        android:layout_height="130dp"
         android:layout_margin="10dp"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
@@ -79,7 +79,7 @@
         <androidx.cardview.widget.CardView
         android:id="@+id/fuel"
         android:layout_width="120dp"
-        android:layout_height="150dp"
+        android:layout_height="130dp"
         android:layout_margin="10dp"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
@@ -152,7 +152,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/coolant"
             android:layout_width="120dp"
-            android:layout_height="150dp"
+            android:layout_height="130dp"
             android:layout_margin="10dp"
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
@@ -190,7 +190,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/engineLoad"
             android:layout_width="120dp"
-            android:layout_height="150dp"
+            android:layout_height="130dp"
             android:layout_margin="10dp"
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
