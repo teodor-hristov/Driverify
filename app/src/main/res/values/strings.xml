@@ -9,6 +9,7 @@
 <!--    Bluetooth dialog-->
     <string name="dialogHead">Choose bluetooth device!</string>
     <string name="error">"Your device is not supporting bluetooth."</string>
+    <string name="bluetoothPerm">You cannnot use car monitoring features without connecting to bluetooth ECU device.</string>
     
 <!--    HOME-->
     <string name="homeDrive">Drive</string>

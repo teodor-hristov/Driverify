@@ -39,6 +39,8 @@ import androidx.fragment.app.DialogFragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -172,13 +174,32 @@ public final class Drive extends AppCompatActivity {
     public void onActivityResult (int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_ENABLE_BT) {
             if (btAdapter != null && btAdapter.isEnabled()) {
-                deviceDialogue = new BluetoothDialog();
-                deviceDialogue.show(getSupportFragmentManager(), DIALOGUE_TAG);
+                showDialogueBluetooth(deviceDialogue);
             } else {
-                Toast toast = Toast.makeText(getApplicationContext(),"NAH", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getApplicationContext(),R.string.bluetoothPerm, Toast.LENGTH_LONG);
                 toast.show();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.bluetoothSearch){
+            bluetoothPermission(btAdapter);
+            showDialogueBluetooth(deviceDialogue);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showDialogueBluetooth(BluetoothDialog deviceDialogue){
+        deviceDialogue = new BluetoothDialog();// show dialogue
+        deviceDialogue.show(getSupportFragmentManager(), DIALOGUE_TAG);
     }
 
     /**
