@@ -16,37 +16,23 @@
 package com.demotxt.droidsrce.homedashboard;
 
 import android.Manifest;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Point;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-
-import com.google.android.gms.vision.text.Line;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview;
 import com.demotxt.droidsrce.homedashboard.ui.camera.GraphicOverlay;
@@ -57,14 +43,11 @@ import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
-import java.util.Set;
 
-/**
- * Activity for the face tracker app.  This app detects faces with the rear facing camera, and draws
- * overlay graphics to indicate the position, size, and ID of each face.
- */
+
 public final class Drive extends AppCompatActivity {
     private static final String TAG = "FaceTracker";
     private static final String DIALOGUE_TAG = "bluetoothDevices";
@@ -95,8 +78,6 @@ public final class Drive extends AppCompatActivity {
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         deviceDialogue = new BluetoothDialog();
 
-        // Check for the camera permission before accessing the camera.  If the
-        // permission is not granted yet, request permission.
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
             createCameraSource();
@@ -195,11 +176,6 @@ public final class Drive extends AppCompatActivity {
             showDialogueBluetooth(deviceDialogue);
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void showDialogueBluetooth(BluetoothDialog deviceDialogue){
-        deviceDialogue = new BluetoothDialog();// show dialogue
-        deviceDialogue.show(getSupportFragmentManager(), DIALOGUE_TAG);
     }
 
     /**
@@ -375,6 +351,7 @@ public final class Drive extends AppCompatActivity {
             mOverlay.remove(mFaceGraphic);
         }
     }
+
     public static Context getAppContext() {
         return appContext;
     }
@@ -384,5 +361,10 @@ public final class Drive extends AppCompatActivity {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
         }
-    }
+    } // asking for permission and waiting in onrequestpermission()
+
+    private void showDialogueBluetooth(BluetoothDialog deviceDialogue){
+        deviceDialogue = new BluetoothDialog();// show dialogue
+        deviceDialogue.show(getSupportFragmentManager(), DIALOGUE_TAG);
+    } // Bluetooth devices dialogue
 }

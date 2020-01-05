@@ -6,20 +6,15 @@ import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class BluetoothDialog extends AppCompatDialogFragment {
     private static final String TAG = "BluetoothDialog";
-    private static final int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private Set<BluetoothDevice> pairedDev;
     private String[] devices;
@@ -55,19 +50,6 @@ public class BluetoothDialog extends AppCompatDialogFragment {
     public boolean isSupportingBluetooth(BluetoothAdapter bluetoothAdapter){
         if (bluetoothAdapter == null) {
             return false;
-        }
-        return true;
-    }
-    public boolean enableBluetooth(BluetoothAdapter bluetoothAdapter){
-        if (!bluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            if(bluetoothAdapter.isEnabled()){
-                return true;
-            }
-            else{
-                return false;
-            }
         }
         return true;
     }
