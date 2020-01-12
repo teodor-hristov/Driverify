@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.versionedparcelable.ParcelUtils;
 
+import com.github.pires.obd.commands.engine.RPMCommand;
 import com.github.pires.obd.commands.protocol.EchoOffCommand;
 import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
 import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
@@ -57,41 +58,41 @@ public class BluetoothDialog extends AppCompatDialogFragment {
                         .setItems(devices, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 selectedDevice = (pairedDev.toArray(new BluetoothDevice[pairedDev.size()]))[which];
-                                try {
-                                    deviceAdress = getUUID(bluetoothAdapter, which);
-                                    if(deviceAdress == null)
-                                        throw new Exception("Null");
-                                } catch (NoSuchMethodException e) {
-                                    Log.e(TAG, e.toString());
-                                } catch (InvocationTargetException e) {
-                                    Log.e(TAG, e.toString());
-                                } catch (IllegalAccessException e) {
-                                    Log.e(TAG, e.toString());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                bluetoothAdapter.getRemoteDevice(selectedDevice.getAddress());
-                                try {
-                                    socket = selectedDevice.createInsecureRfcommSocketToServiceRecord(deviceAdress);
-                                } catch (IOException e) {
-                                    Log.e(TAG, e.toString());
-                                }
-
-                                try {
-                                    socket.connect();
-                                } catch (IOException e) {
-                                    Log.e(TAG, e.toString());
-                                }
-                                // execute commands
-                                try {
-                                    new EchoOffCommand().run(socket.getInputStream(), socket.getOutputStream());
-                                    new LineFeedOffCommand().run(socket.getInputStream(), socket.getOutputStream());
-                                    new TimeoutCommand(125).run(socket.getInputStream(), socket.getOutputStream());
-                                    new SelectProtocolCommand(ObdProtocols.AUTO).run(socket.getInputStream(), socket.getOutputStream());
-                                    new AmbientAirTemperatureCommand().run(socket.getInputStream(), socket.getOutputStream());
-                                } catch (Exception e) {
-                                    // handle errors
-                                }
+//                                try {
+//                                    deviceAdress = getUUID(bluetoothAdapter, which);
+//                                    if(deviceAdress == null)
+//                                        throw new Exception("Null");
+//                                } catch (NoSuchMethodException e) {
+//                                    Log.e(TAG, e.toString());
+//                                } catch (InvocationTargetException e) {
+//                                    Log.e(TAG, e.toString());
+//                                } catch (IllegalAccessException e) {
+//                                    Log.e(TAG, e.toString());
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
+//                                bluetoothAdapter.getRemoteDevice(selectedDevice.getAddress());
+//                                try {
+//                                    socket = selectedDevice.createInsecureRfcommSocketToServiceRecord(deviceAdress);
+//                                } catch (IOException e) {
+//                                    Log.e(TAG, e.toString());
+//                                }
+//
+//                                try {
+//                                    socket.connect();
+//                                } catch (IOException e) {
+//                                    Log.e(TAG, e.toString());
+//                                }
+//                                // execute commands
+//                                try {
+//                                    new EchoOffCommand().run(socket.getInputStream(), socket.getOutputStream());
+//                                    new LineFeedOffCommand().run(socket.getInputStream(), socket.getOutputStream());
+//                                    new TimeoutCommand(125).run(socket.getInputStream(), socket.getOutputStream());
+//                                    new SelectProtocolCommand(ObdProtocols.AUTO).run(socket.getInputStream(), socket.getOutputStream());
+//                                    new AmbientAirTemperatureCommand().run(socket.getInputStream(), socket.getOutputStream());
+//                                } catch (Exception e) {
+//                                    // handle errors
+//                                }
                             }
                         });
             }else{

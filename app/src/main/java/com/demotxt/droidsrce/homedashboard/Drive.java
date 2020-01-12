@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -86,7 +87,6 @@ public final class Drive extends AppCompatActivity {
         }
 
         bluetoothPermission(btAdapter);
-
     }
 
     private void requestCameraPermission() {
