@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,9 +47,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 
-
 public final class Drive extends AppCompatActivity {
-    private static final String TAG = "FaceTracker";
+    private static final String TAG = "Drive";
     private static final String DIALOGUE_TAG = "bluetoothDevices";
 
     private static final int REQUEST_ENABLE_BT = 1;
@@ -64,6 +62,8 @@ public final class Drive extends AppCompatActivity {
     private BluetoothDialog deviceDialogue;
     private BluetoothAdapter btAdapter;
 
+    private boolean status = false;
+
 
     //==============================================================================================
     // Activity Methods
@@ -74,8 +74,8 @@ public final class Drive extends AppCompatActivity {
         super.onCreate(icicle);
         setContentView(R.layout.activity_drive);
         appContext = getApplicationContext();
-        mPreview = (CameraSourcePreview) findViewById(R.id.preview);
-        mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
+        mPreview = findViewById(R.id.preview);
+        mGraphicOverlay = findViewById(R.id.faceOverlay);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         deviceDialogue = new BluetoothDialog();
 
@@ -86,7 +86,10 @@ public final class Drive extends AppCompatActivity {
             requestCameraPermission();
         }
 
-        bluetoothPermission(btAdapter);
+        //bluetoothPermission(btAdapter);
+        // TODO: Start bluetooth in background service
+
+
     }
 
     private void requestCameraPermission() {
@@ -172,8 +175,14 @@ public final class Drive extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.bluetoothSearch){
-            bluetoothPermission(btAdapter);
-            showDialogueBluetooth(deviceDialogue);
+//            bluetoothPermission(btAdapter);
+//            showDialogueBluetooth(deviceDialogue);
+
+            if(!status){
+                startBluetooth();
+            }else{
+                stopBluetooth();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -367,4 +376,11 @@ public final class Drive extends AppCompatActivity {
         deviceDialogue = new BluetoothDialog();// show dialogue
         deviceDialogue.show(getSupportFragmentManager(), DIALOGUE_TAG);
     } // Bluetooth devices dialogue
+
+    public void startBluetooth(){
+        startService(new Intent(this, BluetoothConnection.class));
+    }
+    public void stopBluetooth(){
+        stopService(new Intent(this, BluetoothConnection.class));
+    }
 }
