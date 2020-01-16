@@ -159,16 +159,15 @@
             app:cardBackgroundColor="@color/primary"
             android:focusable="true">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="bottom|center_horizontal"
-                    android:text="@string/fuelText"
-                    android:textColor="@color/accent"
-                    android:textSize="18sp">
-                </TextView>
             <TextView
-                android:id="@+id/fuelValue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom|center_horizontal"
+                android:text="@string/maxSpeedText"
+                android:textColor="@color/accent"
+                android:textSize="18sp"></TextView>
+            <TextView
+                android:id="@+id/maxSpeed"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"

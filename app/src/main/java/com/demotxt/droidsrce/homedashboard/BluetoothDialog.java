@@ -7,11 +7,22 @@ import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.ParcelUuid;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.github.pires.obd.commands.SpeedCommand;
+import com.github.pires.obd.commands.engine.RPMCommand;
+import com.github.pires.obd.commands.protocol.EchoOffCommand;
+import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
+import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
+import com.github.pires.obd.commands.protocol.TimeoutCommand;
+import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand;
+import com.github.pires.obd.enums.ObdProtocols;
+
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -46,41 +57,52 @@ public class BluetoothDialog extends AppCompatDialogFragment {
                         .setItems(devices, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 selectedDevice = (pairedDev.toArray(new BluetoothDevice[pairedDev.size()]))[which];
-//                                try {
-//                                    deviceAdress = getUUID(bluetoothAdapter, which);
-//                                    if(deviceAdress == null)
-//                                        throw new Exception("Null");
-//                                } catch (NoSuchMethodException e) {
-//                                    Log.e(TAG, e.toString());
-//                                } catch (InvocationTargetException e) {
-//                                    Log.e(TAG, e.toString());
-//                                } catch (IllegalAccessException e) {
-//                                    Log.e(TAG, e.toString());
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                }
-//                                bluetoothAdapter.getRemoteDevice(selectedDevice.getAddress());
-//                                try {
-//                                    socket = selectedDevice.createInsecureRfcommSocketToServiceRecord(deviceAdress);
-//                                } catch (IOException e) {
-//                                    Log.e(TAG, e.toString());
-//                                }
-//
-//                                try {
-//                                    socket.connect();
-//                                } catch (IOException e) {
-//                                    Log.e(TAG, e.toString());
-//                                }
-//                                // execute commands
-//                                try {
-//                                    new EchoOffCommand().run(socket.getInputStream(), socket.getOutputStream());
-//                                    new LineFeedOffCommand().run(socket.getInputStream(), socket.getOutputStream());
-//                                    new TimeoutCommand(125).run(socket.getInputStream(), socket.getOutputStream());
-//                                    new SelectProtocolCommand(ObdProtocols.AUTO).run(socket.getInputStream(), socket.getOutputStream());
-//                                    new AmbientAirTemperatureCommand().run(socket.getInputStream(), socket.getOutputStream());
-//                                } catch (Exception e) {
-//                                    // handle errors
-//                                }
+                                try {
+                                    deviceAdress = getUUID(bluetoothAdapter, which);
+                                    if(deviceAdress == null)
+                                        throw new Exception("Null");
+                                } catch (NoSuchMethodException e) {
+                                    Log.e(TAG, e.toString());
+                                } catch (InvocationTargetException e) {
+                                    Log.e(TAG, e.toString());
+                                } catch (IllegalAccessException e) {
+                                    Log.e(TAG, e.toString());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                bluetoothAdapter.getRemoteDevice(selectedDevice.getAddress());
+                                try {
+                                    socket = selectedDevice.createInsecureRfcommSocketToServiceRecord(deviceAdress);
+                                } catch (IOException e) {
+                                    Log.e(TAG, e.toString());
+                                }
+
+                                try {
+                                    socket.connect();
+                                } catch (IOException e) {
+                                    Log.e(TAG, e.toString());
+                                }
+                                // execute commands
+                                try {
+                                    new EchoOffCommand().run(socket.getInputStream(), socket.getOutputStream());
+                                    new LineFeedOffCommand().run(socket.getInputStream(), socket.getOutputStream());
+                                    new TimeoutCommand(125).run(socket.getInputStream(), socket.getOutputStream());
+                                    new SelectProtocolCommand(ObdProtocols.AUTO).run(socket.getInputStream(), socket.getOutputStream());
+                                    new AmbientAirTemperatureCommand().run(socket.getInputStream(), socket.getOutputStream());
+
+                                    RPMCommand engineRpmCommand = new RPMCommand();
+                                    SpeedCommand speedCommand = new SpeedCommand();
+                                    while (!Thread.currentThread().isInterrupted())
+                                    {
+                                        engineRpmCommand.run(socket.getInputStream(), socket.getOutputStream());
+                                        speedCommand.run(socket.getInputStream(), socket.getOutputStream());
+                                        // TODO handle commands result
+                                        Log.d(TAG, "RPM: " + engineRpmCommand.getFormattedResult());
+                                        Log.d(TAG, "Speed: " + speedCommand.getFormattedResult());
+                                    }
+                                } catch (Exception e) {
+                                    // handle errors
+                                }
                             }
                         });
             }else{

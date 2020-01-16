@@ -50,6 +50,8 @@ public class BluetoothConnection extends Service {
         }
     };
 
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();

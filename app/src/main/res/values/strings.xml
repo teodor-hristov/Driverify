@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Do not sleep!</string>
+    <string name="app_name">Driverify</string>
     <string name="title_activity_login"></string>
     <string name="ok">OK</string>
     <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
@@ -26,9 +26,14 @@
 <!--    DRIVE-->
     <string name="rpmText">Engine RPM</string>
     <string name="coolantText">Coolant temperature (C)</string>
-    <string name="fuelText">Fuel (l)</string>
+    <string name="maxSpeedText">Max speed (km/h)</string>
     <string name="engineLoadText">Engine load</string>
     <string name="speedometerText">Speedometer (km/h)</string>
+    <string name="waiting_for_obd">Waiting for paired OBD adapter</string>
+    <string name="connecting_to_ecu">Connecting to ECU</string>
+    <string name="obd2_adapter_not_responding">The OBD adapter is not responding</string>
+    <string name="obd_connected">OBD Connected</string>
+    <string name="connect_lost">Connect Lost</string>
 
 
     <string name="title_activity_fullscreen">FullscreenActivity</string>
