@@ -37,6 +37,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.demotxt.droidsrce.homedashboard.settings.Settings;
 import com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview;
 import com.demotxt.droidsrce.homedashboard.ui.camera.GraphicOverlay;
 import com.google.android.gms.common.ConnectionResult;
@@ -50,17 +51,18 @@ import com.google.android.material.snackbar.Snackbar;
 import com.sohrab.obd.reader.obdCommand.ObdCommand;
 import com.sohrab.obd.reader.obdCommand.ObdConfiguration;
 import com.sohrab.obd.reader.obdCommand.SpeedCommand;
-import com.sohrab.obd.reader.obdCommand.control.TroubleCodesCommand;
+import com.sohrab.obd.reader.obdCommand.engine.LoadCommand;
 import com.sohrab.obd.reader.obdCommand.engine.RPMCommand;
+import com.sohrab.obd.reader.obdCommand.engine.RuntimeCommand;
+import com.sohrab.obd.reader.obdCommand.fuel.FuelLevelCommand;
 import com.sohrab.obd.reader.service.ObdReaderService;
 import com.sohrab.obd.reader.trip.TripRecord;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.sohrab.obd.reader.constants.DefineObdReader.ACTION_READ_OBD_REAL_TIME_DATA;
 import static com.sohrab.obd.reader.constants.DefineObdReader.ACTION_OBD_CONNECTED;
-import static com.sohrab.obd.reader.constants.DefineObdReader.INTENT_EXTRA_DATA;
+import static com.sohrab.obd.reader.constants.DefineObdReader.ACTION_READ_OBD_REAL_TIME_DATA;
 
 public final class Drive extends AppCompatActivity {
     private static final String TAG = "Drive";
@@ -82,10 +84,6 @@ public final class Drive extends AppCompatActivity {
     private TextView mMaxSpeed;
     private TextView mCoolantText;
 
-
-    private BluetoothDialog deviceDialogue;
-    private BluetoothAdapter btAdapter;
-
     private int rc;
     private boolean status = false;
 
@@ -103,9 +101,6 @@ public final class Drive extends AppCompatActivity {
         mPreview = findViewById(R.id.preview);
         mGraphicOverlay = findViewById(R.id.faceOverlay);
 
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-        deviceDialogue = new BluetoothDialog();
-
         mRpmText = findViewById(R.id.rpmValue);
         mSpeedText = findViewById(R.id.speedometerValue);
         mEngineLoad = findViewById(R.id.engineLoadValue);
@@ -118,7 +113,12 @@ public final class Drive extends AppCompatActivity {
         ArrayList<ObdCommand> obdCommands = new ArrayList<>();
         obdCommands.add(new SpeedCommand());
         obdCommands.add(new RPMCommand());
-        obdCommands.add(new TroubleCodesCommand());
+        obdCommands.add(new LoadCommand());
+        obdCommands.add(new FuelLevelCommand());
+        obdCommands.add(new RuntimeCommand());
+        //obdCommands.add(new TroubleCodesCommand());
+
+        //Set configuration
         ObdConfiguration.setmObdCommands(this, obdCommands);
 
         //Register receiver with some action related to OBD connection status and read PID values
@@ -159,7 +159,7 @@ public final class Drive extends AppCompatActivity {
                 String connectionStatusMsg = intent.getStringExtra(ObdReaderService.INTENT_EXTRA_DATA);
                 //mObdInfoTextView.setText(connectionStatusMsg);
                 makeToast(connectionStatusMsg);
-                Toast.makeText(Drive.this, connectionStatusMsg, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Drive.this, connectionStatusMsg, Toast.LENGTH_SHORT).show();
 
                 if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {
                     //OBD connected  do what want after OBD connection
@@ -176,11 +176,15 @@ public final class Drive extends AppCompatActivity {
                 //mObdInfoTextView.setText("Checkpoint 1");
                 TripRecord tripRecord = TripRecord.getTripRecode(Drive.this);
 
-                mRpmText.setText(tripRecord.getEngineRpm());
-                mSpeedText.setText(tripRecord.getSpeed());
-                mEngineLoad.setText(tripRecord.getmEngineLoad());
-                mMaxSpeed.setText(tripRecord.getSpeedMax());
-                mCoolantText.setText(tripRecord.getmEngineCoolantTemp());
+                //mRpmText.setText(tripRecord.getEngineRpm());
+                Log.i(TAG, tripRecord.getEngineRpm());
+                Log.i(TAG, tripRecord.getmEngineLoad());
+                Log.i(TAG, tripRecord.getEngineRuntime());
+                Log.i(TAG, tripRecord.getSpeed().toString());
+                //mSpeedText.setText(tripRecord.getSpeed());
+                //mEngineLoad.setText(tripRecord.getmEngineLoad() + "%");
+                //mMaxSpeed.setText(tripRecord.getSpeedMax());
+                //mCoolantText.setText(tripRecord.getmEngineCoolantTemp());
 
                 //mObdInfoTextView.setText("Trip record info: "+tripRecord.toString());
                 // here you can fetch real time data from TripRecord using getter methods like
@@ -258,12 +262,7 @@ public final class Drive extends AppCompatActivity {
     @Override
     public void onActivityResult (int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_ENABLE_BT) {
-            if (btAdapter != null && btAdapter.isEnabled()) {
-                showDialogueBluetooth(deviceDialogue);
-            } else {
-                Toast toast = Toast.makeText(getApplicationContext(),R.string.bluetoothPerm, Toast.LENGTH_LONG);
-                toast.show();
-            }
+
         }
     }
 
@@ -276,6 +275,26 @@ public final class Drive extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.bluetoothSearch){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.settings_dialog)
+                    .setItems(R.array.menuDriverItems, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // The 'which' argument contains the index position
+                                    // of the selected item
+                                    switch (which){
+                                        case 0:
+                                            startActivity(new Intent(Drive.getAppContext(), Settings.class));
+                                            break;
+                                        case 1:
+                                            startActivity(new Intent(Drive.getAppContext(), Settings.class));
+                                            break;
+                                        case 2:
+                                            startActivity(new Intent(Drive.getAppContext(), Settings.class));
+                                            break;
+                                    }
+                                }
+                            });
+            builder.show();
 //            bluetoothPermission(btAdapter);
 //            showDialogueBluetooth(deviceDialogue);
 
@@ -473,13 +492,8 @@ public final class Drive extends AppCompatActivity {
         }
     } // asking for permission and waiting in onrequestpermission()
 
-    private void showDialogueBluetooth(BluetoothDialog deviceDialogue){
-        deviceDialogue = new BluetoothDialog();// show dialogue
-        deviceDialogue.show(getSupportFragmentManager(), DIALOGUE_TAG);
-    } // Bluetooth devices dialogue
-
     public void makeToast(String  msg){
-        Toast.makeText(this.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
     }
 
 

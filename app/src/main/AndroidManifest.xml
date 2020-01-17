@@ -45,13 +45,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".settings.Settings"
+            android:parentActivityName=".Drive"/>
         <activity
             android:name=".FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fullscreen"
             android:theme="@style/FullscreenTheme" />
 
-        <service android:name=".BluetoothConnection"/>
     </application>
 
 </manifest>

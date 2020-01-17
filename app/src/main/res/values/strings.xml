@@ -23,6 +23,9 @@
     <string name="homeFaultCodes">Fault codes</string>
     <string name="homeFaultCodesInfo">Information about fault codes in the vehicle.</string>
 
+<!--    DRIVE_SETTINGS-->
+    <string name="settings_dialog">Settings</string>
+
 <!--    DRIVE-->
     <string name="rpmText">Engine RPM</string>
     <string name="coolantText">Coolant temperature (C)</string>
