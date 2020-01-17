@@ -38,6 +38,10 @@
     <string name="obd_connected">OBD Connected</string>
     <string name="connect_lost">Connect Lost</string>
 
+<!--    DTCs-->
+    <string name="clear_codes">Clear DTCs</string>
+    <string name="copy_codes">Copy DTCs</string>
+    <string name="save_codes">Save DTCs</string>
 
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>

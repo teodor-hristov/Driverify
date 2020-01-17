@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.demotxt.droidsrce.homedashboard.settings.Settings;
 import com.sohrab.obd.reader.obdCommand.ObdCommand;
 import com.sohrab.obd.reader.obdCommand.ObdConfiguration;
 import com.sohrab.obd.reader.obdCommand.control.TroubleCodesCommand;
@@ -62,8 +65,30 @@ public class TroubleCodes extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mObdReaderReceiver);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.trouble_codes_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.clearCodes:
+                //TODO: Clear codes
+                break;
+            case R.id.copyCodes:
+                //TODO: Copy to clipboard codes
+                break;
+            case R.id.saveCodes:
+                //TODO: Save codes
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private final BroadcastReceiver mObdReaderReceiver = new BroadcastReceiver() {
         @Override

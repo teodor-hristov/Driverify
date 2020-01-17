@@ -311,6 +311,7 @@ public final class Drive extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mObdReaderReceiver);
         if (mCameraSource != null) {
             mCameraSource.release();
         }
@@ -363,10 +364,6 @@ public final class Drive extends AppCompatActivity {
                 .show();
     }
 
-    //==============================================================================================
-    // Camera Source Preview
-    //==============================================================================================
-
     /**
      * Starts or restarts the camera source, if it exists.  If the camera source doesn't exist yet
      * (e.g., because onResume was called before the camera source was created), this will be called
@@ -393,10 +390,6 @@ public final class Drive extends AppCompatActivity {
             }
         }
     }
-
-    //==============================================================================================
-    // Graphic Face Tracker
-    //==============================================================================================
 
     /**
      * Factory for creating a face tracker to be associated with a new face.  The multiprocessor
@@ -462,13 +455,6 @@ public final class Drive extends AppCompatActivity {
     public static Context getAppContext() {
         return appContext;
     }
-
-    private void bluetoothPermission(BluetoothAdapter btAdapter){
-        if (btAdapter != null && !btAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-        }
-    } // asking for permission and waiting in onrequestpermission()
 
     public void makeToast(String  msg){
         Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
