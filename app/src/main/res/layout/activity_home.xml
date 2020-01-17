@@ -23,7 +23,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
         android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/bankcardId"
+            android:id="@+id/driveId"
             android:layout_width="160dp"
             android:layout_height="190dp"
             android:layout_margin="10dp"
@@ -68,6 +68,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/info"
             android:layout_width="160dp"
             android:layout_height="190dp"
             android:layout_margin="10dp"
@@ -121,6 +122,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
         android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/tipsId"
             android:layout_width="160dp"
             android:layout_height="190dp"
             android:layout_margin="10dp"
@@ -165,6 +167,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/blackBoxId"
             android:layout_width="160dp"
             android:layout_height="190dp"
             android:layout_margin="10dp"
@@ -218,6 +221,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
         android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/troubleCodes"
             android:layout_width="340dp"
             android:layout_height="150dp"
             android:layout_margin="10dp"

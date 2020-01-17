@@ -83,6 +83,7 @@ public final class Drive extends AppCompatActivity {
     private TextView mEngineLoad;
     private TextView mMaxSpeed;
     private TextView mCoolantText;
+    private IntentFilter intentFilter;
 
     private int rc;
     private boolean status = false;
@@ -109,20 +110,20 @@ public final class Drive extends AppCompatActivity {
 
 
         //Obd command array
-        //ObdConfiguration.setmObdCommands(this, null); for executing all commands
+        ObdConfiguration.setmObdCommands(this, null); //for executing all commands
         ArrayList<ObdCommand> obdCommands = new ArrayList<>();
         obdCommands.add(new SpeedCommand());
         obdCommands.add(new RPMCommand());
-        obdCommands.add(new LoadCommand());
-        obdCommands.add(new FuelLevelCommand());
-        obdCommands.add(new RuntimeCommand());
+        //obdCommands.add(new LoadCommand());
+        //obdCommands.add(new FuelLevelCommand());
+        //obdCommands.add(new RuntimeCommand());
         //obdCommands.add(new TroubleCodesCommand());
 
         //Set configuration
-        ObdConfiguration.setmObdCommands(this, obdCommands);
+       ObdConfiguration.setmObdCommands(this, obdCommands);
 
         //Register receiver with some action related to OBD connection status and read PID values
-        IntentFilter intentFilter = new IntentFilter();
+        intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_READ_OBD_REAL_TIME_DATA);
         intentFilter.addAction(ACTION_OBD_CONNECTED);
         registerReceiver(mObdReaderReceiver, intentFilter);
@@ -175,12 +176,16 @@ public final class Drive extends AppCompatActivity {
             } else if (action.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
                 //mObdInfoTextView.setText("Checkpoint 1");
                 TripRecord tripRecord = TripRecord.getTripRecode(Drive.this);
-
-                //mRpmText.setText(tripRecord.getEngineRpm());
-                Log.i(TAG, tripRecord.getEngineRpm());
-                Log.i(TAG, tripRecord.getmEngineLoad());
-                Log.i(TAG, tripRecord.getEngineRuntime());
-                Log.i(TAG, tripRecord.getSpeed().toString());
+                try {
+                    mRpmText.setText(tripRecord.getEngineRpm());
+                    mSpeedText.setText(tripRecord.getSpeed());
+                    Log.i(TAG, tripRecord.getEngineRpm());
+                }catch (Exception e){
+                    Log.e(TAG, "onReceive: " + e.toString());
+                }
+                //Log.i(TAG, tripRecord.getmEngineLoad());
+                //Log.i(TAG, tripRecord.getEngineRuntime());
+                //Log.i(TAG, tripRecord.getSpeed().toString());
                 //mSpeedText.setText(tripRecord.getSpeed());
                 //mEngineLoad.setText(tripRecord.getmEngineLoad() + "%");
                 //mMaxSpeed.setText(tripRecord.getSpeedMax());
@@ -274,35 +279,8 @@ public final class Drive extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.bluetoothSearch){
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.settings_dialog)
-                    .setItems(R.array.menuDriverItems, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // The 'which' argument contains the index position
-                                    // of the selected item
-                                    switch (which){
-                                        case 0:
-                                            startActivity(new Intent(Drive.getAppContext(), Settings.class));
-                                            break;
-                                        case 1:
-                                            startActivity(new Intent(Drive.getAppContext(), Settings.class));
-                                            break;
-                                        case 2:
-                                            startActivity(new Intent(Drive.getAppContext(), Settings.class));
-                                            break;
-                                    }
-                                }
-                            });
-            builder.show();
-//            bluetoothPermission(btAdapter);
-//            showDialogueBluetooth(deviceDialogue);
-
-//            if(!status){
-//                startBluetooth();
-//            }else{
-//                stopBluetooth();
-//            }
+        if(item.getItemId() == R.id.driveSettings){
+            startActivity(new Intent(this.getApplicationContext(), Settings.class));
         }
         return super.onOptionsItemSelected(item);
     }

@@ -10,20 +10,31 @@ import android.widget.LinearLayout;
 
 
 public class Home extends AppCompatActivity {
-    CardView mycard ;
-    Intent i ;
+    CardView troubleView, driveView ;
+    Intent drive, trubleCodes ;
     LinearLayout ll;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        ll = (LinearLayout) findViewById(R.id.ll);
-        mycard = (CardView) findViewById(R.id.bankcardId);
-        i = new Intent(this,Drive.class);
-        mycard.setOnClickListener(new View.OnClickListener() {
+
+        ll = findViewById(R.id.ll);
+        driveView = findViewById(R.id.driveId);
+        troubleView = findViewById(R.id.troubleCodes);
+
+        drive = new Intent(this, Drive.class);
+        driveView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(i);
+                startActivity(drive);
+            }
+        });
+
+        trubleCodes = new Intent(this, TroubleCodes.class);
+        troubleView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(trubleCodes);
             }
         });
     }

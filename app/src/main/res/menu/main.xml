@@ -5,5 +5,12 @@
         android:id="@+id/bluetoothSearch"
         android:icon="@drawable/ic_settings"
         android:title="@string/settings_dialog"
-        app:showAsAction="ifRoom"></item>
+        app:showAsAction="ifRoom">
+        <menu>
+            <item android:id="@+id/driveSettings"
+                android:title="@string/settings_dialog"
+                app:showAsAction="never"/>
+
+        </menu>
+    </item>
 </menu>

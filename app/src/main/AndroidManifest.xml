@@ -47,6 +47,8 @@
         </activity>
         <activity android:name=".settings.Settings"
             android:parentActivityName=".Drive"/>
+        <activity android:name=".TroubleCodes"
+            android:parentActivityName=".Home"/>
         <activity
             android:name=".FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
