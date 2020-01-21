@@ -17,8 +17,10 @@ package com.demotxt.droidsrce.homedashboard;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -86,6 +88,7 @@ public final class Drive extends AppCompatActivity {
     private TextView mCoolantText;
     private IntentFilter intentFilter;
     private Intent ObdService;
+    private boolean isRegistered = false;
 
     private int rc;
     private boolean status = false;
@@ -125,7 +128,10 @@ public final class Drive extends AppCompatActivity {
         //obdCommands.add(new TroubleCodesCommand());
 
         //Set configuration
-       ObdConfiguration.setmObdCommands(this, obdCommands);
+        if (ObdConfiguration.getmObdCommands() == null)
+            ObdConfiguration.setmObdCommands(this, obdCommands);
+
+
 
         //Register receiver with some action related to OBD connection status and read PID values
         intentFilter = new IntentFilter();
@@ -154,6 +160,7 @@ public final class Drive extends AppCompatActivity {
 
             //findViewById(R.id.progress_bar).setVisibility(View.GONE);
             //mObdInfoTextView.setVisibility(View.VISIBLE);
+            isRegistered = true;
             String action = intent.getAction();
 
             if (action.equals(ACTION_OBD_CONNECTED)) {
@@ -269,7 +276,8 @@ public final class Drive extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         startCameraSource();
-        startActivity(ObdService);
+
+        startService(ObdService);
         registerReceiver(mObdReaderReceiver, intentFilter);
     }
 
@@ -280,8 +288,14 @@ public final class Drive extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mPreview.stop();
-        unregisterReceiver(mObdReaderReceiver);
-        stopService(ObdService);
+        if(isRegistered) {
+            unregisterReceiver(mObdReaderReceiver);
+            isRegistered = false;
+        }
+        if(isServiceRunning(ObdReaderService.class)){
+            stopService(ObdService);
+            Log.i(TAG, "onPause: " + isServiceRunning(ObdReaderService.class));
+        }
 
     }
 
@@ -296,11 +310,13 @@ public final class Drive extends AppCompatActivity {
         if (mCameraSource != null) {
             mCameraSource.release();
         }
-        if(mObdReaderReceiver != null) {
+        if(isRegistered) {
             unregisterReceiver(mObdReaderReceiver);
+            isRegistered = false;
         }
-        if(ObdService != null){
+        if(isServiceRunning(ObdReaderService.class)){
             stopService(ObdService);
+            Log.i(TAG, "onPause: " + isServiceRunning(ObdReaderService.class));
         }
     }
 
@@ -445,6 +461,15 @@ public final class Drive extends AppCompatActivity {
 
     public void makeToast(String  msg){
         Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
+    }
+    public boolean isServiceRunning(Class serviceClass){
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

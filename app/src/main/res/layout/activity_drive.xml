@@ -10,8 +10,8 @@
 
     <com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview
         android:id="@+id/preview"
-        android:layout_width="10dp"
-        android:layout_height="14dp"
+        android:layout_width="5dp"
+        android:layout_height="7dp"
         android:background="@color/primary_dark"
         android:focusable="auto"
         android:visibility="visible"

@@ -1,5 +1,6 @@
 package com.demotxt.droidsrce.homedashboard;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,10 +17,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.demotxt.droidsrce.homedashboard.settings.Settings;
 import com.github.pires.obd.commands.SpeedCommand;
-import com.github.pires.obd.commands.engine.RPMCommand;
 import com.sohrab.obd.reader.obdCommand.ObdCommand;
 import com.sohrab.obd.reader.obdCommand.ObdConfiguration;
 import com.sohrab.obd.reader.obdCommand.control.TroubleCodesCommand;
+import com.sohrab.obd.reader.obdCommand.engine.RPMCommand;
 import com.sohrab.obd.reader.service.ObdReaderService;
 import com.sohrab.obd.reader.trip.TripRecord;
 
@@ -35,53 +36,57 @@ public class TroubleCodes extends AppCompatActivity {
     private IntentFilter intentFilter;
     private TextView codes;
     private ArrayList<String> mAllCodes;
-    private Intent test;
+    private Intent ObdService;
+    private boolean isRegistered = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trouble_codes);
         //TODO add trouble codes api
+
         codes = findViewById(R.id.troubleCodesId);
+        ObdService = new Intent(this, ObdReaderService.class);
         mAllCodes = new ArrayList<>();
 
         //Obd command array
         //ObdConfiguration.setmObdCommands(this, null); //for executing all commands
-        ArrayList<ObdCommand> obdCommands = new ArrayList<>();
-        obdCommands.add(new TroubleCodesCommand());
-
-        //Set configuration
-        ObdConfiguration.setmObdCommands(this, obdCommands);
+//        ArrayList<ObdCommand> obdCommands = new ArrayList<>();
+//        obdCommands.add(new TroubleCodesCommand());
+//
+//        //Set configuration
+//        ObdConfiguration.setmObdCommands(this, obdCommands);
 
         //Register receiver with some action related to OBD connection status and read PID values
         intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_READ_OBD_REAL_TIME_DATA);
         intentFilter.addAction(ACTION_OBD_CONNECTED);
         registerReceiver(mObdReaderReceiver, intentFilter);
-        test = new Intent(this, ObdReaderService.class);
+//
         //start service that keep running in background for connecting and execute command until you stop
-        startService(test);
-//        codes.append(new RPMCommand().getFormattedResult() + "\n");
-//        codes.append(new TroubleCodes().toString() + "\n");
-//        codes.append(new SpeedCommand().getFormattedResult());
+        startService(ObdService);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        stopService(test);
-        //registerReceiver(mObdReaderReceiver, intentFilter);
-        //unregisterReceiver(mObdReaderReceiver);
-       // stopService(this, ObdConfiguration.class);
-        //ObdConfiguration.setmObdCommands() = null;
+        startService(ObdService);
+        registerReceiver(mObdReaderReceiver, intentFilter);
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        unregisterReceiver(mObdReaderReceiver);
+        if(isRegistered) {
+            unregisterReceiver(mObdReaderReceiver);
+            isRegistered = false;
+        }
+        if(isServiceRunning(ObdReaderService.class)){
+            stopService(ObdService);
+            Log.i(TAG, "onPause: " + isServiceRunning(ObdReaderService.class));
+        }
     }
 
     @Override
@@ -106,55 +111,34 @@ public class TroubleCodes extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Broadcast Receiver to receive OBD connection status and real time data
+     */
     private final BroadcastReceiver mObdReaderReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
             //findViewById(R.id.progress_bar).setVisibility(View.GONE);
             //mObdInfoTextView.setVisibility(View.VISIBLE);
+            isRegistered = true;
             String action = intent.getAction();
 
             if (action.equals(ACTION_OBD_CONNECTED)) {
-
                 String connectionStatusMsg = intent.getStringExtra(ObdReaderService.INTENT_EXTRA_DATA);
-                //mObdInfoTextView.setText(connectionStatusMsg);
                 makeToast(connectionStatusMsg);
-                //Toast.makeText(Drive.this, connectionStatusMsg, Toast.LENGTH_SHORT).show();
 
-                if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {
-                    //OBD connected  do what want after OBD connection
-                    //mObdInfoTextView.setText("Connected");
-                    makeToast("Connected");
-                    //makeToast(Integer.toString(R.string.obd_connected));
-                } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {
-                    //OBD disconnected  do what want after OBD disconnection
-                    makeToast(Integer.toString(R.string.connect_lost));
-                } else {
-                    // here you could check OBD connection and pairing status
+                if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {//OBD connected  do what want after OBD connection
+                    makeToast(getString(R.string.obd_connected));
+                    codes.setText("" + new TroubleCodesCommand().getFormattedResult());
+
+                } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {//OBD disconnected  do what want after OBD disconnection
+                    makeToast(getString(R.string.connect_lost));
+
+                } else {// here you could check OBD connection and pairing status
+
                 }
 
             } else if (action.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
-                //mObdInfoTextView.setText("Checkpoint 1");
-                TripRecord tripRecord = TripRecord.getTripRecode(TroubleCodes.this);
-                    if(tripRecord.getmPermanentTroubleCode() != null) {
-                        mAllCodes.addAll(Arrays.asList(tripRecord.getmPermanentTroubleCode()
-                                .split(" ")));
-
-                        // mAllCodes.addAll(Arrays.asList(tripRecord.getmPendingTroubleCode()
-                        //       .split(" ")));
-
-                        for (String item : mAllCodes) {
-                            codes.append(item + "\n");
-                        }
-
-                        if(tripRecord.getmPermanentTroubleCode().length() > 4){
-                            codes.setText("There is no fault codes.");
-                        }
-                    }
-                //mRpmText.setText(tripRecord.getEngineRpm());
-                //Log.i(TAG, tripRecord.getmPermanentTroubleCode());
-                //Log.i(TAG, tripRecord.getmPendingTroubleCode());
-
 
             }
 
@@ -162,5 +146,15 @@ public class TroubleCodes extends AppCompatActivity {
     };
     public void makeToast(String  msg){
         Toast.makeText(TroubleCodes.this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public boolean isServiceRunning(Class serviceClass){
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
