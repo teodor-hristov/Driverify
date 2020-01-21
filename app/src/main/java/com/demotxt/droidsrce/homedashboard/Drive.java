@@ -185,7 +185,7 @@ public final class Drive extends AppCompatActivity {
                     mCoolantText.setText("" + tripRecord.getmEngineCoolantTemp());
                     mMaxSpeed.setText("" + tripRecord.getSpeedMax());
                 }else{
-                    Toast.makeText(this, "If you want to ")
+                    Toast.makeText(getApplicationContext(), "You need running engine if you want to view car info!", Toast.LENGTH_LONG).show();
                 }
 
                     Log.i(TAG, tripRecord.getEngineRpm());
