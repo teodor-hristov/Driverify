@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.demotxt.droidsrce.homedashboard.settings.Settings;
+import com.github.pires.obd.commands.SpeedCommand;
+import com.github.pires.obd.commands.engine.RPMCommand;
 import com.sohrab.obd.reader.obdCommand.ObdCommand;
 import com.sohrab.obd.reader.obdCommand.ObdConfiguration;
 import com.sohrab.obd.reader.obdCommand.control.TroubleCodesCommand;
@@ -33,6 +35,7 @@ public class TroubleCodes extends AppCompatActivity {
     private IntentFilter intentFilter;
     private TextView codes;
     private ArrayList<String> mAllCodes;
+    private Intent test;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,23 +58,29 @@ public class TroubleCodes extends AppCompatActivity {
         intentFilter.addAction(ACTION_READ_OBD_REAL_TIME_DATA);
         intentFilter.addAction(ACTION_OBD_CONNECTED);
         registerReceiver(mObdReaderReceiver, intentFilter);
-
-
+        test = new Intent(this, ObdReaderService.class);
         //start service that keep running in background for connecting and execute command until you stop
-        startService(new Intent(this, ObdReaderService.class));
+        startService(test);
+//        codes.append(new RPMCommand().getFormattedResult() + "\n");
+//        codes.append(new TroubleCodes().toString() + "\n");
+//        codes.append(new SpeedCommand().getFormattedResult());
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        unregisterReceiver(mObdReaderReceiver);
+        stopService(test);
+        //registerReceiver(mObdReaderReceiver, intentFilter);
+        //unregisterReceiver(mObdReaderReceiver);
+       // stopService(this, ObdConfiguration.class);
         //ObdConfiguration.setmObdCommands() = null;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         unregisterReceiver(mObdReaderReceiver);
     }
 
@@ -137,8 +146,10 @@ public class TroubleCodes extends AppCompatActivity {
                         for (String item : mAllCodes) {
                             codes.append(item + "\n");
                         }
-                    }else{
-                        codes.setText("There is no fault codes.");
+
+                        if(tripRecord.getmPermanentTroubleCode().length() > 4){
+                            codes.setText("There is no fault codes.");
+                        }
                     }
                 //mRpmText.setText(tripRecord.getEngineRpm());
                 //Log.i(TAG, tripRecord.getmPermanentTroubleCode());

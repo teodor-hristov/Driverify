@@ -178,29 +178,18 @@ public final class Drive extends AppCompatActivity {
             } else if (action.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
                 //mObdInfoTextView.setText("Checkpoint 1");
                 TripRecord tripRecord = TripRecord.getTripRecode(Drive.this);
-                try {
+                if(Integer.parseInt(tripRecord.getEngineRpm()) > 0){
                     mRpmText.setText("" + tripRecord.getEngineRpm());
                     mSpeedText.setText("" + tripRecord.getSpeed());
                     mEngineLoad.setText("" + tripRecord.getmEngineLoad());
                     mCoolantText.setText("" + tripRecord.getmEngineCoolantTemp());
                     mMaxSpeed.setText("" + tripRecord.getSpeedMax());
-                    Log.i(TAG, tripRecord.getEngineRpm());
-                }catch (Exception e){
-                    Log.e(TAG, "onReceive: " + e.toString());
+                }else{
+                    Toast.makeText(this, "If you want to ")
                 }
-                //Log.i(TAG, tripRecord.getmEngineLoad());
-                //Log.i(TAG, tripRecord.getEngineRuntime());
-                //Log.i(TAG, tripRecord.getSpeed().toString());
-                //mSpeedText.setText(tripRecord.getSpeed());
-                //mEngineLoad.setText(tripRecord.getmEngineLoad() + "%");
-                //mMaxSpeed.setText(tripRecord.getSpeedMax());
-                //mCoolantText.setText(tripRecord.getmEngineCoolantTemp());
 
-                //mObdInfoTextView.setText("Trip record info: "+tripRecord.toString());
-                // here you can fetch real time data from TripRecord using getter methods like
-                //mObdInfoTextView.setText("Speed: " + tripRecord.getSpeed().toString() +"\nRPM: "
-                 //       + tripRecord.getEngineRpm());
-                //tripRecord.getEngineRpm();
+                    Log.i(TAG, tripRecord.getEngineRpm());
+
 
             }
 
