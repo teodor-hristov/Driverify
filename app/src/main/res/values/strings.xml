@@ -37,6 +37,7 @@
     <string name="obd2_adapter_not_responding">The OBD adapter is not responding</string>
     <string name="obd_connected">OBD Connected</string>
     <string name="connect_lost">Connect Lost</string>
+    <string name="engineRunningTip">You need running engine if you want to view car info!</string>
 
 <!--    DTCs-->
     <string name="clear_codes">Clear DTCs</string>

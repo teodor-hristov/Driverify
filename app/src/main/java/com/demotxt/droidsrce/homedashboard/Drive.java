@@ -85,6 +85,7 @@ public final class Drive extends AppCompatActivity {
     private TextView mMaxSpeed;
     private TextView mCoolantText;
     private IntentFilter intentFilter;
+    private Intent ObdService;
 
     private int rc;
     private boolean status = false;
@@ -109,9 +110,11 @@ public final class Drive extends AppCompatActivity {
         mMaxSpeed = findViewById(R.id.maxSpeed);
         mCoolantText = findViewById(R.id.coolantValue);
 
+        ObdService = new Intent(getApplicationContext(), ObdReaderService.class);
+
 
         //Obd command array
-        ObdConfiguration.setmObdCommands(this, null); //for executing all commands
+        //ObdConfiguration.setmObdCommands(this, null); //for executing all commands
         ArrayList<ObdCommand> obdCommands = new ArrayList<>();
         obdCommands.add(new SpeedCommand());
         obdCommands.add(new RPMCommand());
@@ -128,11 +131,11 @@ public final class Drive extends AppCompatActivity {
         intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_READ_OBD_REAL_TIME_DATA);
         intentFilter.addAction(ACTION_OBD_CONNECTED);
+
+
         registerReceiver(mObdReaderReceiver, intentFilter);
-
-
         //start service that keep running in background for connecting and execute command until you stop
-        startService(new Intent(this, ObdReaderService.class));
+        startService(ObdService);
 
         rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
@@ -140,10 +143,6 @@ public final class Drive extends AppCompatActivity {
         } else {
             requestCameraPermission();
         }
-
-       //bluetoothPermission(btAdapter);
-
-
     }
 
     /**
@@ -158,39 +157,30 @@ public final class Drive extends AppCompatActivity {
             String action = intent.getAction();
 
             if (action.equals(ACTION_OBD_CONNECTED)) {
-
                 String connectionStatusMsg = intent.getStringExtra(ObdReaderService.INTENT_EXTRA_DATA);
-                //mObdInfoTextView.setText(connectionStatusMsg);
                 makeToast(connectionStatusMsg);
-                //Toast.makeText(Drive.this, connectionStatusMsg, Toast.LENGTH_SHORT).show();
 
-                if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {
-                    //OBD connected  do what want after OBD connection
-                    //mObdInfoTextView.setText("Connected");
-                    makeToast(Integer.toString(R.string.obd_connected));
-                } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {
-                    //OBD disconnected  do what want after OBD disconnection
-                    makeToast(Integer.toString(R.string.connect_lost));
-                } else {
-                    // here you could check OBD connection and pairing status
+                if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {//OBD connected  do what want after OBD connection
+                    makeToast(getString(R.string.obd_connected));
+
+                } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {//OBD disconnected  do what want after OBD disconnection
+                    makeToast(getString(R.string.connect_lost));
+
+                } else {// here you could check OBD connection and pairing status
+
                 }
 
             } else if (action.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
-                //mObdInfoTextView.setText("Checkpoint 1");
                 TripRecord tripRecord = TripRecord.getTripRecode(Drive.this);
-                if(Integer.parseInt(tripRecord.getEngineRpm()) > 0){
+                if(Integer.parseInt(new RPMCommand().getCalculatedResult()) > 0){
                     mRpmText.setText("" + tripRecord.getEngineRpm());
                     mSpeedText.setText("" + tripRecord.getSpeed());
                     mEngineLoad.setText("" + tripRecord.getmEngineLoad());
                     mCoolantText.setText("" + tripRecord.getmEngineCoolantTemp());
                     mMaxSpeed.setText("" + tripRecord.getSpeedMax());
                 }else{
-                    Toast.makeText(getApplicationContext(), "You need running engine if you want to view car info!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.engineRunningTip, Toast.LENGTH_LONG).show();
                 }
-
-                    Log.i(TAG, tripRecord.getEngineRpm());
-
-
             }
 
         }
@@ -259,13 +249,6 @@ public final class Drive extends AppCompatActivity {
     }
 
     @Override
-    public void onActivityResult (int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_ENABLE_BT) {
-
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
@@ -286,6 +269,8 @@ public final class Drive extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         startCameraSource();
+        startActivity(ObdService);
+        registerReceiver(mObdReaderReceiver, intentFilter);
     }
 
     /**
@@ -295,6 +280,8 @@ public final class Drive extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mPreview.stop();
+        unregisterReceiver(mObdReaderReceiver);
+        stopService(ObdService);
 
     }
 
@@ -308,6 +295,12 @@ public final class Drive extends AppCompatActivity {
         unregisterReceiver(mObdReaderReceiver);
         if (mCameraSource != null) {
             mCameraSource.release();
+        }
+        if(mObdReaderReceiver != null) {
+            unregisterReceiver(mObdReaderReceiver);
+        }
+        if(ObdService != null){
+            stopService(ObdService);
         }
     }
 
