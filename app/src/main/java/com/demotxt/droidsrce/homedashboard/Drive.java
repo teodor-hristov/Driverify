@@ -55,6 +55,7 @@ import com.sohrab.obd.reader.obdCommand.engine.LoadCommand;
 import com.sohrab.obd.reader.obdCommand.engine.RPMCommand;
 import com.sohrab.obd.reader.obdCommand.engine.RuntimeCommand;
 import com.sohrab.obd.reader.obdCommand.fuel.FuelLevelCommand;
+import com.sohrab.obd.reader.obdCommand.temperature.EngineCoolantTemperatureCommand;
 import com.sohrab.obd.reader.service.ObdReaderService;
 import com.sohrab.obd.reader.trip.TripRecord;
 
@@ -114,9 +115,10 @@ public final class Drive extends AppCompatActivity {
         ArrayList<ObdCommand> obdCommands = new ArrayList<>();
         obdCommands.add(new SpeedCommand());
         obdCommands.add(new RPMCommand());
-        //obdCommands.add(new LoadCommand());
-        //obdCommands.add(new FuelLevelCommand());
-        //obdCommands.add(new RuntimeCommand());
+        obdCommands.add(new LoadCommand());
+        obdCommands.add(new FuelLevelCommand());
+        obdCommands.add(new EngineCoolantTemperatureCommand());
+        obdCommands.add(new RuntimeCommand());
         //obdCommands.add(new TroubleCodesCommand());
 
         //Set configuration
@@ -177,8 +179,11 @@ public final class Drive extends AppCompatActivity {
                 //mObdInfoTextView.setText("Checkpoint 1");
                 TripRecord tripRecord = TripRecord.getTripRecode(Drive.this);
                 try {
-                    mRpmText.setText(tripRecord.getEngineRpm());
-                    mSpeedText.setText(tripRecord.getSpeed());
+                    mRpmText.setText("" + tripRecord.getEngineRpm());
+                    mSpeedText.setText("" + tripRecord.getSpeed());
+                    mEngineLoad.setText("" + tripRecord.getmEngineLoad());
+                    mCoolantText.setText("" + tripRecord.getmEngineCoolantTemp());
+                    mMaxSpeed.setText("" + tripRecord.getSpeedMax());
                     Log.i(TAG, tripRecord.getEngineRpm());
                 }catch (Exception e){
                     Log.e(TAG, "onReceive: " + e.toString());

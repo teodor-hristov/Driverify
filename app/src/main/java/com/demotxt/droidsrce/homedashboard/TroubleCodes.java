@@ -63,6 +63,13 @@ public class TroubleCodes extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterReceiver(mObdReaderReceiver);
+        //ObdConfiguration.setmObdCommands() = null;
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mObdReaderReceiver);
@@ -108,7 +115,8 @@ public class TroubleCodes extends AppCompatActivity {
                 if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {
                     //OBD connected  do what want after OBD connection
                     //mObdInfoTextView.setText("Connected");
-                    makeToast(Integer.toString(R.string.obd_connected));
+                    makeToast("Connected");
+                    //makeToast(Integer.toString(R.string.obd_connected));
                 } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {
                     //OBD disconnected  do what want after OBD disconnection
                     makeToast(Integer.toString(R.string.connect_lost));
@@ -119,21 +127,21 @@ public class TroubleCodes extends AppCompatActivity {
             } else if (action.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
                 //mObdInfoTextView.setText("Checkpoint 1");
                 TripRecord tripRecord = TripRecord.getTripRecode(TroubleCodes.this);
-                try {
-                    mAllCodes.addAll(Arrays.asList(tripRecord.getmPermanentTroubleCode()
-                            .split(" ")));
-                }catch (Exception e){
-                    Log.e(TAG, "onReceive: " + e.toString());
-                }
-               // mAllCodes.addAll(Arrays.asList(tripRecord.getmPendingTroubleCode()
-                 //       .split(" ")));
+                    if(tripRecord.getmPermanentTroubleCode() != null) {
+                        mAllCodes.addAll(Arrays.asList(tripRecord.getmPermanentTroubleCode()
+                                .split(" ")));
 
-                for(String item : mAllCodes){
-                    codes.append(item + "\n");
-                }
+                        // mAllCodes.addAll(Arrays.asList(tripRecord.getmPendingTroubleCode()
+                        //       .split(" ")));
 
+                        for (String item : mAllCodes) {
+                            codes.append(item + "\n");
+                        }
+                    }else{
+                        codes.setText("There is no fault codes.");
+                    }
                 //mRpmText.setText(tripRecord.getEngineRpm());
-                Log.i(TAG, tripRecord.getmPermanentTroubleCode());
+                //Log.i(TAG, tripRecord.getmPermanentTroubleCode());
                 //Log.i(TAG, tripRecord.getmPendingTroubleCode());
 
 
