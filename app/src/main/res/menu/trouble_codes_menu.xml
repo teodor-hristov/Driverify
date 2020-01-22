@@ -5,19 +5,23 @@
         android:icon="@drawable/ic_settings"
         android:title="@string/settings_dialog"
         app:showAsAction="ifRoom">
-        <menu><item
-            android:id="@+id/clearCodes"
+        <menu
             android:icon="@drawable/ic_settings"
-            android:title="@string/clear_codes"
-            app:showAsAction="never"/>
+            >
+            <item
+                android:id="@+id/getCodes"
+                android:title="@string/get_codes"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/clearCodes"
+                android:title="@string/clear_codes"
+                app:showAsAction="never"/>
             <item
                 android:id="@+id/copyCodes"
-                android:icon="@drawable/ic_settings"
                 android:title="@string/copy_codes"
                 app:showAsAction="never"/>
             <item
                 android:id="@+id/saveCodes"
-                android:icon="@drawable/ic_settings"
                 android:title="@string/save_codes"
                 app:showAsAction="never"/>
         </menu>

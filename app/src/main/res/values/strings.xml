@@ -41,6 +41,7 @@
     <string name="live_data">Start live data!</string>
 
 <!--    DTCs-->
+    <string name="get_codes">Get DTCs</string>
     <string name="clear_codes">Clear DTCs</string>
     <string name="copy_codes">Copy DTCs</string>
     <string name="save_codes">Save DTCs</string>

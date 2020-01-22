@@ -49,14 +49,6 @@ public class TroubleCodes extends AppCompatActivity {
         mAllCodes = new ArrayList<>();
         mClipManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
-        //Obd command array
-        //ObdConfiguration.setmObdCommands(this, null); //for executing all commands
-//        ArrayList<ObdCommand> obdCommands = new ArrayList<>();
-//        obdCommands.add(new TroubleCodesCommand());
-//
-//        //Set configuration
-//        ObdConfiguration.setmObdCommands(this, obdCommands);
-
         //Register receiver with some action related to OBD connection status and read PID values
         intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_READ_OBD_REAL_TIME_DATA);
@@ -98,6 +90,10 @@ public class TroubleCodes extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            case R.id.getCodes:
+                //TODO: Get codes
+                makeToast("TODO: Get codes");
+                break;
             case R.id.clearCodes:
                 //TODO: Test if clear codes is working
                 if(codes.getText().length() > CODE_LEN || codes.getText() != null)
