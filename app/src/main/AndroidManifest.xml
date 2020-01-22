@@ -45,7 +45,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".settings.Settings"
+        <activity android:name=".settings.Preferences"
             android:parentActivityName=".Drive"/>
         <activity android:name=".TroubleCodes"
             android:parentActivityName=".Home"/>
@@ -54,7 +54,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fullscreen"
             android:theme="@style/FullscreenTheme" />
-
     </application>
 
 </manifest>

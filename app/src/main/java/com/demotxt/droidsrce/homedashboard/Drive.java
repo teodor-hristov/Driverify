@@ -20,8 +20,6 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Service;
-import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -39,7 +37,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.demotxt.droidsrce.homedashboard.settings.Settings;
+import com.demotxt.droidsrce.homedashboard.settings.Preferences;
 import com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview;
 import com.demotxt.droidsrce.homedashboard.ui.camera.GraphicOverlay;
 import com.google.android.gms.common.ConnectionResult;
@@ -106,7 +104,6 @@ public final class Drive extends AppCompatActivity {
         appContext = getApplicationContext();
         mPreview = findViewById(R.id.preview);
         mGraphicOverlay = findViewById(R.id.faceOverlay);
-
         mRpmText = findViewById(R.id.rpmValue);
         mSpeedText = findViewById(R.id.speedometerValue);
         mEngineLoad = findViewById(R.id.engineLoadValue);
@@ -162,7 +159,6 @@ public final class Drive extends AppCompatActivity {
             //mObdInfoTextView.setVisibility(View.VISIBLE);
             isRegistered = true;
             String action = intent.getAction();
-
             if (action.equals(ACTION_OBD_CONNECTED)) {
                 String connectionStatusMsg = intent.getStringExtra(ObdReaderService.INTENT_EXTRA_DATA);
                 makeToast(connectionStatusMsg);
@@ -259,12 +255,18 @@ public final class Drive extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.driveSettings){
-            startActivity(new Intent(this.getApplicationContext(), Settings.class));
+       switch (item.getItemId()){
+        case R.id.driveSettings:
+            startActivity(new Intent(this.getApplicationContext(), Preferences.class));
+            break;
+           case R.id.live_data:
+               makeToast("TODO: Make connection not automaticly, need to choose device and than to connect!");
+               break;
         }
         return super.onOptionsItemSelected(item);
     }

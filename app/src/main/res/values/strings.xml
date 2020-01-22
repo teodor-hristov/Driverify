@@ -38,11 +38,78 @@
     <string name="obd_connected">OBD Connected</string>
     <string name="connect_lost">Connect Lost</string>
     <string name="engineRunningTip">You need running engine if you want to view car info!</string>
+    <string name="live_data">Start live data!</string>
 
 <!--    DTCs-->
     <string name="clear_codes">Clear DTCs</string>
     <string name="copy_codes">Copy DTCs</string>
     <string name="save_codes">Save DTCs</string>
+    <string name="dtc_copied">DTCs are now copied to clipboard!</string>
+    <string name="dtc_cleared">DTCs are cleared now!</string>
+    <string name="no_dtc">There is no DTCs stored in your vehicle!</string>
+
+
+<!--    PREFERENCES-->
+    <string name="title_pref_features">Choose features</string>
+    <string name="pref_pedestrian_detection">Pedestrian detection.</string>
+    <string name="pref_pedestrian_detection_summary">Turn on/off pedestrian detection.</string>
+    <string name="pref_sleep_detection">Sleep detection</string>
+    <string name="pref_sleep_detection_summary">Turn on/off sleep detection.</string>
+    <string name="pref_black_box">Sleep detection</string>
+    <string name="pref_black_box_summary">Turn on/off sleep detection.</string>
+    <string name="pref_upload_category_title">Data Upload</string>
+    <string name="pref_upload_category" translatable="false">upload_category</string>
+    <string name="pref_gps_category" translatable="false">gps_category</string>
+    <string name="title_pref_obd">OBD Preferences</string>
+    <string name="title_pref_commands">OBD Commands</string>
+    <string name="title_pref_bluetooth" translatable="false">Bluetooth</string>
+    <string name="title_pref_gps" translatable="false">GPS</string>
+    <string name="pref_upload_title">Enable Data Upload</string>
+    <string name="pref_upload_summaryOff">Enable http data upload</string>
+    <string name="pref_upload_summaryOn">Disable http data upload</string>
+    <string name="pref_upload_url_title">Upload URL</string>
+    <string name="pref_upload_url_summary">POST URL that will accept real-time data</string>
+    <string name="pref_vehicle_id_title">Vehicle ID</string>
+    <string name="pref_vehicle_id_summary">Optional unique id of this vehicle, used with uploaded data</string>
+    <string name="pref_bluetooth_title">Enable Bluetooth</string>
+    <string name="pref_bluetooth_summaryOff">Turn on Bluetooth</string>
+    <string name="pref_bluetooth_summaryOn">Turn off Bluetooth</string>
+    <string name="pref_bluetooth_list_devices_summary">List of paired bluetooth devices.</string>
+    <string name="pref_bluetooth_list_devices_title">Bluetooth Devices</string>
+    <string name="pref_gps_category_title">Enable GPS</string>
+    <string name="pref_gps_category_summaryOff">Turn on GPS</string>
+    <string name="pref_gps_category_summaryOn">Turn off GPS</string>
+    <string name="pref_gps_update_period_title">Update Period in Seconds</string>
+    <string name="pref_gps_update_period_summary">The length of time between querying new position in seconds</string>
+    <string name="pref_gps_distance_period_title">Update Period in Meters</string>
+    <string name="pref_gps_distance_period_summary">Min Distance between location updates, in meters</string>
+    <string name="pref_obd_protocols_title">OBD Protocol</string>
+    <string name="pref_obd_protocols_summary">Select OBD Protocol to use</string>
+    <string name="pref_imperial_units_title">Imperial Units</string>
+    <string name="pref_imperial_units_summaryOff">Enable imperial units</string>
+    <string name="pref_imperial_units_summaryOn">Go back to metric units</string>
+    <string name="pref_obd_update_period_title">Update Period in Seconds</string>
+    <string name="pref_obd_update_period_summary">The length of time between querying vehicle data in seconds</string>
+    <string name="pref_max_fuel_econ_title">Maximum Fuel Economy Value</string>
+    <string name="pref_max_fuel_econ_summary">Any fuel economy values larger than this will be thrown out</string>
+    <string name="pref_volumetric_efficiency_dialog_title">Volumetric Efficiency (eg 0.85)</string>
+    <string name="pref_volumetric_efficiency_summary">Used for fuel economy on vehicles without MAF sensor</string>
+    <string name="pref_volumetric_efficiency_title">Volumetric Efficiency</string>
+    <string name="pref_engine_displacement_title">Engine Displacement (liters)</string>
+    <string name="pref_engine_displacement_summary">Used for fuel economy on vehicles without MAF sensor</string>
+    <string name="pref_reader_config_title">Reader Config Commands</string>
+    <string name="pref_reader_config_summary">Commands to configure bluetooth reader, separate with new line</string>
+    <string name="title_pref_commands_summary">Select the commands you would like to see in real-time.</string>
+    <string name="title_pref_commands_title">OBD Commands</string>
+    <string name="title_pref_full_logging"> Full logging configuration </string>
+    <string name="pref_enable_full_logging_summary"> Enables full offline logging with upload</string>
+    <string name="pref_enable_full_logging_title"> Enable full logging </string>
+    <string name="default_dirname_full_logging">OBDReaderLogs</string>
+    <string name="pref_dirname_dialogTitle">Choose the name of the directory to save the logs</string>
+    <string name="pref_dirname_title">Directory name</string>
+    <string name="pref_dirname_summary">Name of the directory where to save the files</string>
+    <string name="pref_dev_email_title">Developer Email</string>
+    <string name="pref_dev_email_summary">Logs will be emailed to this address</string>
 
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>

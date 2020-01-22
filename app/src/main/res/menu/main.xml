@@ -7,6 +7,9 @@
         android:title="@string/settings_dialog"
         app:showAsAction="ifRoom">
         <menu>
+            <item android:id="@+id/live_data"
+                android:title="@string/live_data"
+                app:showAsAction="never"/>
             <item android:id="@+id/driveSettings"
                 android:title="@string/settings_dialog"
                 app:showAsAction="never"/>

@@ -15,6 +15,7 @@
 <!--    \/ new color gamma-->
     <color name="primary">#607D8B</color>
     <color name="primary_dark">#455A64</color>
+    <color name="red_preferences">#8B0000</color>
     <color name="primary_light">#CFD8DC</color>
     <color name="accent">#9E9E9E</color>
     <color name="primary_text">#212121</color>
