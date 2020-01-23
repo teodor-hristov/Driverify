@@ -20,11 +20,13 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,6 +74,7 @@ public final class Drive extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int RC_HANDLE_GMS = 9001;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
+    private static boolean bluetoothDefaultIsEnable = false;
 
     //CAMERA
     private static Context appContext;
@@ -87,6 +90,11 @@ public final class Drive extends AppCompatActivity {
     private IntentFilter intentFilter;
     private Intent ObdService;
     private boolean isRegistered = false;
+
+    private boolean preRequisites = true;
+    private BluetoothAdapter btAdapter;
+
+    private SharedPreferences prefs;
 
     private int rc;
     private boolean status = false;
@@ -136,9 +144,20 @@ public final class Drive extends AppCompatActivity {
         intentFilter.addAction(ACTION_OBD_CONNECTED);
 
 
-        registerReceiver(mObdReaderReceiver, intentFilter);
+      //  registerReceiver(mObdReaderReceiver, intentFilter);
         //start service that keep running in background for connecting and execute command until you stop
-        startService(ObdService);
+       // startService(ObdService);
+
+
+        //check if bt is enabled
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (btAdapter != null)
+            bluetoothDefaultIsEnable = btAdapter.isEnabled();
+
+        preRequisites = btAdapter != null && btAdapter.isEnabled();
+        if (!preRequisites && prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
+            preRequisites = btAdapter != null && btAdapter.enable();
+        }
 
         rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
@@ -279,8 +298,19 @@ public final class Drive extends AppCompatActivity {
         super.onResume();
         startCameraSource();
 
-        startService(ObdService);
-        registerReceiver(mObdReaderReceiver, intentFilter);
+        //check if bt is enabled
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (btAdapter != null)
+            bluetoothDefaultIsEnable = btAdapter.isEnabled();
+
+        if (!preRequisites) {
+            makeToast(getString(R.string.connect_lost));
+        } else {
+            makeToast(getString(R.string.connected_ok));
+        }
+
+//        startService(ObdService);
+//        registerReceiver(mObdReaderReceiver, intentFilter);
     }
 
     /**
