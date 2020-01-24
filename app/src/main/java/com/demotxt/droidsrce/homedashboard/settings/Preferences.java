@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -17,28 +18,36 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class Preferences extends PreferenceActivity implements Preference.OnPreferenceChangeListener {
+    
 
     public static final String BLUETOOTH_LIST_KEY = "bluetooth_list_preference";
     public static final String BLUETOOTH_ENABLE = "enable_bluetooth_preference";
 
+    private Preference bt;
+    private BluetoothAdapter mBtAdapter;
+    private final Activity thisActivity = this;
+    private Set<BluetoothDevice> pairedDevices;
+    private ListPreference listBtDevices;
+    private Preference mPreferenceCheckBt;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
+        mPreferenceCheckBt = findPreference(BLUETOOTH_ENABLE);
 
         /*
          * Read preferences resources available at res/xml/preferences.xml
          */
         ArrayList<CharSequence> pairedDeviceStrings = new ArrayList<>();
         ArrayList<CharSequence> vals = new ArrayList<>();
-        ListPreference listBtDevices = (ListPreference) getPreferenceScreen()
+        listBtDevices= (ListPreference) getPreferenceScreen()
                 .findPreference(BLUETOOTH_LIST_KEY);
 
         /*
          * Select device to connect
          */
-        final BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBtAdapter == null) {
             listBtDevices
                     .setEntries(pairedDeviceStrings.toArray(new CharSequence[0]));
@@ -55,7 +64,7 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
          *
          * TODO there are so many repeated validations :-/
          */
-        final Activity thisActivity = this;
+
         listBtDevices.setEntries(new CharSequence[1]);
         listBtDevices.setEntryValues(new CharSequence[1]);
         listBtDevices.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -74,7 +83,7 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
         /*
          * Get paired devices and populate preference list.
          */
-        Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
+        pairedDevices = mBtAdapter.getBondedDevices();
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
                 pairedDeviceStrings.add(device.getName() + "\n" + device.getAddress());
@@ -83,7 +92,29 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
         }
         listBtDevices.setEntries(pairedDeviceStrings.toArray(new CharSequence[0]));
         listBtDevices.setEntryValues(vals.toArray(new CharSequence[0]));
+
+        /*
+         * Check if bt enable/disable state is changed
+         */
+        if(mBtAdapter != null){
+            mPreferenceCheckBt.setOnPreferenceClickListener(clickListener);
+        }
+
     }
+        Preference.OnPreferenceClickListener clickListener = new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                if(preference.getKey().equals(BLUETOOTH_ENABLE)){
+                    if(preference.isEnabled()){
+                         mBtAdapter.enable();
+                        Log.i(TAG, "onPreferenceClick: ");
+                    }else{
+                         mBtAdapter.disable();
+                    }
+                }
+                return false;
+            }
+        };
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object o) {

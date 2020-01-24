@@ -29,6 +29,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,38 +51,31 @@ import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.material.snackbar.Snackbar;
-import com.sohrab.obd.reader.obdCommand.ObdCommand;
-import com.sohrab.obd.reader.obdCommand.ObdConfiguration;
-import com.sohrab.obd.reader.obdCommand.SpeedCommand;
-import com.sohrab.obd.reader.obdCommand.engine.LoadCommand;
 import com.sohrab.obd.reader.obdCommand.engine.RPMCommand;
-import com.sohrab.obd.reader.obdCommand.engine.RuntimeCommand;
-import com.sohrab.obd.reader.obdCommand.fuel.FuelLevelCommand;
-import com.sohrab.obd.reader.obdCommand.temperature.EngineCoolantTemperatureCommand;
 import com.sohrab.obd.reader.service.ObdReaderService;
 import com.sohrab.obd.reader.trip.TripRecord;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static com.sohrab.obd.reader.constants.DefineObdReader.ACTION_OBD_CONNECTED;
 import static com.sohrab.obd.reader.constants.DefineObdReader.ACTION_READ_OBD_REAL_TIME_DATA;
 
 public final class Drive extends AppCompatActivity {
     private static final String TAG = "Drive";
-    private static final String DIALOGUE_TAG = "bluetoothDevices";
 
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int RC_HANDLE_GMS = 9001;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
     private static boolean bluetoothDefaultIsEnable = false;
 
-    //CAMERA
+    //region CAMERA vars
     private static Context appContext;
     private CameraSource mCameraSource = null;
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
-    //OBD
+    //endregion
+
+    //region OBD vars
     private TextView mRpmText;
     private TextView mSpeedText;
     private TextView mEngineLoad;
@@ -89,15 +83,14 @@ public final class Drive extends AppCompatActivity {
     private TextView mCoolantText;
     private IntentFilter intentFilter;
     private Intent ObdService;
-    private boolean isRegistered = false;
+    //endregion
 
+    private boolean isRegistered = false;
     private boolean preRequisites = true;
     private BluetoothAdapter btAdapter;
-
     private SharedPreferences prefs;
 
     private int rc;
-    private boolean status = false;
 
 
     //==============================================================================================
@@ -120,36 +113,7 @@ public final class Drive extends AppCompatActivity {
 
         ObdService = new Intent(getApplicationContext(), ObdReaderService.class);
 
-
-        //Obd command array
-        //ObdConfiguration.setmObdCommands(this, null); //for executing all commands
-        ArrayList<ObdCommand> obdCommands = new ArrayList<>();
-        obdCommands.add(new SpeedCommand());
-        obdCommands.add(new RPMCommand());
-        obdCommands.add(new LoadCommand());
-        obdCommands.add(new FuelLevelCommand());
-        obdCommands.add(new EngineCoolantTemperatureCommand());
-        obdCommands.add(new RuntimeCommand());
-        //obdCommands.add(new TroubleCodesCommand());
-
-        //Set configuration
-        if (ObdConfiguration.getmObdCommands() == null)
-            ObdConfiguration.setmObdCommands(this, obdCommands);
-
-
-
-        //Register receiver with some action related to OBD connection status and read PID values
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_READ_OBD_REAL_TIME_DATA);
-        intentFilter.addAction(ACTION_OBD_CONNECTED);
-
-
-      //  registerReceiver(mObdReaderReceiver, intentFilter);
-        //start service that keep running in background for connecting and execute command until you stop
-       // startService(ObdService);
-
-
-        //check if bt is enabled
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         if (btAdapter != null)
             bluetoothDefaultIsEnable = btAdapter.isEnabled();
@@ -167,47 +131,74 @@ public final class Drive extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startCameraSource();
+
+        /*
+            Check if bluetooth is enabled and if not bt.enable()
+            else bt.disable.
+         */
+        if (btAdapter != null)
+            bluetoothDefaultIsEnable = btAdapter.isEnabled();
+
+        preRequisites = btAdapter != null && btAdapter.isEnabled();
+        if (!preRequisites && prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
+            preRequisites = btAdapter != null && btAdapter.enable();
+        }
+        if(preRequisites && !prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)){
+            preRequisites = btAdapter != null && btAdapter.disable();
+        }
+    }
+
+    /**
+     * Stops the camera.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPreview.stop();
+
+    }
+
+    /**
+     * Releases the resources associated with the camera source, the associated detector, and the
+     * rest of the processing pipeline.
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (btAdapter != null && btAdapter.isEnabled() && !bluetoothDefaultIsEnable)
+            btAdapter.disable();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+       switch (item.getItemId()){
+        case R.id.driveSettings:
+            startActivity(new Intent(this.getApplicationContext(), Preferences.class));
+            break;
+           case R.id.live_data:
+               makeToast("TODO: Make connection not automaticly, need to choose device and than to connect!");
+               break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //region SpeepDetection with GMS
     /**
      * Broadcast Receiver to receive OBD connection status and real time data
      */
-    private final BroadcastReceiver mObdReaderReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            //findViewById(R.id.progress_bar).setVisibility(View.GONE);
-            //mObdInfoTextView.setVisibility(View.VISIBLE);
-            isRegistered = true;
-            String action = intent.getAction();
-            if (action.equals(ACTION_OBD_CONNECTED)) {
-                String connectionStatusMsg = intent.getStringExtra(ObdReaderService.INTENT_EXTRA_DATA);
-                makeToast(connectionStatusMsg);
-
-                if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {//OBD connected  do what want after OBD connection
-                    makeToast(getString(R.string.obd_connected));
-
-                } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {//OBD disconnected  do what want after OBD disconnection
-                    makeToast(getString(R.string.connect_lost));
-
-                } else {// here you could check OBD connection and pairing status
-
-                }
-
-            } else if (action.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
-                TripRecord tripRecord = TripRecord.getTripRecode(Drive.this);
-                if(Integer.parseInt(new RPMCommand().getCalculatedResult()) > 0){
-                    mRpmText.setText("" + tripRecord.getEngineRpm());
-                    mSpeedText.setText("" + tripRecord.getSpeed());
-                    mEngineLoad.setText("" + tripRecord.getmEngineLoad());
-                    mCoolantText.setText("" + tripRecord.getmEngineCoolantTemp());
-                    mMaxSpeed.setText("" + tripRecord.getSpeedMax());
-                }else{
-                    Toast.makeText(getApplicationContext(), R.string.engineRunningTip, Toast.LENGTH_LONG).show();
-                }
-            }
-
-        }
-    };
-
     private void requestCameraPermission() {
         Log.w(TAG, "Camera permission is not granted. Requesting permission");
 
@@ -269,89 +260,6 @@ public final class Drive extends AppCompatActivity {
                 .setRequestedFps(30.0f)
                 .build();
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-       switch (item.getItemId()){
-        case R.id.driveSettings:
-            startActivity(new Intent(this.getApplicationContext(), Preferences.class));
-            break;
-           case R.id.live_data:
-               makeToast("TODO: Make connection not automaticly, need to choose device and than to connect!");
-               break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Restarts the camera.
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        startCameraSource();
-
-        //check if bt is enabled
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (btAdapter != null)
-            bluetoothDefaultIsEnable = btAdapter.isEnabled();
-
-        if (!preRequisites) {
-            makeToast(getString(R.string.connect_lost));
-        } else {
-            makeToast(getString(R.string.connected_ok));
-        }
-
-//        startService(ObdService);
-//        registerReceiver(mObdReaderReceiver, intentFilter);
-    }
-
-    /**
-     * Stops the camera.
-     */
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mPreview.stop();
-        if(isRegistered) {
-            unregisterReceiver(mObdReaderReceiver);
-            isRegistered = false;
-        }
-        if(isServiceRunning(ObdReaderService.class)){
-            stopService(ObdService);
-            Log.i(TAG, "onPause: " + isServiceRunning(ObdReaderService.class));
-        }
-
-    }
-
-    /**
-     * Releases the resources associated with the camera source, the associated detector, and the
-     * rest of the processing pipeline.
-     */
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mObdReaderReceiver);
-        if (mCameraSource != null) {
-            mCameraSource.release();
-        }
-        if(isRegistered) {
-            unregisterReceiver(mObdReaderReceiver);
-            isRegistered = false;
-        }
-        if(isServiceRunning(ObdReaderService.class)){
-            stopService(ObdService);
-            Log.i(TAG, "onPause: " + isServiceRunning(ObdReaderService.class));
-        }
-    }
-
     /**
      * Callback for the result from requesting permissions. This method
      * is invoked for every call on {@link #requestPermissions(String[], int)}.
@@ -486,6 +394,7 @@ public final class Drive extends AppCompatActivity {
             mOverlay.remove(mFaceGraphic);
         }
     }
+    //endregion
 
     public static Context getAppContext() {
         return appContext;
@@ -494,6 +403,7 @@ public final class Drive extends AppCompatActivity {
     public void makeToast(String  msg){
         Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
     }
+
     public boolean isServiceRunning(Class serviceClass){
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -503,6 +413,46 @@ public final class Drive extends AppCompatActivity {
         }
         return false;
     }
+
+    //region mObdReaderReceiver
+    private final BroadcastReceiver mObdReaderReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            //findViewById(R.id.progress_bar).setVisibility(View.GONE);
+            //mObdInfoTextView.setVisibility(View.VISIBLE);
+            isRegistered = true;
+            String action = intent.getAction();
+            if (action.equals(ACTION_OBD_CONNECTED)) {
+                String connectionStatusMsg = intent.getStringExtra(ObdReaderService.INTENT_EXTRA_DATA);
+                makeToast(connectionStatusMsg);
+
+                if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {//OBD connected  do what want after OBD connection
+                    makeToast(getString(R.string.obd_connected));
+
+                } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {//OBD disconnected  do what want after OBD disconnection
+                    makeToast(getString(R.string.connect_lost));
+
+                } else {// here you could check OBD connection and pairing status
+
+                }
+
+            } else if (action.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
+                TripRecord tripRecord = TripRecord.getTripRecode(Drive.this);
+                if(Integer.parseInt(new RPMCommand().getCalculatedResult()) > 0){
+                    mRpmText.setText("" + tripRecord.getEngineRpm());
+                    mSpeedText.setText("" + tripRecord.getSpeed());
+                    mEngineLoad.setText("" + tripRecord.getmEngineLoad());
+                    mCoolantText.setText("" + tripRecord.getmEngineCoolantTemp());
+                    mMaxSpeed.setText("" + tripRecord.getSpeedMax());
+                }else{
+                    Toast.makeText(getApplicationContext(), R.string.engineRunningTip, Toast.LENGTH_LONG).show();
+                }
+            }
+
+        }
+    };
+    //endregion
 
 
 
