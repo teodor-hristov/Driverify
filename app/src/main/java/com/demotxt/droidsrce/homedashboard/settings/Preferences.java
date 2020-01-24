@@ -10,6 +10,7 @@ import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+
 import androidx.annotation.Nullable;
 
 import com.demotxt.droidsrce.homedashboard.R;
@@ -19,9 +20,10 @@ import java.util.Set;
 
 public class Preferences extends PreferenceActivity implements Preference.OnPreferenceChangeListener {
 
-    private static final String TAG = "Preferences";
+    private static final String TAG = Preferences.class.getName();
     public static final String BLUETOOTH_LIST_KEY = "bluetooth_list_preference";
     public static final String BLUETOOTH_ENABLE = "enable_bluetooth_preference";
+
 
     private Preference bt;
     private BluetoothAdapter mBtAdapter;
@@ -38,15 +40,12 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
         addPreferencesFromResource(R.xml.preferences);
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         mPreferenceCheckBt = findPreference(BLUETOOTH_ENABLE);
+        pairedDeviceStrings = new ArrayList<>();
+        vals = new ArrayList<>();
 
-        /*
-         * Read preferences resources available at res/xml/preferences.xml
-         */
-         pairedDeviceStrings = new ArrayList<>();
-         vals = new ArrayList<>();
-         listBtDevices= (ListPreference) getPreferenceScreen().findPreference(BLUETOOTH_LIST_KEY);
-         listBtDevices.setEntries(pairedDeviceStrings.toArray(new CharSequence[0]));
-         listBtDevices.setEntryValues(vals.toArray(new CharSequence[0]));
+        listBtDevices= (ListPreference) getPreferenceScreen().findPreference(BLUETOOTH_LIST_KEY);
+        listBtDevices.setEntries(pairedDeviceStrings.toArray(new CharSequence[0]));
+        listBtDevices.setEntryValues(vals.toArray(new CharSequence[0]));
 
 
         /*
@@ -59,28 +58,12 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
             makeToast("This device does not support Bluetooth.");
             return;
         }
-//        /*
-//         * Listen for preferences click.
-//         *
-//         * TODO there are so many repeated validations :-/
-//         */
-//        listBtDevices.setEntries(new CharSequence[1]);
-//        listBtDevices.setEntryValues(new CharSequence[1]);
-//        listBtDevices.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-//            public boolean onPreferenceClick(Preference preference) {
-//                // see what I mean in the previous comment?
-//                if (mBtAdapter == null || !mBtAdapter.isEnabled()) {
-//                    makeToast("This device does not support Bluetooth or it is disabled.");
-//                    return false;
-//                }
-//                return true;
-//            }
-//        });
 
         /*
          * Get paired devices and populate preference list.
          * TODO: Double click problem
          */
+        //region ListBtDevices
         listBtDevices.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -114,6 +97,7 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
                 return false;
             }
         });
+        //endregion
 
         /*
          * Enable/Disable bt realtime

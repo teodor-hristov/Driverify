@@ -21,6 +21,9 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,6 +32,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.DialogPreference;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -43,6 +47,14 @@ import androidx.core.app.ActivityCompat;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
 import com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview;
 import com.demotxt.droidsrce.homedashboard.ui.camera.GraphicOverlay;
+import com.github.pires.obd.commands.SpeedCommand;
+import com.github.pires.obd.commands.control.TroubleCodesCommand;
+import com.github.pires.obd.commands.protocol.EchoOffCommand;
+import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
+import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
+import com.github.pires.obd.commands.protocol.TimeoutCommand;
+import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand;
+import com.github.pires.obd.enums.ObdProtocols;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
@@ -56,6 +68,8 @@ import com.sohrab.obd.reader.service.ObdReaderService;
 import com.sohrab.obd.reader.trip.TripRecord;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import static com.sohrab.obd.reader.constants.DefineObdReader.ACTION_OBD_CONNECTED;
 import static com.sohrab.obd.reader.constants.DefineObdReader.ACTION_READ_OBD_REAL_TIME_DATA;
@@ -88,6 +102,7 @@ public final class Drive extends AppCompatActivity {
     private boolean isRegistered = false;
     private boolean preRequisites = true;
     private BluetoothAdapter btAdapter;
+    private BluetoothDevice mBtDevice;
     private SharedPreferences prefs;
 
     private int rc;
@@ -111,16 +126,52 @@ public final class Drive extends AppCompatActivity {
         mMaxSpeed = findViewById(R.id.maxSpeed);
         mCoolantText = findViewById(R.id.coolantValue);
 
-        ObdService = new Intent(getApplicationContext(), ObdReaderService.class);
+        //ObdService = new Intent(getApplicationContext(), ObdReaderService.class);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
+
         if (btAdapter != null)
             bluetoothDefaultIsEnable = btAdapter.isEnabled();
 
         preRequisites = btAdapter != null && btAdapter.isEnabled();
         if (!preRequisites && prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
             preRequisites = btAdapter != null && btAdapter.enable();
+        }
+
+        if(btAdapter != null && !"".equals(prefs.getString(Preferences.BLUETOOTH_LIST_KEY, "-1"))){
+            for(BluetoothDevice dev : btAdapter.getBondedDevices()){
+                if(dev.getName().equals(prefs.getString(Preferences.BLUETOOTH_LIST_KEY, "-1"))){
+                    mBtDevice = dev;
+                    break;
+                }
+            }
+            BluetoothSocket socket = null;
+            try {
+                Method method = BluetoothManager.class.getMethod("connect", BluetoothDevice.class);
+                socket = (BluetoothSocket) method.invoke(null, mBtDevice);
+                if(socket != null){
+                    new EchoOffCommand().run(socket.getInputStream(), socket.getOutputStream());
+                    new LineFeedOffCommand().run(socket.getInputStream(), socket.getOutputStream());
+                    new TimeoutCommand(125).run(socket.getInputStream(), socket.getOutputStream());
+                    new SelectProtocolCommand(ObdProtocols.AUTO).run(socket.getInputStream(), socket.getOutputStream());
+                    new AmbientAirTemperatureCommand().run(socket.getInputStream(), socket.getOutputStream());
+                }
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.i(TAG, "Probvam: " + new RPMCommand().getFormattedResult());
+            Log.i(TAG, "Probvam: " + new TroubleCodesCommand().getFormattedResult());
+            Log.i(TAG, "Probvam: " + new SpeedCommand().getFormattedResult());
+
         }
 
         rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
