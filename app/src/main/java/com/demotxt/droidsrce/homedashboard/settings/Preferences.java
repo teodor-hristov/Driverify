@@ -109,6 +109,7 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
                     if(preference.getKey().equals(BLUETOOTH_ENABLE)){
                         if(!mBtAdapter.isEnabled()){
                             if(mBtAdapter.enable()) {
+                                preference.setEnabled(true);
                                 Log.i(TAG, "onPreferenceClick: enable");
                                 makeToast("Bluetooth is enabled!");
                             }else{
@@ -117,6 +118,7 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
 
                         }else{
                             if(mBtAdapter.disable()) {
+                                preference.setEnabled(false);
                                 Log.i(TAG, "onPreferenceClick: disable");
                                 makeToast("Bluetooth is disabled!");
                             }else{
