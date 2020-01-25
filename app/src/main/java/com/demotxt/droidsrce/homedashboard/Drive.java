@@ -42,6 +42,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.demotxt.droidsrce.homedashboard.io.BluetoothConnectionIO;
+import com.demotxt.droidsrce.homedashboard.services.ObdConnection;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
 import com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview;
 import com.demotxt.droidsrce.homedashboard.ui.camera.GraphicOverlay;
@@ -235,78 +236,13 @@ public final class Drive extends AppCompatActivity {
                 startActivity(new Intent(this.getApplicationContext(), Preferences.class));
                 break;
             case R.id.live_data:
-
                 ArrayList<ObdCommand> commands = new ArrayList<>();
                 commands.add(new RPMCommand());
                 commands.add(new SpeedCommand());
                 commands.add(new TroubleCodesCommand());
 
-                if(btAdapter != null) {
-                    for (BluetoothDevice dev : btAdapter.getBondedDevices()) {
-                        if (dev.getAddress().equals(prefs.getString(Preferences.BLUETOOTH_LIST_KEY, "-1"))) {
-                            mBtDevice = dev;
-                            break;
-                        }
-                    }
-                }
-                //makeToast("TODO: Make connection not automaticly, need to choose device and than to connect!");
-                BluetoothSocket sock = null;
-                try {
-                    if(mBtDevice != null) {
-                        Log.i(TAG, "Entering communication test...");
-                        sock = new BluetoothConnectionIO(mBtDevice).connect();
-                        sock.connect();
-                        if(sock.isConnected()) {
-                            Log.i(TAG, "Connection is now created.");
-                            Log.i(TAG, "Testing OBD commands...");
-                            new EchoOffCommand().run(sock.getInputStream(), sock.getOutputStream());
-                            new LineFeedOffCommand().run(sock.getInputStream(), sock.getOutputStream());
-                            new TimeoutCommand(125).run(sock.getInputStream(), sock.getOutputStream());
-                            new SelectProtocolCommand(ObdProtocols.AUTO).run(sock.getInputStream(), sock.getOutputStream());
-                            new AmbientAirTemperatureCommand().run(sock.getInputStream(), sock.getOutputStream());
-                           if(commands.size() > 0){
-                               for(ObdCommand var : commands){
-                                   var.run(sock.getInputStream(), sock.getOutputStream());
-                               }
-                           }
-                        }
+                startService(new Intent(getApplicationContext(), ObdConnection.class));
 
-                    }else{
-                        Log.i(TAG, "mbtdevice null");
-                    }
-
-                } catch (IOException e) {
-                    Log.i(TAG, "Nep.");
-                    makeToast("There is an error with connecting to device.");
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (TimeoutException e) {
-                    e.printStackTrace();
-                    Log.e(TAG, "Not responding");
-                }
-
-                if(sock.isConnected()) {
-                    Log.i(TAG, "Commands are working and getting data...");
-                    if (sock.isConnected()) {
-
-                        //print commands
-                        if(commands.size() > 0){
-                            for(ObdCommand var : commands){
-                                Log.i(TAG, "" + var.getName() + ": " + var.getFormattedResult());
-                                makeToast("" + var.getName() + ": " + var.getFormattedResult());
-                            }
-                        }
-                        try {
-                            sock.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Log.i(TAG, "No connection");
-                        makeToast("There is an error with connecting to device.");
-                    }
-                }
 
                 break;
         }
