@@ -20,9 +20,10 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.IntentService;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,7 +42,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.demotxt.droidsrce.homedashboard.io.BluetoothConnectionIO;
 import com.demotxt.droidsrce.homedashboard.services.ObdConnection;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
 import com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview;
@@ -50,12 +50,6 @@ import com.github.pires.obd.commands.ObdCommand;
 import com.github.pires.obd.commands.SpeedCommand;
 import com.github.pires.obd.commands.control.TroubleCodesCommand;
 import com.github.pires.obd.commands.engine.RPMCommand;
-import com.github.pires.obd.commands.protocol.EchoOffCommand;
-import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
-import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
-import com.github.pires.obd.commands.protocol.TimeoutCommand;
-import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand;
-import com.github.pires.obd.enums.ObdProtocols;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
@@ -64,16 +58,14 @@ import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.material.snackbar.Snackbar;
+import com.sohrab.obd.reader.service.ObdReaderService;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.UUID;
-import java.util.concurrent.TimeoutException;
 
 public final class Drive extends AppCompatActivity {
     private static final String TAG = "Drive";
 
-    private static final int REQUEST_ENABLE_BT = 1;
     private static final int RC_HANDLE_GMS = 9001;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
     private static boolean bluetoothDefaultIsEnable = false;
@@ -100,6 +92,8 @@ public final class Drive extends AppCompatActivity {
     private BluetoothAdapter btAdapter;
     private BluetoothDevice mBtDevice;
     private SharedPreferences prefs;
+    private  IntentFilter filter;
+    private Intent obdConnection;
 
     private int rc;
 
@@ -112,6 +106,7 @@ public final class Drive extends AppCompatActivity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.activity_drive);
+        Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
 
         appContext = getApplicationContext();
         mPreview = findViewById(R.id.preview);
@@ -122,10 +117,10 @@ public final class Drive extends AppCompatActivity {
         mMaxSpeed = findViewById(R.id.maxSpeed);
         mCoolantText = findViewById(R.id.coolantValue);
 
-        //ObdService = new Intent(getApplicationContext(), ObdReaderService.class);
-
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
+        filter = new IntentFilter();
+        obdConnection = new Intent(getApplicationContext(), ObdConnection.class);
 
         if (btAdapter != null)
             bluetoothDefaultIsEnable = btAdapter.isEnabled();
@@ -142,33 +137,17 @@ public final class Drive extends AppCompatActivity {
                     break;
                 }
             }
-//            BluetoothSocket socket = null;
-//            try {
-//                Method method = BluetoothManager.class.getMethod("connect", BluetoothDevice.class);
-//                socket = (BluetoothSocket) method.invoke(null, mBtDevice);
-//                if(socket != null){
-//                    new EchoOffCommand().run(socket.getInputStream(), socket.getOutputStream());
-//                    new LineFeedOffCommand().run(socket.getInputStream(), socket.getOutputStream());
-//                    new TimeoutCommand(125).run(socket.getInputStream(), socket.getOutputStream());
-//                    new SelectProtocolCommand(ObdProtocols.AUTO).run(socket.getInputStream(), socket.getOutputStream());
-//                    new AmbientAirTemperatureCommand().run(socket.getInputStream(), socket.getOutputStream());
-//                }
-//            } catch (NoSuchMethodException e) {
-//                e.printStackTrace();
-//            } catch (IllegalAccessException e) {
-//                e.printStackTrace();
-//            } catch (InvocationTargetException e) {
-//                e.printStackTrace();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            Log.i(TAG, "Probvam: " + new RPMCommand().getFormattedResult());
-//            Log.i(TAG, "Probvam: " + new TroubleCodesCommand().getFormattedResult());
-//            Log.i(TAG, "Probvam: " + new SpeedCommand().getFormattedResult());
+
 
         }
+
+
+        filter.addAction(ObdConnection.connected);
+        filter.addAction(ObdConnection.disconnected);
+        filter.addAction(ObdConnection.receiveData);
+        filter.addAction(ObdConnection.extra);
+
+        registerReceiver(mObdBlReceiever, filter);
 
         rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
@@ -183,9 +162,9 @@ public final class Drive extends AppCompatActivity {
         super.onResume();
         startCameraSource();
 
-        /*
-            Check if bluetooth is enabled and if not bt.enable()
-            else bt.disable.
+        /**
+         *  Check if bluetooth is enabled and if not bt.enable()
+         * else bt.disable.
          */
         if (btAdapter != null)
             bluetoothDefaultIsEnable = btAdapter.isEnabled();
@@ -219,8 +198,47 @@ public final class Drive extends AppCompatActivity {
 
         if (btAdapter != null && btAdapter.isEnabled() && !bluetoothDefaultIsEnable)
             btAdapter.disable();
+
+        if(mObdBlReceiever != null){
+            unregisterReceiver(mObdBlReceiever);
+        }
     }
 
+    private BroadcastReceiver mObdBlReceiever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "mObdReceiver is working");
+            isRegistered = true;
+            String action = intent.getAction();
+//            if (action.equals(ObdConnection.connected)) {
+//                String connectionStatusMsg = intent.getStringExtra(ObdConnection.extra);
+//                makeToast(connectionStatusMsg);
+//
+//                if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {//OBD connected  do what want after OBD connection
+//                    makeToast(getString(R.string.obd_connected));
+//
+//                } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {//OBD disconnected  do what want after OBD disconnection
+//                    makeToast(getString(R.string.connect_lost));
+//
+//                } else {// here you could check OBD connection and pairing status
+//
+//                }
+
+            //} else
+                if (action.equals(ObdConnection.receiveData)) {
+                    Log.i(TAG, "Real obd data");
+//                if(Integer.parseInt(new RPMCommand().getCalculatedResult()) > 0){
+//                    mRpmText.setText("" + tripRecord.getEngineRpm());
+//                    mSpeedText.setText("" + tripRecord.getSpeed());
+//                    mEngineLoad.setText("" + tripRecord.getmEngineLoad());
+//                    mCoolantText.setText("" + tripRecord.getmEngineCoolantTemp());
+//                    mMaxSpeed.setText("" + tripRecord.getSpeedMax());
+//                }else{
+//                    Toast.makeText(getApplicationContext(), R.string.engineRunningTip, Toast.LENGTH_LONG).show();
+//                }
+            }
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -241,12 +259,28 @@ public final class Drive extends AppCompatActivity {
                 commands.add(new SpeedCommand());
                 commands.add(new TroubleCodesCommand());
 
-                startService(new Intent(getApplicationContext(), ObdConnection.class));
-
-
+                startService(obdConnection);
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static Context getAppContext() {
+        return appContext;
+    }
+
+    public void makeToast(String  msg){
+        Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public boolean isServiceRunning(Class serviceClass){
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //region SpeepDetection with GMS
@@ -450,24 +484,6 @@ public final class Drive extends AppCompatActivity {
     }
     //endregion
 
-    public static Context getAppContext() {
-        return appContext;
-    }
-
-    public void makeToast(String  msg){
-        Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    public boolean isServiceRunning(Class serviceClass){
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     //region mObdReaderReceiver
 //    private final BroadcastReceiver mObdReaderReceiver = new BroadcastReceiver() {
 //        @Override
@@ -507,6 +523,8 @@ public final class Drive extends AppCompatActivity {
 //        }
 //    };
     //endregion
+
+
 
 
 
