@@ -30,6 +30,7 @@
     <string name="rpmText">Engine RPM</string>
     <string name="coolantText">Coolant temperature (C)</string>
     <string name="maxSpeedText">Max speed (km/h)</string>
+    <string name="oilTempText">Oil temperature (C)</string>
     <string name="engineLoadText">Engine load</string>
     <string name="speedometerText">Speedometer (km/h)</string>
     <string name="waiting_for_obd">Waiting for paired OBD adapter</string>
@@ -38,7 +39,8 @@
     <string name="obd_connected">OBD Connected</string>
     <string name="connect_lost">Connect Lost</string>
     <string name="engineRunningTip">You need running engine if you want to view car info!</string>
-    <string name="live_data">Start live data!</string>
+    <string name="start_live_data">Start live data!</string>
+    <string name="stop_live_data">Stop live data!</string>
 
 <!--    DTCs-->
     <string name="get_codes">Get DTCs</string>

@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.IntentService;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -42,6 +41,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
 import com.demotxt.droidsrce.homedashboard.services.ObdConnection;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
 import com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview;
@@ -58,7 +58,6 @@ import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.material.snackbar.Snackbar;
-import com.sohrab.obd.reader.service.ObdReaderService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,10 +80,9 @@ public final class Drive extends AppCompatActivity {
     private TextView mRpmText;
     private TextView mSpeedText;
     private TextView mEngineLoad;
-    private TextView mMaxSpeed;
+    private TextView mOilTemp;
     private TextView mCoolantText;
-    private IntentFilter intentFilter;
-    private Intent ObdService;
+    private ArrayList<TextView> driveItems;
     //endregion
 
     private boolean isRegistered = false;
@@ -114,13 +112,19 @@ public final class Drive extends AppCompatActivity {
         mRpmText = findViewById(R.id.rpmValue);
         mSpeedText = findViewById(R.id.speedometerValue);
         mEngineLoad = findViewById(R.id.engineLoadValue);
-        mMaxSpeed = findViewById(R.id.maxSpeed);
+        mOilTemp = findViewById(R.id.oilTemp);
         mCoolantText = findViewById(R.id.coolantValue);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         filter = new IntentFilter();
         obdConnection = new Intent(getApplicationContext(), ObdConnection.class);
+        driveItems = new ArrayList<>();
+        driveItems.add(mRpmText);
+        driveItems.add(mSpeedText);
+        driveItems.add(mEngineLoad);
+        driveItems.add(mCoolantText);
+
 
         if (btAdapter != null)
             bluetoothDefaultIsEnable = btAdapter.isEnabled();
@@ -207,35 +211,33 @@ public final class Drive extends AppCompatActivity {
     private BroadcastReceiver mObdBlReceiever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "mObdReceiver is working");
             isRegistered = true;
             String action = intent.getAction();
-//            if (action.equals(ObdConnection.connected)) {
-//                String connectionStatusMsg = intent.getStringExtra(ObdConnection.extra);
-//                makeToast(connectionStatusMsg);
-//
-//                if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {//OBD connected  do what want after OBD connection
-//                    makeToast(getString(R.string.obd_connected));
-//
-//                } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {//OBD disconnected  do what want after OBD disconnection
-//                    makeToast(getString(R.string.connect_lost));
-//
-//                } else {// here you could check OBD connection and pairing status
-//
-//                }
+            ObdReaderData data;
 
-            //} else
+            if (action.equals(ObdConnection.connected)) {
+                String connectionStatusMsg = intent.getStringExtra(ObdConnection.extra);
+                makeToast(connectionStatusMsg);
+
+                if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {//OBD connected  do what want after OBD connection
+                    makeToast(getString(R.string.obd_connected));
+
+                } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {//OBD disconnected  do what want after OBD disconnection
+                    makeToast(getString(R.string.connect_lost));
+
+
+                } else {// here you could check OBD connection and pairing status
+
+                }
+
+            } else
                 if (action.equals(ObdConnection.receiveData)) {
-                    Log.i(TAG, "Real obd data");
-//                if(Integer.parseInt(new RPMCommand().getCalculatedResult()) > 0){
-//                    mRpmText.setText("" + tripRecord.getEngineRpm());
-//                    mSpeedText.setText("" + tripRecord.getSpeed());
-//                    mEngineLoad.setText("" + tripRecord.getmEngineLoad());
-//                    mCoolantText.setText("" + tripRecord.getmEngineCoolantTemp());
-//                    mMaxSpeed.setText("" + tripRecord.getSpeedMax());
-//                }else{
-//                    Toast.makeText(getApplicationContext(), R.string.engineRunningTip, Toast.LENGTH_LONG).show();
-//                }
+                    data = intent.getParcelableExtra(ObdConnection.receiveData);
+                    if(data != null) {
+                                for(int i = 0; i < data.getCommands().size()-1; i++){
+                                    driveItems.get(i).setText("" + data.getCommands().get(i));
+                                }
+                            }
             }
         }
     };
@@ -253,13 +255,28 @@ public final class Drive extends AppCompatActivity {
             case R.id.driveSettings:
                 startActivity(new Intent(this.getApplicationContext(), Preferences.class));
                 break;
-            case R.id.live_data:
+            case R.id.start_live_data:
                 ArrayList<ObdCommand> commands = new ArrayList<>();
                 commands.add(new RPMCommand());
                 commands.add(new SpeedCommand());
                 commands.add(new TroubleCodesCommand());
 
                 startService(obdConnection);
+                if(!isRegistered){
+                    registerReceiver(mObdBlReceiever, filter);
+                }
+                makeToast("Live data started.");
+                break;
+            case R.id.stop_live_data:
+                if(isServiceRunning(ObdConnection.class)){
+                    stopService(obdConnection);
+                }
+                if(isRegistered){
+                    unregisterReceiver(mObdBlReceiever);
+                }
+                makeToast("Live data stopped.");
+                for(TextView v : driveItems)
+                    v.setText("");
                 break;
         }
         return super.onOptionsItemSelected(item);
