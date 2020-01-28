@@ -181,11 +181,11 @@ public class ObdConnection extends IntentService {
                 e.printStackTrace();
             }
             if (sock.isConnected()) {
-//                intent.setAction(connected);
-//                intent.putExtra(extra, getString(R.string.connected_ok));
-//                sendBroadcast(intent);
 
-                //update data
+                /**
+                 * Update data
+                 * TODO: make methods for update and send
+                 */
                 if (cmds.size() > 0) {
                     for (ObdCommand var : cmds) {
                         try {
@@ -198,12 +198,14 @@ public class ObdConnection extends IntentService {
                         }
                     }
                 }
-                //print commands
+                /**
+                 * Print and put to intent data
+                 */
                 if (cmds.size() > 0) {
                     intent.setAction(receiveData);
                     for (ObdCommand var : cmds) {
                         data.setCommands(stringCommands);
-                        Log.i(TAG, "" + var.getName() + ": " + var.getFormattedResult());
+                        //Log.i(TAG, "" + var.getName() + ": " + var.getFormattedResult());
                         intent.putExtra(receiveData, data);
 
                     }

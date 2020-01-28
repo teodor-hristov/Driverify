@@ -181,6 +181,9 @@ public final class Drive extends AppCompatActivity {
         if(preRequisites && !prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)){
             preRequisites = btAdapter != null && btAdapter.disable();
         }
+        if(!isRegistered){
+            registerReceiver(mObdBlReceiever, filter);
+        }
     }
 
     /**
@@ -190,7 +193,10 @@ public final class Drive extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mPreview.stop();
-
+        if(isRegistered){
+            unregisterReceiver(mObdBlReceiever);
+            isRegistered = false;
+        }
     }
 
     /**
@@ -204,8 +210,9 @@ public final class Drive extends AppCompatActivity {
         if (btAdapter != null && btAdapter.isEnabled() && !bluetoothDefaultIsEnable)
             btAdapter.disable();
 
-        if(mObdBlReceiever != null){
+        if(isRegistered){
             unregisterReceiver(mObdBlReceiever);
+            isRegistered = false;
         }
     }
 
@@ -269,9 +276,6 @@ public final class Drive extends AppCompatActivity {
                 makeToast("Live data started.");
                 break;
             case R.id.stop_live_data:
-                if(isServiceRunning(ObdConnection.class)){
-                    stopService(obdConnection);
-                }
                 if(isRegistered){
                     unregisterReceiver(mObdBlReceiever);
                     isRegistered = false;
