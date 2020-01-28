@@ -124,6 +124,7 @@ public final class Drive extends AppCompatActivity {
         driveItems.add(mSpeedText);
         driveItems.add(mEngineLoad);
         driveItems.add(mCoolantText);
+        driveItems.add(mOilTemp);
 
 
         if (btAdapter != null)
@@ -234,7 +235,7 @@ public final class Drive extends AppCompatActivity {
                 if (action.equals(ObdConnection.receiveData)) {
                     data = intent.getParcelableExtra(ObdConnection.receiveData);
                     if(data != null) {
-                                for(int i = 0; i < data.getCommands().size()-1; i++){
+                                for(int i = 0; i < data.getCommands().size(); i++){
                                     driveItems.get(i).setText("" + data.getCommands().get(i));
                                 }
                             }
@@ -273,6 +274,7 @@ public final class Drive extends AppCompatActivity {
                 }
                 if(isRegistered){
                     unregisterReceiver(mObdBlReceiever);
+                    isRegistered = false;
                 }
                 makeToast("Live data stopped.");
                 for(TextView v : driveItems)
