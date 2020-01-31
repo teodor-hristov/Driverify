@@ -30,6 +30,8 @@ import com.github.pires.obd.commands.protocol.TimeoutCommand;
 import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand;
 import com.github.pires.obd.commands.temperature.EngineCoolantTemperatureCommand;
 import com.github.pires.obd.enums.ObdProtocols;
+import com.github.pires.obd.exceptions.UnableToConnectException;
+import com.github.pires.obd.exceptions.UnsupportedCommandException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -102,7 +104,7 @@ public class ObdConnection extends IntentService {
         commands.add(new SpeedCommand());
         commands.add(new EngineCoolantTemperatureCommand());
         commands.add(new LoadCommand());
-        commands.add(new OilTempCommand());
+        //commands.add(new OilTempCommand());
         setCmds(commands);
 
         Log.i(TAG, "ObdConnection service started");
@@ -139,7 +141,6 @@ public class ObdConnection extends IntentService {
                     new LineFeedOffCommand().run(sock.getInputStream(), sock.getOutputStream());
                     new TimeoutCommand(125).run(sock.getInputStream(), sock.getOutputStream());
                     new SelectProtocolCommand(ObdProtocols.AUTO).run(sock.getInputStream(), sock.getOutputStream());
-                    new AmbientAirTemperatureCommand().run(sock.getInputStream(), sock.getOutputStream());
                     Log.i(TAG, "Commands are working and getting data...");
                     intent.setAction(connected);
                     intent.putExtra(extra, getString(R.string.connected_ok));
@@ -164,6 +165,12 @@ public class ObdConnection extends IntentService {
         } catch (TimeoutException e) {
             e.printStackTrace();
             Log.e(TAG, "Not responding");
+        } catch (UnableToConnectException e ){
+            makeToast("Car ECU is not responding. You need running engine.");
+            e.printStackTrace();
+        } catch (UnsupportedCommandException e){
+            e.printStackTrace();
+            makeToast("Unsupported command.");
         }
 
         /**
@@ -195,6 +202,12 @@ public class ObdConnection extends IntentService {
                             e.printStackTrace();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
+                        } catch (UnsupportedCommandException e){
+                            e.printStackTrace();
+                            makeToast("Unsupported command" + var.getName());
+                        } catch (UnableToConnectException e){
+                            e.printStackTrace();
+                            makeToast("Unable to connect." + var.getName());
                         }
                     }
                 }
@@ -203,14 +216,10 @@ public class ObdConnection extends IntentService {
                  */
                 if (cmds.size() > 0) {
                     intent.setAction(receiveData);
-                    for (ObdCommand var : cmds) {
-                        data.setCommands(stringCommands);
-                        //Log.i(TAG, "" + var.getName() + ": " + var.getFormattedResult());
-                        intent.putExtra(receiveData, data);
+                    data.setCommands(stringCommands);
+                    intent.putExtra(receiveData, data);
 
-                    }
                     sendBroadcast(intent);
-
                 }
             } else {
                 Log.i(TAG, "No connection");
