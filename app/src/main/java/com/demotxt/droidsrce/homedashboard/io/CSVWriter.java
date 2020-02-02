@@ -1,33 +1,36 @@
 package com.demotxt.droidsrce.homedashboard.io;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Date;
 
 public class CSVWriter {
-    private static final String PATH = "storage/emulated/0/Driverify/Logs";
+    private static final String PATH = "storage/emulated/0/Driverify/Logs/";
+    private boolean isObdBeenDisconnected = false;
     private String path;
-    private PrintWriter writer;
+    private BufferedWriter writer;
+
+    public boolean isIsObdBeenDisconnected() {
+        return isObdBeenDisconnected;
+    }
+
+    public void setIsObdBeenDisconnected(boolean isObdBeenDisconnected) {
+        this.isObdBeenDisconnected = isObdBeenDisconnected;
+    }
 
     public String getPath() {
         return path;
     }
 
-    public PrintWriter getWriter() {
+    public BufferedWriter getWriter() {
         return writer;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public CSVWriter() throws IOException {
         File lvFile = new File(PATH);
-        File lvLogFile = new File(lvFile.getAbsolutePath() + new Date().toGMTString() + ".csv");
+        File lvLogFile = new File(PATH + new Date().toGMTString() + ".csv");
         if(!lvFile.exists()){
             lvFile.mkdirs();
         }
@@ -37,18 +40,22 @@ public class CSVWriter {
 
         this.path = lvLogFile.getAbsolutePath();
 
-        this.writer = new PrintWriter(new FileWriter(this.path));
+        this.writer = new BufferedWriter(new FileWriter(this.path));
     }
 
-    public boolean write(String string) throws IOException {
-        if(this.path != null) {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(this.path));
-            writer.write(string);
-
-            writer.close();
+    public boolean append(String string) throws IOException {
+        if(this.writer != null) {
+            writer.append(string);
+            this.newLine();
             return true;
         }
         return false;
 
+    }
+    public void close() throws IOException {
+        writer.close();
+    }
+    public void newLine() throws IOException {
+        writer.newLine();
     }
 }

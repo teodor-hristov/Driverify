@@ -41,6 +41,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.demotxt.droidsrce.homedashboard.io.CSVWriter;
 import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
 import com.demotxt.droidsrce.homedashboard.services.ObdConnection;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
@@ -90,8 +91,11 @@ public final class Drive extends AppCompatActivity {
     private BluetoothAdapter btAdapter;
     private BluetoothDevice mBtDevice;
     private SharedPreferences prefs;
-    private  IntentFilter filter;
+    private IntentFilter filter;
     private Intent obdConnection;
+
+    private CSVWriter writer = null;
+    private StringBuilder sb;
 
     private int rc;
 
@@ -125,7 +129,6 @@ public final class Drive extends AppCompatActivity {
         driveItems.add(mEngineLoad);
         driveItems.add(mCoolantText);
         driveItems.add(mOilTemp);
-
 
         if (btAdapter != null)
             bluetoothDefaultIsEnable = btAdapter.isEnabled();
@@ -232,6 +235,13 @@ public final class Drive extends AppCompatActivity {
 
                 } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {//OBD disconnected  do what want after OBD disconnection
                     makeToast(getString(R.string.connect_lost));
+                    try {
+                        if(writer != null)
+                            writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.i(TAG, "Problem with file close");
+                    }
 
 
                 } else {// here you could check OBD connection and pairing status
@@ -241,10 +251,38 @@ public final class Drive extends AppCompatActivity {
             } else
                 if (action.equals(ObdConnection.receiveData)) {
                     data = intent.getParcelableExtra(ObdConnection.receiveData);
+                    /**
+                     * Creating CSV file
+                     * Adding header line for rpm speed coolant load
+                     * Appending information given from the car ECU
+                     */
+                    try {
+                        if(writer == null) {
+                            writer = new CSVWriter();
+                            writer.append("rpm, speed, coolant, load");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.i(TAG, "Writer initialization problem.");
+                        Log.i(TAG, e.getMessage());
+                    }
                     if(data != null) {
                                 for(int i = 0; i < data.getCommands().size(); i++){
                                     driveItems.get(i).setText("" + data.getCommands().get(i));
                                 }
+                        if(writer != null){
+                            sb = new StringBuilder();
+                            try {
+                                for(String str : data.getCommands()){
+                                    sb.append(str);
+                                    sb.append(",");
+                                }
+                                writer.append(sb.toString());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Log.i(TAG, "Could not write to file");
+                            }
+                        }
                             }
             }
         }
@@ -281,8 +319,15 @@ public final class Drive extends AppCompatActivity {
                     isRegistered = false;
                 }
                 makeToast("Live data stopped.");
+                try {
+                    if(writer != null)
+                        writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.i(TAG, "Problem with file close");
+                }
                 for(TextView v : driveItems)
-                    v.setText("");
+                    v.setText("0");
                 break;
         }
         return super.onOptionsItemSelected(item);
