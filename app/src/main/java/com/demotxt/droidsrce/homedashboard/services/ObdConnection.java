@@ -117,14 +117,7 @@ public class ObdConnection extends IntentService {
         /**
          * Update selected device
          */
-        if (btAdapter != null) {
-            for (BluetoothDevice dev : btAdapter.getBondedDevices()) {
-                if (dev.getAddress().equals(prefs.getString(Preferences.BLUETOOTH_LIST_KEY, "-1"))) {
-                    mBtDevice = dev;
-                    break;
-                }
-            }
-        }
+        mBtDevice = updateSelectedDevice(btAdapter, prefs);
 
         try {
             if (mBtDevice != null) {
@@ -134,7 +127,6 @@ public class ObdConnection extends IntentService {
                 if (sock.isConnected()) {
                     Log.i(TAG, "Connection is now created.");
                     Log.i(TAG, "Testing OBD commands...");
-                    makeToast(getString(R.string.connected_ok));
                     new EchoOffCommand().run(sock.getInputStream(), sock.getOutputStream());
                     new LineFeedOffCommand().run(sock.getInputStream(), sock.getOutputStream());
                     new TimeoutCommand(125).run(sock.getInputStream(), sock.getOutputStream());
@@ -171,12 +163,6 @@ public class ObdConnection extends IntentService {
             makeToast("Unsupported command.");
         }
 
-        /**
-         * Need to optimize the code, too much dummy implementations
-         * need to check if is connected to catch the errors
-         * need to sent data to broadcast receiver in Drive.class
-         * need to add stop live data in drive
-         */
         prereq = mBtDevice != null && sock != null && sock.isConnected();
         intent.setAction(receiveData);
         while (prereq) {
@@ -189,36 +175,12 @@ public class ObdConnection extends IntentService {
 
                 /**
                  * Update data
-                 * TODO: make methods for update and send
                  */
-                if (cmds.size() > 0) {
-                    for (ObdCommand var : cmds) {
-                        try {
-                            var.run(sock.getInputStream(), sock.getOutputStream());
-                            stringCommands.add(var.getCalculatedResult());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (UnsupportedCommandException e){
-                            e.printStackTrace();
-                            makeToast("Unsupported command" + var.getName());
-                        } catch (UnableToConnectException e){
-                            e.printStackTrace();
-                            makeToast("Unable to connect." + var.getName());
-                        }
-                    }
-                }
+                    updateData(sock, cmds,stringCommands);
                 /**
                  * Print and put to intent data
                  */
-                if (cmds.size() > 0) {
-                    intent.setAction(receiveData);
-                    data.setCommands(stringCommands);
-                    intent.putExtra(receiveData, data);
-
-                    sendBroadcast(intent);
-                }
+                printToIntent(cmds, stringCommands, data,intent, receiveData);
             } else {
                 Log.i(TAG, "No connection");
                 intent.setAction(connected);
@@ -242,5 +204,47 @@ public class ObdConnection extends IntentService {
 
     public void makeToast(String txt){
         Toast.makeText(Drive.getAppContext(), txt, Toast.LENGTH_SHORT).show();
+    }
+    public void updateData(BluetoothSocket sock, ArrayList<ObdCommand> cmds, ArrayList<String> stringCommands){
+        if (cmds.size() > 0) {
+            for (ObdCommand var : cmds) {
+                try {
+                    var.run(sock.getInputStream(), sock.getOutputStream());
+                    stringCommands.add(var.getCalculatedResult());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedCommandException e){
+                    e.printStackTrace();
+                    makeToast("Unsupported command" + var.getName());
+                } catch (UnableToConnectException e){
+                    e.printStackTrace();
+                    makeToast("Unable to connect." + var.getName());
+                }
+            }
+        }
+    }
+
+    public BluetoothDevice updateSelectedDevice(BluetoothAdapter btAdapter, SharedPreferences prefs){
+        if (btAdapter != null) {
+            for (BluetoothDevice dev : btAdapter.getBondedDevices()) {
+                if (dev.getAddress().equals(prefs.getString(Preferences.BLUETOOTH_LIST_KEY, "-1"))) {
+                    return dev;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    public void printToIntent(ArrayList<ObdCommand> cmds, ArrayList<String> stringCommands, ObdReaderData data, Intent intent, String receiveData){
+        if (cmds.size() > 0) {
+            intent.setAction(receiveData);
+            data.setCommands(stringCommands);
+            intent.putExtra(receiveData, data);
+
+            sendBroadcast(intent);
+        }
     }
 }
