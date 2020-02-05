@@ -108,7 +108,6 @@ public class ObdConnection extends IntentService {
         commands.add(new SpeedCommand());
         commands.add(new EngineCoolantTemperatureCommand());
         commands.add(new LoadCommand());
-        //commands.add(new OilTempCommand());
         setCmds(commands);
 
         ArrayList<ObdCommand> dtcCommand = new ArrayList<>();
@@ -190,7 +189,7 @@ public class ObdConnection extends IntentService {
                  * Print and put to intent data
                  */
                 printToIntent(cmds, stringCommands, data,intent.setAction(receiveData), receiveData);
-                //printToIntent(dtcCommand, stringDtc, dtc, intent.setAction(DTC), receiveData);
+
             } else {
                 Log.i(TAG, "No connection");
                 intent.setAction(connected);
@@ -221,9 +220,7 @@ public class ObdConnection extends IntentService {
                 try {
                     var.run(sock.getInputStream(), sock.getOutputStream());
                     stringCommands.add(var.getCalculatedResult());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 } catch (UnsupportedCommandException e){
                     e.printStackTrace();

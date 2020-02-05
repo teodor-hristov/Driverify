@@ -119,6 +119,9 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
         Toast.makeText(thisActivity, txt, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Getting phone adapter. Getting bounded devices. Put bounded devices into preferences list.
+     */
     public void updateBtList(){
         if(mBtAdapter.isEnabled() && mBtAdapter != null){
             pairedDevices = mBtAdapter.getBondedDevices();

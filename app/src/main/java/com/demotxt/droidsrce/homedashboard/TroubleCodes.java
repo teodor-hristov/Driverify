@@ -115,13 +115,7 @@ public class TroubleCodes extends AppCompatActivity {
             case R.id.getCodes:
                 try {
                     getCodes(codes, sock);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e(TAG, e.getMessage());
-                } catch (TimeoutException e) {
-                    e.printStackTrace();
-                    Log.e(TAG, e.getMessage());
-                } catch (InterruptedException e) {
+                } catch (IOException | InterruptedException | TimeoutException e) {
                     e.printStackTrace();
                     Log.e(TAG, e.getMessage());
                 }
