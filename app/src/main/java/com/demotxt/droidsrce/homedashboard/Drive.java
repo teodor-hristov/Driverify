@@ -187,6 +187,9 @@ public final class Drive extends AppCompatActivity {
         if(!isRegistered){
             registerReceiver(mObdBlReceiever, filter);
         }
+        if(!isServiceRunning(ObdConnection.class)){
+            startService(new Intent(getApplicationContext(), ObdConnection.class));
+        }
     }
 
     /**
@@ -199,6 +202,9 @@ public final class Drive extends AppCompatActivity {
         if(isRegistered){
             unregisterReceiver(mObdBlReceiever);
             isRegistered = false;
+        }
+        if(isServiceRunning(ObdConnection.class)){
+            stopService(new Intent(getApplicationContext(), ObdConnection.class));
         }
     }
 
@@ -216,6 +222,9 @@ public final class Drive extends AppCompatActivity {
         if(isRegistered){
             unregisterReceiver(mObdBlReceiever);
             isRegistered = false;
+        }
+        if(isServiceRunning(ObdConnection.class)){
+            stopService(new Intent(getApplicationContext(), ObdConnection.class));
         }
     }
 
@@ -317,6 +326,9 @@ public final class Drive extends AppCompatActivity {
                 if(isRegistered){
                     unregisterReceiver(mObdBlReceiever);
                     isRegistered = false;
+                }
+                if(isServiceRunning(ObdConnection.class)){
+                    stopService(new Intent(getApplicationContext(), ObdConnection.class));
                 }
                 makeToast("Live data stopped.");
                 try {
@@ -552,45 +564,6 @@ public final class Drive extends AppCompatActivity {
     }
     //endregion
 
-    //region mObdReaderReceiver
-//    private final BroadcastReceiver mObdReaderReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//
-//            //findViewById(R.id.progress_bar).setVisibility(View.GONE);
-//            //mObdInfoTextView.setVisibility(View.VISIBLE);
-//            isRegistered = true;
-//            String action = intent.getAction();
-//            if (action.equals(ACTION_OBD_CONNECTED)) {
-//                String connectionStatusMsg = intent.getStringExtra(ObdReaderService.INTENT_EXTRA_DATA);
-//                makeToast(connectionStatusMsg);
-//
-//                if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {//OBD connected  do what want after OBD connection
-//                    makeToast(getString(R.string.obd_connected));
-//
-//                } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {//OBD disconnected  do what want after OBD disconnection
-//                    makeToast(getString(R.string.connect_lost));
-//
-//                } else {// here you could check OBD connection and pairing status
-//
-//                }
-//
-//            } else if (action.equals(ACTION_READ_OBD_REAL_TIME_DATA)) {
-//                TripRecord tripRecord = TripRecord.getTripRecode(Drive.this);
-//                if(Integer.parseInt(new RPMCommand().getCalculatedResult()) > 0){
-//                    mRpmText.setText("" + tripRecord.getEngineRpm());
-//                    mSpeedText.setText("" + tripRecord.getSpeed());
-//                    mEngineLoad.setText("" + tripRecord.getmEngineLoad());
-//                    mCoolantText.setText("" + tripRecord.getmEngineCoolantTemp());
-//                    mMaxSpeed.setText("" + tripRecord.getSpeedMax());
-//                }else{
-//                    Toast.makeText(getApplicationContext(), R.string.engineRunningTip, Toast.LENGTH_LONG).show();
-//                }
-//            }
-//
-//        }
-//    };
-    //endregion
 
 
 

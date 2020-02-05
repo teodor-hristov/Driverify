@@ -23,6 +23,7 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
     private static final String TAG = Preferences.class.getName();
     public static final String BLUETOOTH_LIST_KEY = "bluetooth_list_preference";
     public static final String BLUETOOTH_ENABLE = "enable_bluetooth_preference";
+    public static final String UPDATE_PERIOD = "obd_update_period_preference";
 
 
     private Preference bt;
@@ -44,8 +45,8 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
         vals = new ArrayList<>();
 
         listBtDevices= (ListPreference) getPreferenceScreen().findPreference(BLUETOOTH_LIST_KEY);
-        listBtDevices.setEntries(pairedDeviceStrings.toArray(new CharSequence[0]));
-        listBtDevices.setEntryValues(vals.toArray(new CharSequence[0]));
+        updateBtList();
+
 
 
         /*
@@ -61,39 +62,12 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
 
         /*
          * Get paired devices and populate preference list.
-         * TODO: Double click problem
          */
         //region ListBtDevices
         listBtDevices.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                if(mBtAdapter.isEnabled() && mBtAdapter != null){
-                    //Clear old devices and setting it clear
-                    if(vals != null && pairedDeviceStrings != null) {
-                        vals.clear();
-                        pairedDeviceStrings.clear();
-                        listBtDevices.setEntries(pairedDeviceStrings.toArray(new CharSequence[0]));
-                        listBtDevices.setEntryValues(vals.toArray(new CharSequence[0]));
-                    }
-
-                    pairedDevices = mBtAdapter.getBondedDevices();
-                    if (pairedDevices.size() > 0) {
-                        for (BluetoothDevice device : pairedDevices) {
-                            pairedDeviceStrings.add(device.getName() + "\n" + device.getAddress());
-                            vals.add(device.getAddress());
-                        }
-                    }
-                    listBtDevices.setEntries(pairedDeviceStrings.toArray(new CharSequence[0]));
-                    listBtDevices.setEntryValues(vals.toArray(new CharSequence[0]));
-                }else{
-                    //Clear old devices and setting it clear
-                    if(vals != null && pairedDeviceStrings != null) {
-                        vals.clear();
-                        pairedDeviceStrings.clear();
-                        listBtDevices.setEntries(pairedDeviceStrings.toArray(new CharSequence[0]));
-                        listBtDevices.setEntryValues(vals.toArray(new CharSequence[0]));
-                    }
-                }
+                updateBtList();
                 return false;
             }
         });
@@ -143,5 +117,31 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
     }
     public void makeToast(String txt){
         Toast.makeText(thisActivity, txt, Toast.LENGTH_SHORT).show();
+    }
+
+    public void updateBtList(){
+        if(mBtAdapter.isEnabled() && mBtAdapter != null){
+            pairedDevices = mBtAdapter.getBondedDevices();
+
+            //Clear old devices and setting it clear
+            if(vals != null && pairedDeviceStrings != null) {
+                vals.clear();
+                pairedDeviceStrings.clear();
+                if (pairedDevices.size() > 0) {
+                    for (BluetoothDevice device : pairedDevices) {
+                        pairedDeviceStrings.add(device.getName() + "\n" + device.getAddress());
+                        vals.add(device.getAddress());
+                    }
+                }
+            }
+        }else{
+            //Clear old devices and setting it clear
+            if(vals != null && pairedDeviceStrings != null) {
+                vals.clear();
+                pairedDeviceStrings.clear();
+            }
+        }
+        listBtDevices.setEntries(pairedDeviceStrings.toArray(new CharSequence[0]));
+        listBtDevices.setEntryValues(vals.toArray(new CharSequence[0]));
     }
 }

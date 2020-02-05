@@ -75,7 +75,7 @@
             android:summaryOn="@string/pref_imperial_units_summaryOn"
             android:title="@string/pref_imperial_units_title" />
         <EditTextPreference
-            android:defaultValue="4"
+            android:defaultValue="1"
             android:dialogTitle="@string/pref_obd_update_period_title"
             android:key="obd_update_period_preference"
             android:summary="@string/pref_obd_update_period_summary"
@@ -111,24 +111,24 @@
 <!--            android:summary="@string/pref_dev_email_summary"-->
 <!--            android:title="@string/pref_dev_email_title"/>-->
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/title_pref_commands">
-        <PreferenceScreen
-            android:key="obd_commands_screen"
-            android:summary="@string/title_pref_commands_summary"
-            android:title="@string/title_pref_commands_title"/>
-    </PreferenceCategory>
+<!--    <PreferenceCategory android:title="@string/title_pref_commands">-->
+<!--        <PreferenceScreen-->
+<!--            android:key="obd_commands_screen"-->
+<!--            android:summary="@string/title_pref_commands_summary"-->
+<!--            android:title="@string/title_pref_commands_title"/>-->
+<!--    </PreferenceCategory>-->
     <PreferenceCategory android:title="@string/title_pref_full_logging">
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="enable_full_logging"
             android:summary="@string/pref_enable_full_logging_summary"
             android:title="@string/pref_enable_full_logging_title"/>
-        <EditTextPreference
-            android:defaultValue="@string/default_dirname_full_logging"
-            android:dialogTitle="@string/pref_dirname_dialogTitle"
-            android:key="dirname_full_logging"
-            android:summary="@string/pref_dirname_summary"
-            android:title="@string/pref_dirname_title" />
+<!--        <EditTextPreference-->
+<!--            android:defaultValue="@string/default_dirname_full_logging"-->
+<!--            android:dialogTitle="@string/pref_dirname_dialogTitle"-->
+<!--            android:key="dirname_full_logging"-->
+<!--            android:summary="@string/pref_dirname_summary"-->
+<!--            android:title="@string/pref_dirname_title" />-->
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_pref_features">
         <CheckBoxPreference

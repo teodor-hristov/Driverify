@@ -24,6 +24,10 @@
                 android:id="@+id/saveCodes"
                 android:title="@string/save_codes"
                 app:showAsAction="never"/>
+            <item
+                android:id="@+id/settings"
+                android:title="Settings"
+                app:showAsAction="never"/>
         </menu>
 
     </item>

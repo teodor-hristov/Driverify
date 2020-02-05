@@ -20,6 +20,7 @@ import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
 import com.github.pires.obd.commands.ObdCommand;
 import com.github.pires.obd.commands.SpeedCommand;
+import com.github.pires.obd.commands.control.TroubleCodesCommand;
 import com.github.pires.obd.commands.engine.LoadCommand;
 import com.github.pires.obd.commands.engine.RPMCommand;
 import com.github.pires.obd.commands.protocol.EchoOffCommand;
@@ -41,6 +42,7 @@ public class ObdConnection extends IntentService {
     public static final String disconnected = "BLUETOOTH_DISCONNECTED";
     public static final String receiveData = "OBD_DATA_RECEIVE";
     public static final String extra = "INTENT_EXTRA_DATA";
+    public static final String DTC = "INTENT_TROUBLE_CODES";
 
     private ArrayList<ObdCommand> cmds;
     private BluetoothAdapter btAdapter;
@@ -48,8 +50,11 @@ public class ObdConnection extends IntentService {
     private BluetoothSocket sock;
     private boolean prereq = false;
     private ObdReaderData data;
+    private ObdReaderData dtc;
     private ArrayList<String> stringCommands;
+    private ArrayList<String> stringDtc;
     private Intent intent;
+    private int sleepPrefs;
 
     private SharedPreferences prefs;
 
@@ -97,6 +102,7 @@ public class ObdConnection extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         stringCommands = new ArrayList<>();
+        stringDtc =  new ArrayList<>();
         ArrayList<ObdCommand> commands = new ArrayList<>();
         commands.add(new RPMCommand());
         commands.add(new SpeedCommand());
@@ -105,13 +111,18 @@ public class ObdConnection extends IntentService {
         //commands.add(new OilTempCommand());
         setCmds(commands);
 
+        ArrayList<ObdCommand> dtcCommand = new ArrayList<>();
+        dtcCommand.add(new TroubleCodesCommand());
+
         Log.i(TAG, "ObdConnection service started");
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        sleepPrefs = Integer.parseInt(prefs.getString(Preferences.UPDATE_PERIOD, "-1"));
         sock = null;
         data = new ObdReaderData(stringCommands);
+        dtc = new ObdReaderData(stringDtc);
         intent = new Intent();
 
         /**
@@ -164,15 +175,13 @@ public class ObdConnection extends IntentService {
         }
 
         prereq = mBtDevice != null && sock != null && sock.isConnected();
-        intent.setAction(receiveData);
         while (prereq) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(sleepPrefs);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             if (sock.isConnected()) {
-
                 /**
                  * Update data
                  */
@@ -180,7 +189,8 @@ public class ObdConnection extends IntentService {
                 /**
                  * Print and put to intent data
                  */
-                printToIntent(cmds, stringCommands, data,intent, receiveData);
+                printToIntent(cmds, stringCommands, data,intent.setAction(receiveData), receiveData);
+                //printToIntent(dtcCommand, stringDtc, dtc, intent.setAction(DTC), receiveData);
             } else {
                 Log.i(TAG, "No connection");
                 intent.setAction(connected);

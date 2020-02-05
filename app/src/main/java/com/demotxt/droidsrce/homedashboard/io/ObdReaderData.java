@@ -1,9 +1,10 @@
+/**
+ * This class is made for passing OBD data to broadcast receivers
+ */
 package com.demotxt.droidsrce.homedashboard.io;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.github.pires.obd.commands.ObdCommand;
 
 import java.util.ArrayList;
 
