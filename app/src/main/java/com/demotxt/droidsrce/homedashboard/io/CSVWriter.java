@@ -7,18 +7,9 @@ import java.io.IOException;
 import java.util.Date;
 
 public class CSVWriter {
-    private static final String PATH = "storage/emulated/0/Driverify/Logs/";
-    private boolean isObdBeenDisconnected = false;
+    private static String PATH;
     private String path;
     private BufferedWriter writer;
-
-    public boolean isIsObdBeenDisconnected() {
-        return isObdBeenDisconnected;
-    }
-
-    public void setIsObdBeenDisconnected(boolean isObdBeenDisconnected) {
-        this.isObdBeenDisconnected = isObdBeenDisconnected;
-    }
 
     public String getPath() {
         return path;
@@ -28,7 +19,8 @@ public class CSVWriter {
         return writer;
     }
 
-    public CSVWriter() throws IOException {
+    public CSVWriter(String PATH) throws IOException {
+        this.PATH = PATH;
         File lvFile = new File(PATH);
         File lvLogFile = new File(PATH + new Date().toGMTString() + ".csv");
         if(!lvFile.exists()){

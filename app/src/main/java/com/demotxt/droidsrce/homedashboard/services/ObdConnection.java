@@ -90,7 +90,6 @@ public class ObdConnection extends IntentService {
                 makeToast("There is an error while destroying the connection.");
             }
         }
-
     }
 
     @Nullable
@@ -102,7 +101,7 @@ public class ObdConnection extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         stringCommands = new ArrayList<>();
-        stringDtc =  new ArrayList<>();
+        stringDtc = new ArrayList<>();
         ArrayList<ObdCommand> commands = new ArrayList<>();
         commands.add(new RPMCommand());
         commands.add(new SpeedCommand());
@@ -165,10 +164,10 @@ public class ObdConnection extends IntentService {
         } catch (TimeoutException e) {
             e.printStackTrace();
             Log.e(TAG, "Not responding");
-        } catch (UnableToConnectException e ){
+        } catch (UnableToConnectException e) {
             makeToast("Car ECU is not responding. You need running engine.");
             e.printStackTrace();
-        } catch (UnsupportedCommandException e){
+        } catch (UnsupportedCommandException e) {
             e.printStackTrace();
             makeToast("Unsupported command.");
         }
@@ -184,11 +183,11 @@ public class ObdConnection extends IntentService {
                 /**
                  * Update data
                  */
-                    updateData(sock, cmds,stringCommands);
+                updateData(sock, cmds, stringCommands);
                 /**
                  * Print and put to intent data
                  */
-                printToIntent(cmds, stringCommands, data,intent.setAction(receiveData), receiveData);
+                printToIntent(cmds, stringCommands, data, intent.setAction(receiveData), receiveData);
 
             } else {
                 Log.i(TAG, "No connection");
@@ -211,10 +210,11 @@ public class ObdConnection extends IntentService {
         }
     }
 
-    public void makeToast(String txt){
+    public void makeToast(String txt) {
         Toast.makeText(Drive.getAppContext(), txt, Toast.LENGTH_SHORT).show();
     }
-    public void updateData(BluetoothSocket sock, ArrayList<ObdCommand> cmds, ArrayList<String> stringCommands){
+
+    public void updateData(BluetoothSocket sock, ArrayList<ObdCommand> cmds, ArrayList<String> stringCommands) {
         if (cmds.size() > 0) {
             for (ObdCommand var : cmds) {
                 try {
@@ -222,10 +222,10 @@ public class ObdConnection extends IntentService {
                     stringCommands.add(var.getCalculatedResult());
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
-                } catch (UnsupportedCommandException e){
+                } catch (UnsupportedCommandException e) {
                     e.printStackTrace();
                     makeToast("Unsupported command" + var.getName());
-                } catch (UnableToConnectException e){
+                } catch (UnableToConnectException e) {
                     e.printStackTrace();
                     makeToast("Unable to connect." + var.getName());
                 }
@@ -233,7 +233,7 @@ public class ObdConnection extends IntentService {
         }
     }
 
-    public BluetoothDevice updateSelectedDevice(BluetoothAdapter btAdapter, SharedPreferences prefs){
+    public BluetoothDevice updateSelectedDevice(BluetoothAdapter btAdapter, SharedPreferences prefs) {
         if (btAdapter != null) {
             for (BluetoothDevice dev : btAdapter.getBondedDevices()) {
                 if (dev.getAddress().equals(prefs.getString(Preferences.BLUETOOTH_LIST_KEY, "-1"))) {
@@ -245,7 +245,7 @@ public class ObdConnection extends IntentService {
     }
 
 
-    public void printToIntent(ArrayList<ObdCommand> cmds, ArrayList<String> stringCommands, ObdReaderData data, Intent intent, String receiveData){
+    public void printToIntent(ArrayList<ObdCommand> cmds, ArrayList<String> stringCommands, ObdReaderData data, Intent intent, String receiveData) {
         if (cmds.size() > 0) {
             intent.setAction(receiveData);
             data.setCommands(stringCommands);

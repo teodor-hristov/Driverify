@@ -280,14 +280,9 @@ public final class Drive extends AppCompatActivity {
             } else
                 if (action.equals(ObdConnection.receiveData)) {
                     data = intent.getParcelableExtra(ObdConnection.receiveData);
-                    /**
-                     * Creating CSV file
-                     * Adding header line for rpm speed coolant load
-                     * Appending information given from the car ECU
-                     */
                     try {
                         if(writer == null) {
-                            writer = new CSVWriter();
+                            writer = new CSVWriter("storage/emulated/0/Driverify/Logs/");
                             writer.append("rpm, speed, coolant, load");
                         }
                     } catch (IOException e) {
