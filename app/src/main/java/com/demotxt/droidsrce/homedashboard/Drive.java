@@ -94,13 +94,14 @@ public final class Drive extends AppCompatActivity {
     private boolean isRegistered = false;
     private boolean preRequisites = true;
     private BluetoothAdapter btAdapter;
-    private BluetoothDevice mBtDevice;
     private SharedPreferences prefs;
     private IntentFilter filter;
     private Intent obdConnection;
 
     private CSVWriter writer = null;
     private StringBuilder sb;
+
+
 
     private int rc;
 
