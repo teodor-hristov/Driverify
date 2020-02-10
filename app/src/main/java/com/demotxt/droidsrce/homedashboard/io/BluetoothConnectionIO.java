@@ -12,36 +12,33 @@ public class BluetoothConnectionIO {
     private static final String TAG = BluetoothConnectionIO.class.getName();
     public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-    private BluetoothSocket mSock;
-    private BluetoothDevice mBtDevice;
+    private BluetoothSocket socket;
+    private BluetoothDevice bluetoothDevice;
 
-        public BluetoothConnectionIO() {
-
-        }
-        public BluetoothConnectionIO(BluetoothDevice device) {
-            setmBtDevice(device);
+    public BluetoothConnectionIO(BluetoothDevice device) {
+        setBluetoothDevice(device);
     }
 
-        public BluetoothDevice getmBtDevice() {
-            return mBtDevice;
-        }
+    public BluetoothDevice getBluetoothDevice() {
+        return bluetoothDevice;
+    }
 
-        public void setmBtDevice(BluetoothDevice mBtDevice) {
-            if(mBtDevice != null)
-                this.mBtDevice = mBtDevice;
-        }
+    public void setBluetoothDevice(BluetoothDevice bluetoothDevice) {
+        if (bluetoothDevice != null)
+            this.bluetoothDevice = bluetoothDevice;
+    }
 
-        public BluetoothSocket connect() throws IOException, TimeoutException {
-            if(getmBtDevice() != null){
-                    mSock = mBtDevice.createInsecureRfcommSocketToServiceRecord(MY_UUID);
-                if(mSock != null){
-                    Log.i(TAG, "State socket not null.");
-                    return mSock;
-                }else {
-                    throw new TimeoutException();
-                }
-            }else {
-                throw new NullPointerException();
+    public BluetoothSocket connect() throws IOException, TimeoutException {
+        if (getBluetoothDevice() != null) {
+            socket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+            if (socket != null) {
+                Log.i(TAG, "State socket not null.");
+                return socket;
+            } else {
+                throw new TimeoutException();
             }
+        } else {
+            throw new NullPointerException();
         }
+    }
 }

@@ -152,9 +152,9 @@ public final class Drive extends AppCompatActivity {
             preRequisites = btAdapter != null && btAdapter.enable();
         }
 
-        if(btAdapter != null){
-            for(BluetoothDevice dev : btAdapter.getBondedDevices()){
-                if(dev.getAddress().equals(prefs.getString(Preferences.BLUETOOTH_LIST_KEY, "-1"))){
+        if (btAdapter != null) {
+            for (BluetoothDevice dev : btAdapter.getBondedDevices()) {
+                if (dev.getAddress().equals(prefs.getString(Preferences.BLUETOOTH_LIST_KEY, "-1"))) {
                     mBtDevice = dev;
                     break;
                 }
@@ -176,7 +176,7 @@ public final class Drive extends AppCompatActivity {
             requestCameraPermission();
         }
 
-        if(!isRegistered){
+        if (!isRegistered) {
             registerReceiver(mObdBlReceiever, filter);
         }
         //enableGPS(this);
@@ -199,13 +199,13 @@ public final class Drive extends AppCompatActivity {
         if (!preRequisites && prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
             preRequisites = btAdapter != null && btAdapter.enable();
         }
-        if(preRequisites && !prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)){
+        if (preRequisites && !prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
             preRequisites = btAdapter != null && btAdapter.disable();
         }
-        if(!isRegistered){
+        if (!isRegistered) {
             registerReceiver(mObdBlReceiever, filter);
         }
-        if(!isServiceRunning(ObdConnection.class)){
+        if (!isServiceRunning(ObdConnection.class)) {
             startService(new Intent(getApplicationContext(), ObdConnection.class));
         }
 
@@ -218,11 +218,11 @@ public final class Drive extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mPreview.stop();
-        if(isRegistered){
+        if (isRegistered) {
             unregisterReceiver(mObdBlReceiever);
             isRegistered = false;
         }
-        if(isServiceRunning(ObdConnection.class)){
+        if (isServiceRunning(ObdConnection.class)) {
             stopService(new Intent(getApplicationContext(), ObdConnection.class));
         }
 
@@ -239,11 +239,11 @@ public final class Drive extends AppCompatActivity {
         if (btAdapter != null && btAdapter.isEnabled() && !bluetoothDefaultIsEnable)
             btAdapter.disable();
 
-        if(isRegistered){
+        if (isRegistered) {
             unregisterReceiver(mObdBlReceiever);
             isRegistered = false;
         }
-        if(isServiceRunning(ObdConnection.class)){
+        if (isServiceRunning(ObdConnection.class)) {
             stopService(new Intent(getApplicationContext(), ObdConnection.class));
         }
     }
@@ -265,49 +265,46 @@ public final class Drive extends AppCompatActivity {
                 } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {//OBD disconnected  do what want after OBD disconnection
                     makeToast(getString(R.string.connect_lost));
                     try {
-                        if(writer != null)
+                        if (writer != null)
                             writer.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                         Log.i(TAG, "Problem with file close");
                     }
-
-
                 } else {// here you could check OBD connection and pairing status
 
                 }
 
-            } else
-                if (action.equals(ObdConnection.receiveData)) {
-                    data = intent.getParcelableExtra(ObdConnection.receiveData);
-                    try {
-                        if(writer == null) {
-                            writer = new CSVWriter("storage/emulated/0/Driverify/Logs/");
-                            writer.append("rpm, speed, coolant, load");
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.i(TAG, "Writer initialization problem.");
-                        Log.i(TAG, e.getMessage());
+            } else if (action.equals(ObdConnection.receiveData)) {
+                data = intent.getParcelableExtra(ObdConnection.receiveData);
+                try {
+                    if (writer == null) {
+                        writer = new CSVWriter("storage/emulated/0/Driverify/Logs/");
+                        writer.append(writer.formatCSV("rpm speed coolant load"));
                     }
-                    if(data != null) {
-                                for(int i = 0; i < data.getCommands().size(); i++){
-                                    driveItems.get(i).setText("" + data.getCommands().get(i));
-                                }
-                        if(writer != null){
-                            sb = new StringBuilder();
-                            try {
-                                for(String str : data.getCommands()){
-                                    sb.append(str);
-                                    sb.append(",");
-                                }
-                                writer.append(sb.toString());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                Log.i(TAG, "Could not write to file");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.i(TAG, "Writer initialization problem.");
+                    Log.i(TAG, e.getMessage());
+                }
+                if (data != null) {
+                    for (int i = 0; i < data.getCommands().size(); i++) {
+                        driveItems.get(i).setText("" + data.getCommands().get(i));
+                    }
+                    if (writer != null) {
+                        sb = new StringBuilder();
+                        try {
+                            for (String str : data.getCommands()) {
+                                sb.append(str);
+                                sb.append(",");
                             }
+                            writer.append(sb.toString());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Log.i(TAG, "Could not write to file");
                         }
-                            }
+                    }
+                }
             }
         }
     };
@@ -332,28 +329,28 @@ public final class Drive extends AppCompatActivity {
                 commands.add(new TroubleCodesCommand());
 
                 startService(obdConnection);
-                if(!isRegistered){
+                if (!isRegistered) {
                     registerReceiver(mObdBlReceiever, filter);
                 }
                 makeToast("Live data started.");
                 break;
             case R.id.stop_live_data:
-                if(isRegistered){
+                if (isRegistered) {
                     unregisterReceiver(mObdBlReceiever);
                     isRegistered = false;
                 }
-                if(isServiceRunning(ObdConnection.class)){
+                if (isServiceRunning(ObdConnection.class)) {
                     stopService(new Intent(getApplicationContext(), ObdConnection.class));
                 }
                 makeToast("Live data stopped.");
                 try {
-                    if(writer != null)
+                    if (writer != null)
                         writer.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.i(TAG, "Problem with file close");
                 }
-                for(TextView v : driveItems)
+                for (TextView v : driveItems)
                     v.setText("0");
                 break;
         }
@@ -364,11 +361,11 @@ public final class Drive extends AppCompatActivity {
         return appContext;
     }
 
-    public void makeToast(String  msg){
+    public void makeToast(String msg) {
         Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    public boolean isServiceRunning(Class serviceClass){
+    public boolean isServiceRunning(Class serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
@@ -379,6 +376,7 @@ public final class Drive extends AppCompatActivity {
     }
 
     //region SpeepDetection with GMS
+
     /**
      * Broadcast Receiver to receive OBD connection status and real time data
      */
@@ -443,6 +441,7 @@ public final class Drive extends AppCompatActivity {
                 .setRequestedFps(30.0f)
                 .build();
     }
+
     /**
      * Callback for the result from requesting permissions. This method
      * is invoked for every call on {@link #requestPermissions(String[], int)}.
@@ -579,7 +578,7 @@ public final class Drive extends AppCompatActivity {
     }
     //endregion
 
-    public void getLocation(){
+    public void getLocation() {
         FusedLocationProviderClient client;
         client = LocationServices.getFusedLocationProviderClient(Drive.this);
         client.getLastLocation()
@@ -595,9 +594,10 @@ public final class Drive extends AppCompatActivity {
                     }
                 });
     }
+
     public void enableGPS(Context context) {
         lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if( !lm.isProviderEnabled(LocationManager.GPS_PROVIDER) ) {
+        if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             new AlertDialog.Builder(context)
                     .setTitle("GPS not enabled.")  // GPS not found
                     .setMessage("This application need GPS for Black box records.") // Want to enable?
@@ -610,14 +610,6 @@ public final class Drive extends AppCompatActivity {
                     .show();
         }
     }
-
-
-
-
-
-
-
-
 
 
 }

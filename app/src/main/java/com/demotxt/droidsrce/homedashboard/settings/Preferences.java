@@ -44,7 +44,7 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
         pairedDeviceStrings = new ArrayList<>();
         vals = new ArrayList<>();
 
-        listBtDevices= (ListPreference) getPreferenceScreen().findPreference(BLUETOOTH_LIST_KEY);
+        listBtDevices = (ListPreference) getPreferenceScreen().findPreference(BLUETOOTH_LIST_KEY);
         updateBtList();
 
 
@@ -76,25 +76,25 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
         /*
          * Enable/Disable bt realtime
          */
-        if(mBtAdapter != null){
+        if (mBtAdapter != null) {
             mPreferenceCheckBt.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    if(preference.getKey().equals(BLUETOOTH_ENABLE)){
-                        if(!mBtAdapter.isEnabled()){
-                            if(mBtAdapter.enable()) {
+                    if (preference.getKey().equals(BLUETOOTH_ENABLE)) {
+                        if (!mBtAdapter.isEnabled()) {
+                            if (mBtAdapter.enable()) {
                                 preference.setEnabled(true);
                                 Log.i(TAG, "onPreferenceClick: enable");
                                 makeToast("Bluetooth is enabled!");
-                            }else{
+                            } else {
                                 makeToast("There was an error.");
                             }
 
-                        }else{
-                            if(mBtAdapter.disable()) {
+                        } else {
+                            if (mBtAdapter.disable()) {
                                 Log.i(TAG, "onPreferenceClick: disable");
                                 makeToast("Bluetooth is disabled!");
-                            }else{
+                            } else {
                                 makeToast("There was an error.");
                             }
                         }
@@ -115,19 +115,20 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
-    public void makeToast(String txt){
+
+    public void makeToast(String txt) {
         Toast.makeText(thisActivity, txt, Toast.LENGTH_SHORT).show();
     }
 
     /**
      * Getting phone adapter. Getting bounded devices. Put bounded devices into preferences list.
      */
-    public void updateBtList(){
-        if(mBtAdapter.isEnabled() && mBtAdapter != null){
+    public void updateBtList() {
+        if (mBtAdapter.isEnabled() && mBtAdapter != null) {
             pairedDevices = mBtAdapter.getBondedDevices();
 
             //Clear old devices and setting it clear
-            if(vals != null && pairedDeviceStrings != null) {
+            if (vals != null && pairedDeviceStrings != null) {
                 vals.clear();
                 pairedDeviceStrings.clear();
                 if (pairedDevices.size() > 0) {
@@ -137,9 +138,9 @@ public class Preferences extends PreferenceActivity implements Preference.OnPref
                     }
                 }
             }
-        }else{
+        } else {
             //Clear old devices and setting it clear
-            if(vals != null && pairedDeviceStrings != null) {
+            if (vals != null && pairedDeviceStrings != null) {
                 vals.clear();
                 pairedDeviceStrings.clear();
             }
