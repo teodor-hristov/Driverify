@@ -29,14 +29,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
-import android.location.LocationProvider;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,16 +54,12 @@ import com.github.pires.obd.commands.control.TroubleCodesCommand;
 import com.github.pires.obd.commands.engine.RPMCommand;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.material.snackbar.Snackbar;
-
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -179,8 +170,6 @@ public final class Drive extends AppCompatActivity {
         if (!isRegistered) {
             registerReceiver(mObdBlReceiever, filter);
         }
-        //enableGPS(this);
-        getLocation();
 
     }
 
@@ -577,39 +566,6 @@ public final class Drive extends AppCompatActivity {
         }
     }
     //endregion
-
-    public void getLocation() {
-        FusedLocationProviderClient client;
-        client = LocationServices.getFusedLocationProviderClient(Drive.this);
-        client.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            Log.i(TAG, "lat: " + location.getLatitude());
-                            Log.i(TAG, "long: " + location.getLongitude());
-
-                        }
-                    }
-                });
-    }
-
-    public void enableGPS(Context context) {
-        lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            new AlertDialog.Builder(context)
-                    .setTitle("GPS not enabled.")  // GPS not found
-                    .setMessage("This application need GPS for Black box records.") // Want to enable?
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        }
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-        }
-    }
 
 
 }
