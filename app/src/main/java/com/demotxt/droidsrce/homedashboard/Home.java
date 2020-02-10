@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -19,8 +20,8 @@ import java.security.Permission;
 
 
 public class Home extends AppCompatActivity {
-    private static final int PERMISSION_ALL= 1;
-    String permissions[] ={
+    public static final int PERMISSION_ALL = 1;
+    public static String permissions[] = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.GET_ACCOUNTS,
@@ -29,9 +30,10 @@ public class Home extends AppCompatActivity {
             Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION};
-    CardView troubleView, driveView ;
-    Intent drive, trubleCodes ;
+    CardView troubleView, driveView;
+    Intent drive, trubleCodes;
     LinearLayout ll;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +42,7 @@ public class Home extends AppCompatActivity {
         /**
          * Requesting permissions
          */
-        checkPermission(Home.this, permissions);
-        if (!checkPermission(this, permissions)) {
-            ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
-        }
-
+        requestPermissions();
 
         ll = findViewById(R.id.ll);
         driveView = findViewById(R.id.driveId);
@@ -66,6 +64,7 @@ public class Home extends AppCompatActivity {
             }
         });
     }
+
     public static boolean checkPermission(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -75,5 +74,12 @@ public class Home extends AppCompatActivity {
             }
         }
         return true;
+    }
+
+    public void requestPermissions() {
+        checkPermission(this, permissions);
+        if (!checkPermission(this, permissions)) {
+            ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
+        }
     }
 }

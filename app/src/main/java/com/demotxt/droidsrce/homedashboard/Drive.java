@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -43,6 +44,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.demotxt.droidsrce.homedashboard.io.CSVWriter;
+import com.demotxt.droidsrce.homedashboard.io.LocationIO;
 import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
 import com.demotxt.droidsrce.homedashboard.services.ObdConnection;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
@@ -88,7 +90,7 @@ public final class Drive extends AppCompatActivity {
     //endregion
 
     //region Location vars
-    private LocationManager lm;
+    private LocationIO location;
     //endregion
 
     private boolean isRegistered = false;
@@ -101,8 +103,6 @@ public final class Drive extends AppCompatActivity {
 
     private CSVWriter writer = null;
     private StringBuilder sb;
-
-
 
     private int rc;
 
@@ -155,7 +155,6 @@ public final class Drive extends AppCompatActivity {
 
 
         }
-
 
         filter.addAction(ObdConnection.connected);
         filter.addAction(ObdConnection.disconnected);

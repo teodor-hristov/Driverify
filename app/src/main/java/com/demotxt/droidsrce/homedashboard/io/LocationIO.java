@@ -1,40 +1,42 @@
 package com.demotxt.droidsrce.homedashboard.io;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
 
-import com.demotxt.droidsrce.homedashboard.Drive;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 public class LocationIO {
     private final String TAG = getClass().getName();
-    LocationManager locationManager;
-    Location location;
-    Context context;
+    private LocationManager locationManager;
+    private Location location;
+    private final Context context;
 
     public LocationIO(Context context) {
         this.context = context;
         this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        this.location = new Location("GPS");
+        this.location = getLocation();
     }
 
-    private Location getLocation() {
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            return location;
+    public Location getLocation() {
+        Location localLocation = new Location("GPS");
+        if (this.locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            localLocation = this.locationManager.getLastKnownLocation("GPS");
         } else {
-            enableGPS(context);
+            enableGPS();
         }
-        return null;
+        return localLocation;
     }
 
-    private void enableGPS(final Context context) {
+    private void enableGPS() {
         new AlertDialog.Builder(context)
                 .setTitle("GPS not enabled.")  // GPS not found
                 .setMessage("This application need GPS for Black box records.") // Want to enable?
@@ -46,5 +48,16 @@ public class LocationIO {
                 .setNegativeButton("No", null)
                 .show();
 
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Latitude: ");
+        stringBuilder.append(location.getLatitude() + "\n");
+        stringBuilder.append("Longitude: \n");
+        stringBuilder.append(location.getLongitude() + "\n");
+        return stringBuilder.toString();
     }
 }

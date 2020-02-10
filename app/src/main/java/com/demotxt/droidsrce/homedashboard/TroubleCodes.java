@@ -51,7 +51,7 @@ public class TroubleCodes extends AppCompatActivity {
 
     private boolean isRegistered = false;
 
-    BluetoothConnectionIO btConnection = new BluetoothConnectionIO();
+    //BluetoothConnectionIO btConnection = new BluetoothConnectionIO();
     BluetoothAdapter mbtAdapter = BluetoothAdapter.getDefaultAdapter();
     BluetoothDevice dev = null;
     SharedPreferences prefs;
@@ -81,14 +81,14 @@ public class TroubleCodes extends AppCompatActivity {
                 }
             }
         }
-        btConnection.setmBtDevice(dev);
-        try {
-            sock = btConnection.connect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
+        //btConnection.setmBtDevice(dev);
+//        try {
+//            sock = btConnection.connect();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (TimeoutException e) {
+//            e.printStackTrace();
+//        }
         //registerReceiver(mObdReaderReceiver, intentFilter);
 
     }
@@ -113,12 +113,12 @@ public class TroubleCodes extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.getCodes:
-                try {
-                    getCodes(codes, sock);
-                } catch (IOException | InterruptedException | TimeoutException e) {
-                    e.printStackTrace();
-                    Log.e(TAG, e.getMessage());
-                }
+//                try {
+//                    getCodes(codes, sock);
+//                } catch (IOException | InterruptedException | TimeoutException e) {
+//                    e.printStackTrace();
+//                    Log.e(TAG, e.getMessage());
+//                }
                 break;
             case R.id.clearCodes:
                 if(codes.getText().length() > CODE_LEN || codes.getText() != null)
@@ -169,24 +169,24 @@ public class TroubleCodes extends AppCompatActivity {
         makeToast(getString(R.string.dtc_copied));
     }
 
-    private void getCodes(TextView tv, BluetoothSocket sock) throws IOException, TimeoutException, InterruptedException {
-        if(sock == null) {
-            sock = btConnection.connect();
-            sock.connect();
-        }else if(sock.isConnected() && mbtAdapter != null){
-            new EchoOffCommand().run(sock.getInputStream(), sock.getOutputStream());
-            new LineFeedOffCommand().run(sock.getInputStream(), sock.getOutputStream());
-            new TimeoutCommand(125).run(sock.getInputStream(), sock.getOutputStream());
-            new SelectProtocolCommand(ObdProtocols.AUTO).run(sock.getInputStream(), sock.getOutputStream());
-
-            TroubleCodesCommand dtc = new TroubleCodesCommand();
-            dtc.run(sock.getInputStream(), sock.getOutputStream());
-
-            tv.setText("" + dtc.getFormattedResult());
-            Log.i(TAG, "" + dtc.getFormattedResult());
-        }else{
-            sock.connect();
-            getCodes(tv, sock);
-        }
-    }
+//    private void getCodes(TextView tv, BluetoothSocket sock) throws IOException, TimeoutException, InterruptedException {
+//        if(sock == null) {
+//            sock = btConnection.connect();
+//            sock.connect();
+//        }else if(sock.isConnected() && mbtAdapter != null){
+//            new EchoOffCommand().run(sock.getInputStream(), sock.getOutputStream());
+//            new LineFeedOffCommand().run(sock.getInputStream(), sock.getOutputStream());
+//            new TimeoutCommand(125).run(sock.getInputStream(), sock.getOutputStream());
+//            new SelectProtocolCommand(ObdProtocols.AUTO).run(sock.getInputStream(), sock.getOutputStream());
+//
+//            TroubleCodesCommand dtc = new TroubleCodesCommand();
+//            dtc.run(sock.getInputStream(), sock.getOutputStream());
+//
+//            tv.setText("" + dtc.getFormattedResult());
+//            Log.i(TAG, "" + dtc.getFormattedResult());
+//        }else{
+//            sock.connect();
+//            getCodes(tv, sock);
+//        }
+//    }
 }
