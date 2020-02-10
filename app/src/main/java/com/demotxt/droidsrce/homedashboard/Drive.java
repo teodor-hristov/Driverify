@@ -46,6 +46,7 @@ import androidx.core.app.ActivityCompat;
 import com.demotxt.droidsrce.homedashboard.io.CSVWriter;
 import com.demotxt.droidsrce.homedashboard.io.LocationIO;
 import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
+import com.demotxt.droidsrce.homedashboard.services.LocationServiceProvider;
 import com.demotxt.droidsrce.homedashboard.services.ObdConnection;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
 import com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview;
@@ -171,7 +172,7 @@ public final class Drive extends AppCompatActivity {
         if (!isRegistered) {
             registerReceiver(mObdBlReceiever, filter);
         }
-
+        startService(new Intent(getApplicationContext(), LocationServiceProvider.class));
     }
 
     @Override
