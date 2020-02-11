@@ -83,11 +83,11 @@ public final class Drive extends AppCompatActivity {
     //endregion
 
     //region OBD vars
-    private TextView mRpmText;
-    private TextView mSpeedText;
-    private TextView mEngineLoad;
-    private TextView mOilTemp;
-    private TextView mCoolantText;
+    private TextView rpmText;
+    private TextView speedText;
+    private TextView engineLoad;
+    private TextView oilTemp;
+    private TextView coolantText;
     private ArrayList<TextView> driveItems;
     //endregion
 
@@ -122,22 +122,22 @@ public final class Drive extends AppCompatActivity {
         appContext = getApplicationContext();
         mPreview = findViewById(R.id.preview);
         mGraphicOverlay = findViewById(R.id.faceOverlay);
-        mRpmText = findViewById(R.id.rpmValue);
-        mSpeedText = findViewById(R.id.speedometerValue);
-        mEngineLoad = findViewById(R.id.engineLoadValue);
-        mOilTemp = findViewById(R.id.oilTemp);
-        mCoolantText = findViewById(R.id.coolantValue);
+        rpmText = findViewById(R.id.rpmValue);
+        speedText = findViewById(R.id.speedometerValue);
+        engineLoad = findViewById(R.id.engineLoadValue);
+        oilTemp = findViewById(R.id.oilTemp);
+        coolantText = findViewById(R.id.coolantValue);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         filter = new IntentFilter();
         obdConnection = new Intent(getApplicationContext(), ObdConnection.class);
         driveItems = new ArrayList<>();
-        driveItems.add(mRpmText);
-        driveItems.add(mSpeedText);
-        driveItems.add(mEngineLoad);
-        driveItems.add(mCoolantText);
-        driveItems.add(mOilTemp);
+        driveItems.add(rpmText);
+        driveItems.add(speedText);
+        driveItems.add(engineLoad);
+        driveItems.add(oilTemp);
+        driveItems.add(coolantText);
 
         if (btAdapter != null)
             bluetoothDefaultIsEnable = btAdapter.isEnabled();
