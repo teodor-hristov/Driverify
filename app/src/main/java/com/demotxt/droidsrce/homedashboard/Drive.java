@@ -262,7 +262,7 @@ public final class Drive extends AppCompatActivity {
                 connectivityBluetooth(intent);
             }
             if (action.equals(Constants.GPSEnabled)) {
-                Log.i(TAG, "onReceive: tuka e");
+                makeSnackbar("GPS Enabled!");
             }
             if (action.equals(Constants.GPSDisabled)) {
                 View.OnClickListener listener = new View.OnClickListener() {
@@ -279,7 +279,7 @@ public final class Drive extends AppCompatActivity {
 
             if (action.equals(Constants.receiveData)) {
                 data = intent.getParcelableExtra(Constants.receiveData);
-                handleBluetoothLiveData(data, intent);
+                handleBluetoothLiveData(data);
             }
             if (action.equals(Constants.GPSLiveData)) {
 
@@ -365,7 +365,8 @@ public final class Drive extends AppCompatActivity {
 
     }
 
-    private void handleBluetoothLiveData(ObdReaderData data, Intent intent) {
+    private void handleBluetoothLiveData(ObdReaderData data) {
+        makeSnackbar("OBD live data is processing.!");
         try {
             if (writer == null) {
                 writer = new CSVWriter(Constants.DataLogPath);
