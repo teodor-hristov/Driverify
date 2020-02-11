@@ -272,7 +272,7 @@ public final class Drive extends AppCompatActivity {
                 try {
                     if (writer == null) {
                         writer = new CSVWriter("storage/emulated/0/Driverify/Logs/");
-                        writer.append(writer.formatCSV("rpm speed coolant load"));
+                        writer.append(writer.formatCSV("rpm speed coolant load latitude longitude"));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
