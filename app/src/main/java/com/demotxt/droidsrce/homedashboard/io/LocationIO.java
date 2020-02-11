@@ -36,7 +36,7 @@ public class LocationIO {
         return localLocation;
     }
 
-    private void enableGPS() {
+    public void enableGPS() {
         new AlertDialog.Builder(context)
                 .setTitle("GPS not enabled.")  // GPS not found
                 .setMessage("This application need GPS for Black box records.") // Want to enable?

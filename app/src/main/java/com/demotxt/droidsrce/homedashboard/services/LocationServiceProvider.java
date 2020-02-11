@@ -15,10 +15,13 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.demotxt.droidsrce.homedashboard.io.LocationIO;
+
 public class LocationServiceProvider extends Service {
     private final String TAG = "LocationServiceProvider";
     private LocationListener listener;
     private LocationManager locationManager;
+    private LocationIO locationIO = null;
 
 
     @Nullable
@@ -30,11 +33,12 @@ public class LocationServiceProvider extends Service {
     @Override
     public void onCreate() {
         Log.i(TAG, "Service started!");
+        locationIO = new LocationIO(getApplicationContext());
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Log.i(TAG, "" + location.getLongitude() + " " + location.getLatitude());
+                Log.i(TAG, "coords: " + location.getLongitude() + " " + location.getLatitude());
                 Toast.makeText(getApplicationContext(), "" + location.getLongitude() + " " + location.getLatitude(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent("location_update");
                 intent.putExtra("coordinates", location.getLongitude() + " " + location.getLatitude());
@@ -48,13 +52,13 @@ public class LocationServiceProvider extends Service {
 
             @Override
             public void onProviderEnabled(String s) {
-
+                Log.i(TAG, "Provider started!");
             }
 
             @Override
             public void onProviderDisabled(String s) {
-                Log.i(TAG, "Service stopped!");
-                stopSelf();
+                Log.i(TAG, "Provider stopped!");
+                locationIO.enableGPS();
             }
         };
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
