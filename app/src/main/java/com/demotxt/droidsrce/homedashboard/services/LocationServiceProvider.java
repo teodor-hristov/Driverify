@@ -73,7 +73,7 @@ public class LocationServiceProvider extends Service {
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                1000,
+                900,
                 1,
                 listener);
         super.onCreate();
