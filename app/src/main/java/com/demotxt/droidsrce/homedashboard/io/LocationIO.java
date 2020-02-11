@@ -38,8 +38,8 @@ public class LocationIO {
 
     public void enableGPS() {
         new AlertDialog.Builder(context)
-                .setTitle("GPS not enabled.")  // GPS not found
-                .setMessage("This application need GPS for Black box records.") // Want to enable?
+                .setTitle("GPS not enabled.")
+                .setMessage("This application need GPS for Black box records.")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         context.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
