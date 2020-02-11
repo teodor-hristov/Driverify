@@ -22,7 +22,6 @@ public class LocationServiceProvider extends Service {
     private final String TAG = "LocationServiceProvider";
     private LocationListener listener;
     private LocationManager locationManager;
-    private LocationIO locationIO = null;
     private Intent intentToBroadcastReciever = null;
 
 
@@ -36,7 +35,6 @@ public class LocationServiceProvider extends Service {
     public void onCreate() {
         Log.i(TAG, "Service started!");
         intentToBroadcastReciever = new Intent();
-        locationIO = new LocationIO(getApplicationContext());
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         listener = new LocationListener() {
             @Override
