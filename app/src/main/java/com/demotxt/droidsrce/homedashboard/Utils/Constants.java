@@ -10,4 +10,5 @@ public class Constants {
     public static final String GPSDisabled = "GPS_DISABLE";
     public static final String GPSLiveData = "GPS_LIVE_DATA";
     public static final String GPSPutExtra = "coordinates";
+    public static final String DataLogPath = "storage/emulated/0/Driverify/Logs/";
 }

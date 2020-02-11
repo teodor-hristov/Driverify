@@ -250,6 +250,7 @@ public final class Drive extends AppCompatActivity {
             if (action.equals(Constants.connected)) {
                 connectivityBluetooth(intent);
             } else if (action.equals(Constants.receiveData)) {
+                data = intent.getParcelableExtra(Constants.receiveData);
                 handleBluetoothLiveData(data, intent);
             }
         }
@@ -343,10 +344,9 @@ public final class Drive extends AppCompatActivity {
     }
 
     private void handleBluetoothLiveData(ObdReaderData data, Intent intent) {
-        data = intent.getParcelableExtra(Constants.receiveData);
         try {
             if (writer == null) {
-                writer = new CSVWriter("storage/emulated/0/Driverify/Logs/");
+                writer = new CSVWriter(Constants.DataLogPath);
                 writer.append(writer.formatCSV("rpm speed coolant load latitude longitude"));
             }
         } catch (IOException e) {
