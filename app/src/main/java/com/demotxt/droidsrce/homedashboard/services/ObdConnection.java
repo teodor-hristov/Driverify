@@ -35,6 +35,7 @@ import com.github.pires.obd.exceptions.UnsupportedCommandException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
 public class ObdConnection extends IntentService {
@@ -113,7 +114,7 @@ public class ObdConnection extends IntentService {
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        sleepPrefs = Integer.parseInt(prefs.getString(Preferences.UPDATE_PERIOD, "-1"));
+        sleepPrefs = Integer.parseInt(Objects.requireNonNull(prefs.getString(Preferences.UPDATE_PERIOD, "-1")));
         sock = null;
         data = new ObdReaderData(stringCommands);
         dtc = new ObdReaderData(stringDtc);
