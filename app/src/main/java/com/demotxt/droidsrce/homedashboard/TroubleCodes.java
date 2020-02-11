@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.io.BluetoothConnectionIO;
 import com.demotxt.droidsrce.homedashboard.services.ObdConnection;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
@@ -69,7 +70,7 @@ public class TroubleCodes extends AppCompatActivity {
         mClipManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
         intentFilter = new IntentFilter();
-        intentFilter.addAction(ObdConnection.DTC);
+        intentFilter.addAction(Constants.DTC);
         intentFilter.addAction(ACTION_OBD_CONNECTED);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

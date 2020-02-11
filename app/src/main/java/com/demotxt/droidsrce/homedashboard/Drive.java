@@ -43,6 +43,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.io.CSVWriter;
 import com.demotxt.droidsrce.homedashboard.io.LocationIO;
 import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
@@ -157,10 +158,10 @@ public final class Drive extends AppCompatActivity {
 
         }
 
-        filter.addAction(ObdConnection.connected);
-        filter.addAction(ObdConnection.disconnected);
-        filter.addAction(ObdConnection.receiveData);
-        filter.addAction(ObdConnection.extra);
+        filter.addAction(Constants.connected);
+        filter.addAction(Constants.disconnected);
+        filter.addAction(Constants.receiveData);
+        filter.addAction(Constants.extra);
 
         rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
@@ -246,8 +247,8 @@ public final class Drive extends AppCompatActivity {
             String action = intent.getAction();
             ObdReaderData data;
 
-            if (action.equals(ObdConnection.connected)) {
-                String connectionStatusMsg = intent.getStringExtra(ObdConnection.extra);
+            if (action.equals(Constants.connected)) {
+                String connectionStatusMsg = intent.getStringExtra(Constants.extra);
                 makeToast(connectionStatusMsg);
 
                 if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {//OBD connected  do what want after OBD connection
@@ -266,8 +267,8 @@ public final class Drive extends AppCompatActivity {
 
                 }
 
-            } else if (action.equals(ObdConnection.receiveData)) {
-                data = intent.getParcelableExtra(ObdConnection.receiveData);
+            } else if (action.equals(Constants.receiveData)) {
+                data = intent.getParcelableExtra(Constants.receiveData);
                 try {
                     if (writer == null) {
                         writer = new CSVWriter("storage/emulated/0/Driverify/Logs/");
