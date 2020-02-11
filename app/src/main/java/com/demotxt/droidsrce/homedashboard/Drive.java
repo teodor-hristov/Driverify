@@ -250,35 +250,7 @@ public final class Drive extends AppCompatActivity {
             if (action.equals(Constants.connected)) {
                 connectivityBluetooth(intent);
             } else if (action.equals(Constants.receiveData)) {
-                data = intent.getParcelableExtra(Constants.receiveData);
-                try {
-                    if (writer == null) {
-                        writer = new CSVWriter("storage/emulated/0/Driverify/Logs/");
-                        writer.append(writer.formatCSV("rpm speed coolant load latitude longitude"));
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.i(TAG, "Writer initialization problem.");
-                    Log.i(TAG, e.getMessage());
-                }
-                if (data != null) {
-                    for (int i = 0; i < data.getCommands().size(); i++) {
-                        driveItems.get(i).setText("" + data.getCommands().get(i));
-                    }
-                    if (writer != null) {
-                        sb = new StringBuilder();
-                        try {
-                            for (String str : data.getCommands()) {
-                                sb.append(str);
-                                sb.append(",");
-                            }
-                            writer.append(sb.toString());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Log.i(TAG, "Could not write to file");
-                        }
-                    }
-                }
+                handleBluetoothLiveData(data, intent);
             }
         }
     };
@@ -369,6 +341,39 @@ public final class Drive extends AppCompatActivity {
         }
 
     }
+
+    private void handleBluetoothLiveData(ObdReaderData data, Intent intent) {
+        data = intent.getParcelableExtra(Constants.receiveData);
+        try {
+            if (writer == null) {
+                writer = new CSVWriter("storage/emulated/0/Driverify/Logs/");
+                writer.append(writer.formatCSV("rpm speed coolant load latitude longitude"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.i(TAG, "Writer initialization problem.");
+            Log.i(TAG, e.getMessage());
+        }
+        if (data != null) {
+            for (int i = 0; i < data.getCommands().size(); i++) {
+                driveItems.get(i).setText("" + data.getCommands().get(i));
+            }
+            if (writer != null) {
+                sb = new StringBuilder();
+                try {
+                    for (String str : data.getCommands()) {
+                        sb.append(str);
+                        sb.append(",");
+                    }
+                    writer.append(sb.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.i(TAG, "Could not write to file");
+                }
+            }
+        }
+    }
+
 
     //region SpeepDetection with GMS
 
