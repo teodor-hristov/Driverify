@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.io.LocationIO;
 
 public class LocationServiceProvider extends Service {
@@ -22,6 +23,7 @@ public class LocationServiceProvider extends Service {
     private LocationListener listener;
     private LocationManager locationManager;
     private LocationIO locationIO = null;
+    private Intent intentToBroadcastReciever = null;
 
 
     @Nullable
@@ -33,12 +35,13 @@ public class LocationServiceProvider extends Service {
     @Override
     public void onCreate() {
         Log.i(TAG, "Service started!");
+        intentToBroadcastReciever = new Intent();
         locationIO = new LocationIO(getApplicationContext());
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Intent intent = new Intent("location_update");
+                Intent intent = new Intent(Constants.GPSLiveData);
                 intent.putExtra("coordinates", location.getLongitude() + " " + location.getLatitude());
                 sendBroadcast(intent);
             }
@@ -56,7 +59,7 @@ public class LocationServiceProvider extends Service {
             @Override
             public void onProviderDisabled(String s) {
                 Log.i(TAG, "Provider stopped!");
-                locationIO.enableGPS();
+
             }
         };
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
