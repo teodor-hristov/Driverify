@@ -11,12 +11,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
-import com.demotxt.droidsrce.homedashboard.io.LocationIO;
 
 public class LocationServiceProvider extends Service {
     private final String TAG = "LocationServiceProvider";
