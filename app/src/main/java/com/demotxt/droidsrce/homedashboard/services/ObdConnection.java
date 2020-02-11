@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 
 import com.demotxt.droidsrce.homedashboard.Drive;
 import com.demotxt.droidsrce.homedashboard.R;
+import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.io.BluetoothConnectionIO;
 import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
@@ -38,11 +39,6 @@ import java.util.concurrent.TimeoutException;
 
 public class ObdConnection extends IntentService {
     private static final String TAG = ObdConnection.class.getName();
-    public static final String connected = "BLUETOOTH_CONNECTED";
-    public static final String disconnected = "BLUETOOTH_DISCONNECTED";
-    public static final String receiveData = "OBD_DATA_RECEIVE";
-    public static final String extra = "INTENT_EXTRA_DATA";
-    public static final String DTC = "INTENT_TROUBLE_CODES";
 
     private ArrayList<ObdCommand> cmds;
     private BluetoothAdapter btAdapter;
@@ -141,8 +137,8 @@ public class ObdConnection extends IntentService {
                     new TimeoutCommand(125).run(sock.getInputStream(), sock.getOutputStream());
                     new SelectProtocolCommand(ObdProtocols.AUTO).run(sock.getInputStream(), sock.getOutputStream());
                     Log.i(TAG, "Commands are working and getting data...");
-                    intent.setAction(connected);
-                    intent.putExtra(extra, getString(R.string.connected_ok));
+                    intent.setAction(Constants.connected);
+                    intent.putExtra(Constants.extra, getString(R.string.connected_ok));
                     sendBroadcast(intent);
                     makeToast("Data extraction is working.");
                 }
@@ -150,8 +146,8 @@ public class ObdConnection extends IntentService {
             } else {
                 Log.i(TAG, "mbtdevice null");
                 makeToast("The device you selected is not responding to our connection.");
-                intent.setAction(connected);
-                intent.putExtra(extra, getString(R.string.connect_lost));
+                intent.setAction(Constants.connected);
+                intent.putExtra(Constants.extra, getString(R.string.connect_lost));
                 sendBroadcast(intent);
             }
 
@@ -187,12 +183,12 @@ public class ObdConnection extends IntentService {
                 /**
                  * Print and put to intent data
                  */
-                printToIntent(cmds, stringCommands, data, intent.setAction(receiveData), receiveData);
+                printToIntent(cmds, stringCommands, data, intent.setAction(Constants.receiveData), Constants.receiveData);
 
             } else {
                 Log.i(TAG, "No connection");
-                intent.setAction(connected);
-                intent.putExtra(extra, disconnected);
+                intent.setAction(Constants.connected);
+                intent.putExtra(Constants.extra, Constants.disconnected);
                 sendBroadcast(intent);
                 try {
                     sock = new BluetoothConnectionIO(mBtDevice).connect();
