@@ -42,7 +42,7 @@ public class LocationServiceProvider extends Service {
             @Override
             public void onLocationChanged(Location location) {
                 Intent intent = new Intent(Constants.GPSLiveData);
-                intent.putExtra("coordinates", location.getLongitude() + " " + location.getLatitude());
+                intent.putExtra(Constants.GPSPutExtra, location.getLongitude() + " " + location.getLatitude());
                 sendBroadcast(intent);
             }
 
@@ -54,12 +54,14 @@ public class LocationServiceProvider extends Service {
             @Override
             public void onProviderEnabled(String s) {
                 Log.i(TAG, "Provider started!");
+                Intent intent = new Intent(Constants.GPSEnabled);
+                sendBroadcast(intent);
             }
 
             @Override
             public void onProviderDisabled(String s) {
-                Log.i(TAG, "Provider stopped!");
-
+                Intent intent = new Intent(Constants.GPSDisabled);
+                sendBroadcast(intent);
             }
         };
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
