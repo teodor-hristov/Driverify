@@ -139,6 +139,8 @@ public final class Drive extends AppCompatActivity {
         driveItems.add(oilTemp);
         driveItems.add(coolantText);
 
+        location = new LocationIO(getAppContext());
+
         if (btAdapter != null)
             bluetoothDefaultIsEnable = btAdapter.isEnabled();
 
@@ -249,10 +251,22 @@ public final class Drive extends AppCompatActivity {
 
             if (action.equals(Constants.connected)) {
                 connectivityBluetooth(intent);
-            } else if (action.equals(Constants.receiveData)) {
+            }
+            if (action.equals(Constants.GPSEnabled)) {
+                makeSnackbar("GPS Enabled!");
+            }
+            if (action.equals(Constants.GPSDisabled)) {
+
+            }
+
+            if (action.equals(Constants.receiveData)) {
                 data = intent.getParcelableExtra(Constants.receiveData);
                 handleBluetoothLiveData(data, intent);
             }
+            if (action.equals(Constants.GPSLiveData)) {
+
+            }
+
         }
     };
 
@@ -374,6 +388,11 @@ public final class Drive extends AppCompatActivity {
         }
     }
 
+    public void makeSnackbar(String string){
+        Snackbar.make(mGraphicOverlay, string,
+                Snackbar.LENGTH_INDEFINITE)
+                .show();
+    }
 
     //region SpeepDetection with GMS
 
