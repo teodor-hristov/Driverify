@@ -104,6 +104,17 @@ public final class Drive extends AppCompatActivity {
     private IntentFilter filter;
     private Intent obdConnection;
 
+    private String[] actions = {
+            Constants.connected,
+            Constants.disconnected,
+            Constants.receiveData,
+            Constants.extra,
+            Constants.GPSDisabled,
+            Constants.GPSEnabled,
+            Constants.GPSLiveData,
+            Constants.GPSPutExtra
+    };
+
     private CSVWriter writer = null;
     private StringBuilder sb;
 
@@ -140,7 +151,7 @@ public final class Drive extends AppCompatActivity {
         driveItems.add(oilTemp);
         driveItems.add(coolantText);
 
-        location = new LocationIO(getAppContext());
+        location = new LocationIO(Drive.this);
 
         if (btAdapter != null)
             bluetoothDefaultIsEnable = btAdapter.isEnabled();
@@ -161,10 +172,7 @@ public final class Drive extends AppCompatActivity {
 
         }
 
-        filter.addAction(Constants.connected);
-        filter.addAction(Constants.disconnected);
-        filter.addAction(Constants.receiveData);
-        filter.addAction(Constants.extra);
+        filterAddActions(filter, actions);
 
         rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
@@ -254,10 +262,19 @@ public final class Drive extends AppCompatActivity {
                 connectivityBluetooth(intent);
             }
             if (action.equals(Constants.GPSEnabled)) {
-                makeToast("GPS Enabled!");
+                Log.i(TAG, "onReceive: tuka e");
             }
             if (action.equals(Constants.GPSDisabled)) {
-
+                View.OnClickListener listener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        location.enableGPS();
+                    }
+                };
+                Snackbar.make(mGraphicOverlay,"You turned off GPS, for better usage of this application you have to turn it on." ,
+                        Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Turn on", listener)
+                        .show();
             }
 
             if (action.equals(Constants.receiveData)) {
@@ -383,6 +400,11 @@ public final class Drive extends AppCompatActivity {
         Snackbar.make(mGraphicOverlay, string,
                 Snackbar.LENGTH_INDEFINITE)
                 .show();
+    }
+
+    private void filterAddActions(IntentFilter filter, String[] actions) {
+        for(String item : actions)
+            filter.addAction(item);
     }
 
     //region SpeepDetection with GMS
