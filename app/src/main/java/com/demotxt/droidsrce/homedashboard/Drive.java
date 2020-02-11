@@ -44,6 +44,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
+import com.demotxt.droidsrce.homedashboard.Utils.Methods;
 import com.demotxt.droidsrce.homedashboard.io.CSVWriter;
 import com.demotxt.droidsrce.homedashboard.io.LocationIO;
 import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
@@ -199,7 +200,7 @@ public final class Drive extends AppCompatActivity {
         if (!isRegistered) {
             registerReceiver(liveDataReceiever, filter);
         }
-        if (!isServiceRunning(ObdConnection.class)) {
+        if (!Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
             startService(new Intent(getApplicationContext(), ObdConnection.class));
         }
 
@@ -216,7 +217,7 @@ public final class Drive extends AppCompatActivity {
             unregisterReceiver(liveDataReceiever);
             isRegistered = false;
         }
-        if (isServiceRunning(ObdConnection.class)) {
+        if (Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
             stopService(new Intent(getApplicationContext(), ObdConnection.class));
         }
 
@@ -237,7 +238,7 @@ public final class Drive extends AppCompatActivity {
             unregisterReceiver(liveDataReceiever);
             isRegistered = false;
         }
-        if (isServiceRunning(ObdConnection.class)) {
+        if (Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
             stopService(new Intent(getApplicationContext(), ObdConnection.class));
         }
     }
@@ -253,7 +254,7 @@ public final class Drive extends AppCompatActivity {
                 connectivityBluetooth(intent);
             }
             if (action.equals(Constants.GPSEnabled)) {
-                makeSnackbar("GPS Enabled!");
+                makeToast("GPS Enabled!");
             }
             if (action.equals(Constants.GPSDisabled)) {
 
@@ -300,7 +301,7 @@ public final class Drive extends AppCompatActivity {
                     unregisterReceiver(liveDataReceiever);
                     isRegistered = false;
                 }
-                if (isServiceRunning(ObdConnection.class)) {
+                if (Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
                     stopService(new Intent(getApplicationContext(), ObdConnection.class));
                 }
                 makeToast("Live data stopped.");
@@ -324,16 +325,6 @@ public final class Drive extends AppCompatActivity {
 
     public void makeToast(String msg) {
         Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    public boolean isServiceRunning(Class serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void connectivityBluetooth(Intent intent) {
@@ -388,7 +379,7 @@ public final class Drive extends AppCompatActivity {
         }
     }
 
-    public void makeSnackbar(String string){
+    public void makeSnackbar(String string) {
         Snackbar.make(mGraphicOverlay, string,
                 Snackbar.LENGTH_INDEFINITE)
                 .show();
