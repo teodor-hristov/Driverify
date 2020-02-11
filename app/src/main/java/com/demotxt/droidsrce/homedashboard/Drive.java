@@ -17,7 +17,6 @@ package com.demotxt.droidsrce.homedashboard;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -29,8 +28,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -257,6 +254,13 @@ public final class Drive extends AppCompatActivity {
             isRegistered = true;
             String action = intent.getAction();
             ObdReaderData data;
+            CSVWriter tempWriter = null;
+            try {
+                tempWriter = new CSVWriter(Constants.DataLogPath + "Location/");
+                tempWriter.append("lat lon");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             if (action.equals(Constants.connected)) {
                 connectivityBluetooth(intent);
@@ -271,7 +275,7 @@ public final class Drive extends AppCompatActivity {
                         location.enableGPS();
                     }
                 };
-                Snackbar.make(mGraphicOverlay,"You turned off GPS, for better usage of this application you have to turn it on." ,
+                Snackbar.make(mGraphicOverlay, "You turned off GPS, for better usage of this application you have to turn it on.",
                         Snackbar.LENGTH_INDEFINITE)
                         .setAction("Turn on", listener)
                         .show();
@@ -282,7 +286,9 @@ public final class Drive extends AppCompatActivity {
                 handleBluetoothLiveData(data);
             }
             if (action.equals(Constants.GPSLiveData)) {
-
+                if (intent.hasExtra(Constants.GPSPutExtra)) {
+                    //TODO: SAVE TO CSV FILE COORDINATES
+                }
             }
 
         }
@@ -404,7 +410,7 @@ public final class Drive extends AppCompatActivity {
     }
 
     private void filterAddActions(IntentFilter filter, String[] actions) {
-        for(String item : actions)
+        for (String item : actions)
             filter.addAction(item);
     }
 
