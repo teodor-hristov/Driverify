@@ -119,9 +119,6 @@ public class ObdConnection extends IntentService {
         dtc = new ObdReaderData(stringDtc);
         intent = new Intent();
 
-        /**
-         * Update selected device
-         */
         mBtDevice = updateSelectedDevice(btAdapter, prefs);
 
         try {
@@ -176,13 +173,7 @@ public class ObdConnection extends IntentService {
                 e.printStackTrace();
             }
             if (sock.isConnected()) {
-                /**
-                 * Update data
-                 */
                 updateData(sock, cmds, stringCommands);
-                /**
-                 * Print and put to intent data
-                 */
                 printToIntent(cmds, stringCommands, data, intent.setAction(Constants.receiveData), Constants.receiveData);
 
             } else {
