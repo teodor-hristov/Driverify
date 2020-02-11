@@ -1,15 +1,17 @@
 package com.demotxt.droidsrce.homedashboard.services;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -17,6 +19,7 @@ public class LocationServiceProvider extends Service {
     private final String TAG = "LocationServiceProvider";
     private LocationListener listener;
     private LocationManager locationManager;
+
 
     @Nullable
     @Override
@@ -32,6 +35,7 @@ public class LocationServiceProvider extends Service {
             @Override
             public void onLocationChanged(Location location) {
                 Log.i(TAG, "" + location.getLongitude() + " " + location.getLatitude());
+                Toast.makeText(getApplicationContext(), "" + location.getLongitude() + " " + location.getLatitude(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent("location_update");
                 intent.putExtra("coordinates", location.getLongitude() + " " + location.getLatitude());
                 sendBroadcast(intent);
@@ -50,12 +54,24 @@ public class LocationServiceProvider extends Service {
             @Override
             public void onProviderDisabled(String s) {
                 Log.i(TAG, "Service stopped!");
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                stopSelf();
             }
         };
-        Log.i(TAG, "");
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                1000,
+                1,
+                listener);
         super.onCreate();
     }
 
