@@ -171,7 +171,7 @@ public final class Drive extends AppCompatActivity {
         }
 
         if (!isRegistered) {
-            registerReceiver(mObdBlReceiever, filter);
+            registerReceiver(liveDataReceiever, filter);
         }
         startService(new Intent(getApplicationContext(), LocationServiceProvider.class));
     }
@@ -195,7 +195,7 @@ public final class Drive extends AppCompatActivity {
             preRequisites = btAdapter != null && btAdapter.disable();
         }
         if (!isRegistered) {
-            registerReceiver(mObdBlReceiever, filter);
+            registerReceiver(liveDataReceiever, filter);
         }
         if (!isServiceRunning(ObdConnection.class)) {
             startService(new Intent(getApplicationContext(), ObdConnection.class));
@@ -211,7 +211,7 @@ public final class Drive extends AppCompatActivity {
         super.onPause();
         mPreview.stop();
         if (isRegistered) {
-            unregisterReceiver(mObdBlReceiever);
+            unregisterReceiver(liveDataReceiever);
             isRegistered = false;
         }
         if (isServiceRunning(ObdConnection.class)) {
@@ -232,7 +232,7 @@ public final class Drive extends AppCompatActivity {
             btAdapter.disable();
 
         if (isRegistered) {
-            unregisterReceiver(mObdBlReceiever);
+            unregisterReceiver(liveDataReceiever);
             isRegistered = false;
         }
         if (isServiceRunning(ObdConnection.class)) {
@@ -240,7 +240,7 @@ public final class Drive extends AppCompatActivity {
         }
     }
 
-    private BroadcastReceiver mObdBlReceiever = new BroadcastReceiver() {
+    private BroadcastReceiver liveDataReceiever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             isRegistered = true;
@@ -248,25 +248,7 @@ public final class Drive extends AppCompatActivity {
             ObdReaderData data;
 
             if (action.equals(Constants.connected)) {
-                String connectionStatusMsg = intent.getStringExtra(Constants.extra);
-                makeToast(connectionStatusMsg);
-
-                if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {//OBD connected  do what want after OBD connection
-                    makeToast(getString(R.string.obd_connected));
-
-                } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {//OBD disconnected  do what want after OBD disconnection
-                    makeToast(getString(R.string.connect_lost));
-                    try {
-                        if (writer != null)
-                            writer.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.i(TAG, "Problem with file close");
-                    }
-                } else {// here you could check OBD connection and pairing status
-
-                }
-
+                connectivityBluetooth(intent);
             } else if (action.equals(Constants.receiveData)) {
                 data = intent.getParcelableExtra(Constants.receiveData);
                 try {
@@ -322,13 +304,13 @@ public final class Drive extends AppCompatActivity {
 
                 startService(obdConnection);
                 if (!isRegistered) {
-                    registerReceiver(mObdBlReceiever, filter);
+                    registerReceiver(liveDataReceiever, filter);
                 }
                 makeToast("Live data started.");
                 break;
             case R.id.stop_live_data:
                 if (isRegistered) {
-                    unregisterReceiver(mObdBlReceiever);
+                    unregisterReceiver(liveDataReceiever);
                     isRegistered = false;
                 }
                 if (isServiceRunning(ObdConnection.class)) {
@@ -365,6 +347,27 @@ public final class Drive extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    private void connectivityBluetooth(Intent intent) {
+
+        String connectionStatusMsg = intent.getStringExtra(Constants.extra);
+        makeToast(connectionStatusMsg);
+
+        if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {
+            makeToast(getString(R.string.obd_connected));
+
+        } else if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {
+            makeToast(getString(R.string.connect_lost));
+            try {
+                if (writer != null)
+                    writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.i(TAG, "Problem with file close");
+            }
+        }
+
     }
 
     //region SpeepDetection with GMS
