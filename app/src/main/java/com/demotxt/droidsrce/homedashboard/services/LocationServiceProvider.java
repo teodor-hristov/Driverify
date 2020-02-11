@@ -17,10 +17,10 @@ import androidx.annotation.Nullable;
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 
 public class LocationServiceProvider extends Service {
-    private final String TAG = "LocationServiceProvider";
+    private final String TAG = this.getClass().getName();
     private LocationListener listener;
     private LocationManager locationManager;
-    private Intent intentToBroadcastReciever = new Intent();
+    private Intent intentToBroadcastReceiver = new Intent();
 
 
     @Nullable
@@ -37,9 +37,9 @@ public class LocationServiceProvider extends Service {
             @Override
             public void onLocationChanged(Location location) {
                 Log.i(TAG, "Location changed!");
-               intentToBroadcastReciever.setAction(Constants.GPSLiveData);
-                intentToBroadcastReciever.putExtra(Constants.GPSPutExtra, location.getLongitude() + " " + location.getLatitude());
-                sendBroadcast(intentToBroadcastReciever);
+                intentToBroadcastReceiver.setAction(Constants.GPSLiveData);
+                intentToBroadcastReceiver.putExtra(Constants.GPSPutExtra, location.getLongitude() + " " + location.getLatitude());
+                sendBroadcast(intentToBroadcastReceiver);
             }
 
             @Override
@@ -50,15 +50,15 @@ public class LocationServiceProvider extends Service {
             @Override
             public void onProviderEnabled(String s) {
                 Log.i(TAG, "Provider started!");
-                intentToBroadcastReciever.setAction(Constants.GPSEnabled);
-                sendBroadcast(intentToBroadcastReciever);
+                intentToBroadcastReceiver.setAction(Constants.GPSEnabled);
+                sendBroadcast(intentToBroadcastReceiver);
             }
 
             @Override
             public void onProviderDisabled(String s) {
                 Log.i(TAG, "Provider stopped!");
-                intentToBroadcastReciever.setAction(Constants.GPSDisabled);
-                sendBroadcast(intentToBroadcastReciever);
+                intentToBroadcastReceiver.setAction(Constants.GPSDisabled);
+                sendBroadcast(intentToBroadcastReceiver);
             }
         };
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
