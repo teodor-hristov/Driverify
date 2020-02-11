@@ -38,8 +38,6 @@ public class LocationServiceProvider extends Service {
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Log.i(TAG, "coords: " + location.getLongitude() + " " + location.getLatitude());
-                Toast.makeText(getApplicationContext(), "" + location.getLongitude() + " " + location.getLatitude(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent("location_update");
                 intent.putExtra("coordinates", location.getLongitude() + " " + location.getLatitude());
                 sendBroadcast(intent);
