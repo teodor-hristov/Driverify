@@ -67,7 +67,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public final class Drive extends AppCompatActivity {
-    private static final String TAG = "Drive";
+    private final String TAG = getClass().getName();
 
     private static final int RC_HANDLE_GMS = 9001;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
