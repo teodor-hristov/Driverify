@@ -3,8 +3,6 @@ package com.demotxt.droidsrce.homedashboard.Utils;
 import android.app.ActivityManager;
 import android.content.Context;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
 public class Methods {
     public static boolean isServiceRunning(Context context, Class serviceClass) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -14,5 +12,9 @@ public class Methods {
             }
         }
         return false;
+    }
+
+    public static int millisToSeconds(int millis) {
+        return millis / 1000;
     }
 }
