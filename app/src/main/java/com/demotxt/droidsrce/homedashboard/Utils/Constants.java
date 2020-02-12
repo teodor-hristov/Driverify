@@ -11,4 +11,6 @@ public class Constants {
     public static final String GPSLiveData = "GPS_LIVE_DATA";
     public static final String GPSPutExtra = "coordinates";
     public static final String DataLogPath = "storage/emulated/0/Driverify/Logs/";
+
+    public static final String timeIntervalKey = "obd_update_period_preference";
 }
