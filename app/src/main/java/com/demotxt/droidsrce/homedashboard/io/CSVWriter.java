@@ -11,6 +11,7 @@ public class CSVWriter {
     private static String PATH;
     private String path;
     private BufferedWriter writer;
+    public boolean isOpened;
 
     public String getPath() {
         return path;
@@ -21,6 +22,7 @@ public class CSVWriter {
     }
 
     public CSVWriter(String PATH) throws IOException {
+        this.isOpened = true;
         this.PATH = PATH;
         File lvFile = new File(PATH);
         File lvLogFile = new File(PATH + new Date().toGMTString() + FILE_FORMAT);
@@ -36,24 +38,11 @@ public class CSVWriter {
         this.writer = new BufferedWriter(new FileWriter(this.path));
     }
 
-    public boolean append(String string) throws IOException {
-        writer.append(string);
-        this.newLine();
-        return true;
-    }
-
-    public void close() throws IOException {
-        writer.close();
-    }
-
-    public void newLine() throws IOException {
-        writer.newLine();
-    }
-
     /**
-     Function for string format
-     @param string with space as separator
-     @return return string in CSV format
+     * Function for string format
+     *
+     * @param string with space as separator
+     * @return return string in CSV format
      */
     public static String formatCSV(String string) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -64,5 +53,20 @@ public class CSVWriter {
         stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
 
         return stringBuilder.toString();
+    }
+
+    public boolean append(String string) throws IOException {
+        writer.append(formatCSV(string));
+        this.newLine();
+        return true;
+    }
+
+    public void newLine() throws IOException {
+        writer.newLine();
+    }
+
+    public void close() throws IOException {
+        writer.close();
+        isOpened = false;
     }
 }
