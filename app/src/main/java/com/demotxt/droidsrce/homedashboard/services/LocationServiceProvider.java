@@ -4,23 +4,28 @@ import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
+import com.demotxt.droidsrce.homedashboard.Utils.Methods;
 
 public class LocationServiceProvider extends Service {
     private final String TAG = this.getClass().getName();
     private LocationListener listener;
     private LocationManager locationManager;
     private Intent intentToBroadcastReceiver = new Intent();
+    private int timeInterval; //millis
+    private SharedPreferences preferences;
 
 
     @Nullable
@@ -32,6 +37,10 @@ public class LocationServiceProvider extends Service {
     @Override
     public void onCreate() {
         Log.i(TAG, "Service started!");
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        timeInterval = Methods.millisToSeconds(Integer.parseInt(preferences.getString(Constants.timeIntervalKey, "1000")));
+
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         listener = new LocationListener() {
             @Override
@@ -73,7 +82,7 @@ public class LocationServiceProvider extends Service {
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                900,
+                timeInterval,
                 1,
                 listener);
         super.onCreate();
