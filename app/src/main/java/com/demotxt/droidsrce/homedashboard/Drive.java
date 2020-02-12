@@ -254,16 +254,9 @@ public final class Drive extends AppCompatActivity {
             isRegistered = true;
             String action = intent.getAction();
             ObdReaderData data;
-            CSVWriter tempWriter = null;
-            try {
-                tempWriter = new CSVWriter(Constants.DataLogPath + "Location/");
-                tempWriter.append("lat lon");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
             if (action.equals(Constants.connected)) {
-                connectivityBluetooth(intent);
+                connectivityBluetooth(intent, writer);
             }
             if (action.equals(Constants.GPSEnabled)) {
                 makeSnackbar("GPS Enabled!");
@@ -275,19 +268,21 @@ public final class Drive extends AppCompatActivity {
                         location.enableGPS();
                     }
                 };
-                Snackbar.make(mGraphicOverlay, "You turned off GPS, for better usage of this application you have to turn it on.",
+                Snackbar.make(mGraphicOverlay,
+                        "You turned off GPS, for better usage of this application you have to turn it on.",
                         Snackbar.LENGTH_INDEFINITE)
                         .setAction("Turn on", listener)
                         .show();
+
             }
 
             if (action.equals(Constants.receiveData)) {
                 data = intent.getParcelableExtra(Constants.receiveData);
-                handleBluetoothLiveData(data);
+                handleBluetoothLiveData(data, writer);
             }
             if (action.equals(Constants.GPSLiveData)) {
                 if (intent.hasExtra(Constants.GPSPutExtra)) {
-                    //TODO: SAVE TO CSV FILE COORDINATES
+                    handleLocationLiveData(intent, writer);
                 }
             }
 
@@ -350,7 +345,7 @@ public final class Drive extends AppCompatActivity {
         Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    private void connectivityBluetooth(Intent intent) {
+    private void connectivityBluetooth(Intent intent, CSVWriter writer) {
 
         String connectionStatusMsg = intent.getStringExtra(Constants.extra);
         makeToast(connectionStatusMsg);
@@ -371,12 +366,12 @@ public final class Drive extends AppCompatActivity {
 
     }
 
-    private void handleBluetoothLiveData(ObdReaderData data) {
+    private void handleBluetoothLiveData(ObdReaderData data, CSVWriter writer) {
         makeSnackbar("OBD live data is processing.!");
         try {
             if (writer == null) {
                 writer = new CSVWriter(Constants.DataLogPath);
-                writer.append(writer.formatCSV("rpm speed coolant load latitude longitude"));
+                writer.append("rpm speed coolant load");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -399,6 +394,31 @@ public final class Drive extends AppCompatActivity {
                     e.printStackTrace();
                     Log.i(TAG, "Could not write to file");
                 }
+            }
+        }
+    }
+
+    private void handleLocationLiveData(Intent intent, CSVWriter writer) {
+        try {
+            if (writer == null) {
+                writer = new CSVWriter(Constants.DataLogPath + "Location/");
+                writer.append("latitude longitude");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            makeSnackbar("Something went wrong.");
+        }
+        if (!intent.getStringExtra(Constants.GPSPutExtra).equals("")) {
+            sb = new StringBuilder();
+            try {
+                for (String str : intent.getStringExtra(Constants.GPSPutExtra).split(" ")) {
+                    sb.append(str);
+                    sb.append(",");
+                }
+                writer.append(sb.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.i(TAG, "Could not write to file");
             }
         }
     }
