@@ -69,4 +69,8 @@ public class CSVWriter {
         writer.close();
         isOpened = false;
     }
+
+    public void flush() throws IOException {
+        writer.flush();
+    }
 }
