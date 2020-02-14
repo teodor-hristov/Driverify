@@ -179,7 +179,7 @@ public final class Drive extends AppCompatActivity {
         if (!isRegistered) {
             registerReceiver(liveDataReceiever, filter);
         }
-        startService(new Intent(getApplicationContext(), DataController.class));
+
     }
 
     /**
@@ -216,9 +216,8 @@ public final class Drive extends AppCompatActivity {
             startService(new Intent(getApplicationContext(), ObdConnection.class));
         }
         if (!Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
-            startService(new Intent(getApplicationContext(), LocationServiceProvider.class));
+            startService(new Intent(getApplicationContext(), DataController.class));
         }
-
     }
 
     /**
@@ -240,6 +239,10 @@ public final class Drive extends AppCompatActivity {
         }
         if (Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
             stopService(new Intent(getApplicationContext(), DataController.class));
+        }
+
+        if (Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
+            startService(new Intent(getApplicationContext(), DataController.class));
         }
     }
 
