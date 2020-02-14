@@ -20,9 +20,11 @@ import com.demotxt.droidsrce.homedashboard.io.CSVWriter;
 import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 
 public class DataController extends Service {
     private final String TAG = "DataController";
+    private Timestamp timestamp;
     private CSVWriter bluetoothWriter;
     private CSVWriter locationWriter;
     private IntentFilter filter;
@@ -116,11 +118,12 @@ public class DataController extends Service {
 
     private void handleBluetoothLiveData(ObdReaderData data) {
         Log.i(TAG, "Handle bt data.");
+        timestamp = new Timestamp(System.currentTimeMillis());
         StringBuilder sb;
         try {
             if (bluetoothWriter == null) {
                 bluetoothWriter = new CSVWriter(Constants.DataLogPath);
-                bluetoothWriter.append("rpm speed coolant load");
+                bluetoothWriter.append("rpm speed coolant load timestamp");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,7 +138,8 @@ public class DataController extends Service {
                         sb.append(str);
                         sb.append(" ");
                     }
-                    Log.i(TAG, "" + valueCounter);
+                    sb.append(timestamp.getTime());
+
                     if (valueCounter == Constants.valuesPerSave) {
                         valueCounter = 0;
                         bluetoothWriter.flush();
