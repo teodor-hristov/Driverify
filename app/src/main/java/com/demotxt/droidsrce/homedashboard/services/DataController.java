@@ -37,6 +37,8 @@ public class DataController extends Service {
             Constants.GPSPutExtra
     };
 
+    private int valueCounter = 0;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -133,8 +135,10 @@ public class DataController extends Service {
                         sb.append(str);
                         sb.append(" ");
                     }
+                    if (valueCounter == Constants.valuesPerSave) {
+                        bluetoothWriter.flush();
+                    }
                     bluetoothWriter.append(sb.toString());
-                    Log.i(TAG, "appending");
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.i(TAG, "Could not write to file");
