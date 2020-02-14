@@ -135,10 +135,13 @@ public class DataController extends Service {
                         sb.append(str);
                         sb.append(" ");
                     }
+                    Log.i(TAG, "" + valueCounter);
                     if (valueCounter == Constants.valuesPerSave) {
+                        valueCounter = 0;
                         bluetoothWriter.flush();
                     }
                     bluetoothWriter.append(sb.toString());
+                    valueCounter++;
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.i(TAG, "Could not write to file");
