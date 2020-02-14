@@ -42,7 +42,6 @@ import androidx.core.app.ActivityCompat;
 
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.Utils.Methods;
-import com.demotxt.droidsrce.homedashboard.io.CSVWriter;
 import com.demotxt.droidsrce.homedashboard.io.LocationIO;
 import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
 import com.demotxt.droidsrce.homedashboard.services.DataController;
@@ -112,10 +111,6 @@ public final class Drive extends AppCompatActivity {
             Constants.GPSLiveData,
             Constants.GPSPutExtra
     };
-
-    private CSVWriter writer = null;
-    private CSVWriter locationWriter = null;
-    private StringBuilder sb;
     private Menu actionBarMenu;
 
     private int rc;
