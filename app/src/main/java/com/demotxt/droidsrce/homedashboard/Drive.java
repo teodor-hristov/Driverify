@@ -179,7 +179,6 @@ public final class Drive extends AppCompatActivity {
         if (!isRegistered) {
             registerReceiver(liveDataReceiever, filter);
         }
-
     }
 
     /**
@@ -239,10 +238,6 @@ public final class Drive extends AppCompatActivity {
         }
         if (Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
             stopService(new Intent(getApplicationContext(), DataController.class));
-        }
-
-        if (Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
-            startService(new Intent(getApplicationContext(), DataController.class));
         }
     }
 
