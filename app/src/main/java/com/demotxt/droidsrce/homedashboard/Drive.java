@@ -264,7 +264,11 @@ public final class Drive extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        try {
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (btAdapter != null && btAdapter.isEnabled() && !bluetoothDefaultIsEnable)
             btAdapter.disable();
 
