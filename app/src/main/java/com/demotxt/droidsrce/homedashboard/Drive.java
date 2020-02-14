@@ -44,7 +44,7 @@ import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.Utils.Methods;
 import com.demotxt.droidsrce.homedashboard.io.CSVWriter;
 import com.demotxt.droidsrce.homedashboard.io.LocationIO;
-import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
+import com.demotxt.droidsrce.homedashboard.services.DataController;
 import com.demotxt.droidsrce.homedashboard.services.LocationServiceProvider;
 import com.demotxt.droidsrce.homedashboard.services.ObdConnection;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
@@ -126,32 +126,32 @@ public final class Drive extends AppCompatActivity {
     private BroadcastReceiver liveDataReceiever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            isRegistered = true;
-            String action = intent.getAction();
-            ObdReaderData data;
-
-            if (action.equals(Constants.connected)) {
-                connectedBluetooth(intent);
-            }
-            if (action.equals(Constants.disconnected)) {
-                connectionLost(intent);
-            }
-            if (action.equals(Constants.GPSEnabled)) {
-                locationEnabled();
-            }
-            if (action.equals(Constants.GPSDisabled)) {
-                locationDisabled();
-            }
-
-            if (action.equals(Constants.receiveData)) {
-                data = intent.getParcelableExtra(Constants.receiveData);
-                handleBluetoothLiveData(data);
-            }
-            if (action.equals(Constants.GPSLiveData)) {
-                if (intent.hasExtra(Constants.GPSPutExtra)) {
-//                    handleLocationLiveData(intent);
-                }
-            }
+//            isRegistered = true;
+//            String action = intent.getAction();
+//            ObdReaderData data;
+//
+//            if (action.equals(Constants.connected)) {
+//                connectedBluetooth(intent);
+//            }
+//            if (action.equals(Constants.disconnected)) {
+//                connectionLost(intent);
+//            }
+//            if (action.equals(Constants.GPSEnabled)) {
+//                locationEnabled();
+//            }
+//            if (action.equals(Constants.GPSDisabled)) {
+//                locationDisabled();
+//            }
+//
+//            if (action.equals(Constants.receiveData)) {
+//                data = intent.getParcelableExtra(Constants.receiveData);
+//                handleBluetoothLiveData(data);
+//            }
+//            if (action.equals(Constants.GPSLiveData)) {
+//                if (intent.hasExtra(Constants.GPSPutExtra)) {
+////                    handleLocationLiveData(intent);
+//                }
+//            }
 
         }
     };
@@ -215,7 +215,7 @@ public final class Drive extends AppCompatActivity {
         if (!isRegistered) {
             registerReceiver(liveDataReceiever, filter);
         }
-        startService(new Intent(getApplicationContext(), LocationServiceProvider.class));
+        startService(new Intent(getApplicationContext(), DataController.class));
     }
 
     /**
@@ -264,11 +264,11 @@ public final class Drive extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try {
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            writer.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         if (btAdapter != null && btAdapter.isEnabled() && !bluetoothDefaultIsEnable)
             btAdapter.disable();
 
@@ -280,8 +280,8 @@ public final class Drive extends AppCompatActivity {
             stopService(new Intent(getApplicationContext(), ObdConnection.class));
         }
         if (Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
-            stopService(new Intent(getApplicationContext(), LocationServiceProvider.class));
-            locationDisabled();
+            stopService(new Intent(getApplicationContext(), DataController.class));
+//            locationDisabled();
         }
     }
 
@@ -344,120 +344,120 @@ public final class Drive extends AppCompatActivity {
         Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    private void connectedBluetooth(Intent intent) {
-        String connectionStatusMsg = intent.getStringExtra(Constants.extra);
-        makeToast(connectionStatusMsg);
-
-        if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {
-            makeToast(getString(R.string.obd_connected));
-        }
-    }
-
-    private void connectionLost(Intent intent) {
-        String connectionStatusMsg = intent.getStringExtra(Constants.extra);
-        if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {
-            makeToast("Connection lost.");
-            actionBarMenu.getItem(R.id.bluetoothStatus).setIcon(R.drawable.ic_bluetooth_searching_black_24dp);
-            try {
-                if (writer != null)
-                    writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.i(TAG, "Problem with file close");
-            }
-        }
-    }
-
-    private void handleBluetoothLiveData(ObdReaderData data) {
-        actionBarMenu.findItem(R.id.bluetoothStatus).setIcon(R.drawable.ic_bluetooth_connected_black_24dp);
-        try {
-            if (writer == null) {
-                writer = new CSVWriter(Constants.DataLogPath);
-                writer.append("rpm speed coolant load");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.i(TAG, "Writer initialization problem.");
-            Log.i(TAG, e.getMessage());
-        }
-        if (data != null) {
-            for (int i = 0; i < data.getCommands().size(); i++) {
-                driveItems.get(i).setText("" + data.getCommands().get(i));
-            }
-            if (writer != null) {
-                sb = new StringBuilder();
-                try {
-                    for (String str : data.getCommands()) {
-                        sb.append(str);
-                        sb.append(" ");
-                    }
-                    writer.append(sb.toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.i(TAG, "Could not write to file");
-                }
-            }
-        }
-    }
-
-    private void handleLocationLiveData(Intent intent) {
-        Log.i(TAG, "Getting location data...");
-        actionBarMenu.findItem(R.id.locationStatus).setIcon(R.drawable.location_ok);
-        try {
-            if (locationWriter != null) {
-                locationWriter.append("latitude longitude");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            makeSnackbar("Something went wrong.");
-        }
-        if (intent.getStringExtra(Constants.GPSPutExtra) != null) {
-            Log.i(TAG, "" + intent.getStringExtra(Constants.GPSPutExtra));
-            sb = new StringBuilder();
-            try {
-                for (String str : intent.getStringExtra(Constants.GPSPutExtra).split(" ")) {
-                    sb.append(str);
-                    sb.append(" ");
-                }
-                if (sb != null)
-                    locationWriter.append(sb.toString());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.i(TAG, "Could not write to file");
-            }
-        }
-    }
-
-    private void locationDisabled() {
-        actionBarMenu.findItem(R.id.locationStatus).setIcon(R.drawable.location_off);
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                location.enableGPS();
-            }
-        };
-        try {
-            if (locationWriter != null)
-                locationWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Snackbar.make(mGraphicOverlay,
-                "You turned off GPS, for better usage of this application you have to turn it on.",
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction("Turn on", listener)
-                .show();
-    }
-
-    private void locationEnabled() {
-        makeSnackbar("GPS Enabled!");
-        try {
-            locationWriter = new CSVWriter(Constants.DataLogPath + "Locations/");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    private void connectedBluetooth(Intent intent) {
+//        String connectionStatusMsg = intent.getStringExtra(Constants.extra);
+//        makeToast(connectionStatusMsg);
+//
+//        if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {
+//            makeToast(getString(R.string.obd_connected));
+//        }
+//    }
+//
+//    private void connectionLost(Intent intent) {
+//        String connectionStatusMsg = intent.getStringExtra(Constants.extra);
+//        if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {
+//            makeToast("Connection lost.");
+//            actionBarMenu.getItem(R.id.bluetoothStatus).setIcon(R.drawable.ic_bluetooth_searching_black_24dp);
+//            try {
+//                if (writer != null)
+//                    writer.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                Log.i(TAG, "Problem with file close");
+//            }
+//        }
+//    }
+//
+//    private void handleBluetoothLiveData(ObdReaderData data) {
+//        actionBarMenu.findItem(R.id.bluetoothStatus).setIcon(R.drawable.ic_bluetooth_connected_black_24dp);
+//        try {
+//            if (writer == null) {
+//                writer = new CSVWriter(Constants.DataLogPath);
+//                writer.append("rpm speed coolant load");
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Log.i(TAG, "Writer initialization problem.");
+//            Log.i(TAG, e.getMessage());
+//        }
+//        if (data != null) {
+//            for (int i = 0; i < data.getCommands().size(); i++) {
+//                driveItems.get(i).setText("" + data.getCommands().get(i));
+//            }
+//            if (writer != null) {
+//                sb = new StringBuilder();
+//                try {
+//                    for (String str : data.getCommands()) {
+//                        sb.append(str);
+//                        sb.append(" ");
+//                    }
+//                    writer.append(sb.toString());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    Log.i(TAG, "Could not write to file");
+//                }
+//            }
+//        }
+//    }
+//
+//    private void handleLocationLiveData(Intent intent) {
+//        Log.i(TAG, "Getting location data...");
+//        actionBarMenu.findItem(R.id.locationStatus).setIcon(R.drawable.location_ok);
+//        try {
+//            if (locationWriter != null) {
+//                locationWriter.append("latitude longitude");
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            makeSnackbar("Something went wrong.");
+//        }
+//        if (intent.getStringExtra(Constants.GPSPutExtra) != null) {
+//            Log.i(TAG, "" + intent.getStringExtra(Constants.GPSPutExtra));
+//            sb = new StringBuilder();
+//            try {
+//                for (String str : intent.getStringExtra(Constants.GPSPutExtra).split(" ")) {
+//                    sb.append(str);
+//                    sb.append(" ");
+//                }
+//                if (sb != null)
+//                    locationWriter.append(sb.toString());
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                Log.i(TAG, "Could not write to file");
+//            }
+//        }
+//    }
+//
+//    private void locationDisabled() {
+//        actionBarMenu.findItem(R.id.locationStatus).setIcon(R.drawable.location_off);
+//        View.OnClickListener listener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                location.enableGPS();
+//            }
+//        };
+//        try {
+//            if (locationWriter != null)
+//                locationWriter.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        Snackbar.make(mGraphicOverlay,
+//                "You turned off GPS, for better usage of this application you have to turn it on.",
+//                Snackbar.LENGTH_INDEFINITE)
+//                .setAction("Turn on", listener)
+//                .show();
+//    }
+//
+//    private void locationEnabled() {
+//        makeSnackbar("GPS Enabled!");
+//        try {
+//            locationWriter = new CSVWriter(Constants.DataLogPath + "Locations/");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void makeSnackbar(String string) {
         Snackbar.make(mGraphicOverlay, string,
