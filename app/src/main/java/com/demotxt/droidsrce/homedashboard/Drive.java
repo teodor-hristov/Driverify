@@ -149,7 +149,7 @@ public final class Drive extends AppCompatActivity {
             }
             if (action.equals(Constants.GPSLiveData)) {
                 if (intent.hasExtra(Constants.GPSPutExtra)) {
-                    handleLocationLiveData(intent);
+//                    handleLocationLiveData(intent);
                 }
             }
 
@@ -225,10 +225,6 @@ public final class Drive extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mPreview.stop();
-        if (isRegistered) {
-            unregisterReceiver(liveDataReceiever);
-            isRegistered = false;
-        }
     }
 
     @Override
