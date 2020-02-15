@@ -62,7 +62,6 @@ public class DataController extends Service {
             if (action.equals(Constants.GPSDisabled)) {
                 //locationDisabled();
             }
-
             if (action.equals(Constants.receiveData)) {
                 data = intent.getParcelableExtra(Constants.receiveData);
                 handleBluetoothLiveData(data);
@@ -168,8 +167,9 @@ public class DataController extends Service {
                     sb.append(str);
                     sb.append(" ");
                 }
-                if (sb != null)
+                if (sb != null) {
                     locationWriter.append(sb.toString());
+                }
                 autoSave(locationWriter);
             } catch (IOException e) {
                 e.printStackTrace();
