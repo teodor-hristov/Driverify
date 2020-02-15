@@ -187,30 +187,40 @@ public final class Drive extends AppCompatActivity {
         mPreview.stop();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        startCameraSource();
-        if (btAdapter != null)
-            bluetoothDefaultIsEnable = btAdapter.isEnabled();
+    private BroadcastReceiver liveDataReceiever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            isRegistered = true;
+            String action = intent.getAction();
+            ObdReaderData data;
 
-        preRequisites = btAdapter != null && btAdapter.isEnabled();
-        if (!preRequisites && prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
-            preRequisites = btAdapter != null && btAdapter.enable();
+            if (action.equals(Constants.connected)) {
+                connectedBluetooth(intent);
+            }
+            if (action.equals(Constants.disconnected)) {
+                connectionLost(intent);
+            }
+            if (action.equals(Constants.GPSEnabled)) {
+                locationEnabled();
+                Log.i(TAG, "Enable");
+            }
+            if (action.equals(Constants.GPSDisabled)) {
+                locationDisabled();
+                Log.i(TAG, "Disable");
+            }
+
+            if (action.equals(Constants.receiveData)) {
+                data = intent.getParcelableExtra(Constants.receiveData);
+                handleBluetoothLiveData(data);
+            }
+            if (action.equals(Constants.GPSLiveData)) {
+                if (intent.hasExtra(Constants.GPSPutExtra)) {
+//                    handleLocationLiveData(intent);
+                }
+            }
+
         }
-        if (preRequisites && !prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
-            preRequisites = btAdapter != null && btAdapter.disable();
-        }
-        if (!isRegistered) {
-            registerReceiver(liveDataReceiever, filter);
-        }
-        if (!Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
-            startService(new Intent(getApplicationContext(), ObdConnection.class));
-        }
-        if (!Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
-            startService(new Intent(getApplicationContext(), DataController.class));
-        }
-    }
+    };
 
     @Override
     protected void onDestroy() {
@@ -272,38 +282,34 @@ public final class Drive extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private BroadcastReceiver liveDataReceiever = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            isRegistered = true;
-            String action = intent.getAction();
-            ObdReaderData data;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startCameraSource();
+        if (btAdapter != null)
+            bluetoothDefaultIsEnable = btAdapter.isEnabled();
 
-            if (action.equals(Constants.connected)) {
-                connectedBluetooth(intent);
-            }
-            if (action.equals(Constants.disconnected)) {
-                connectionLost(intent);
-            }
-            if (action.equals(Constants.GPSEnabled)) {
-                locationEnabled();
-            }
-            if (action.equals(Constants.GPSDisabled)) {
-                locationDisabled();
-            }
-
-            if (action.equals(Constants.receiveData)) {
-                data = intent.getParcelableExtra(Constants.receiveData);
-                handleBluetoothLiveData(data);
-            }
-            if (action.equals(Constants.GPSLiveData)) {
-                if (intent.hasExtra(Constants.GPSPutExtra)) {
-//                    handleLocationLiveData(intent);
-                }
-            }
-
+        preRequisites = btAdapter != null && btAdapter.isEnabled();
+        if (!preRequisites && prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
+            preRequisites = btAdapter != null && btAdapter.enable();
         }
-    };
+        if (preRequisites && !prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
+            preRequisites = btAdapter != null && btAdapter.disable();
+        }
+        if (!isRegistered) {
+            registerReceiver(liveDataReceiever, filter);
+        }
+        if (!Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
+            startService(new Intent(getApplicationContext(), ObdConnection.class));
+        }
+        if (!Methods.isServiceRunning(getAppContext(), DataController.class)) {
+            startService(new Intent(getApplicationContext(), DataController.class));
+        }
+        if (!Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
+            startService(new Intent(getApplicationContext(), LocationServiceProvider.class));
+        }
+
+    }
 
     public static Context getAppContext() {
         return appContext;
