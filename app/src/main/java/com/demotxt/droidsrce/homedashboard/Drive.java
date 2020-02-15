@@ -181,9 +181,6 @@ public final class Drive extends AppCompatActivity {
         }
     }
 
-    /**
-     * Stops the camera.
-     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -194,10 +191,6 @@ public final class Drive extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         startCameraSource();
-        /**
-         *  Check if bluetooth is enabled and if not bt.enable()
-         * else bt.disable.
-         */
         if (btAdapter != null)
             bluetoothDefaultIsEnable = btAdapter.isEnabled();
 
@@ -219,10 +212,6 @@ public final class Drive extends AppCompatActivity {
         }
     }
 
-    /**
-     * Releases the resources associated with the camera source, the associated detector, and the
-     * rest of the processing pipeline.
-     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -371,6 +360,7 @@ public final class Drive extends AppCompatActivity {
     }
 
     private void locationEnabled() {
+        actionBarMenu.findItem(R.id.locationStatus).setIcon(R.drawable.location_ok);
         makeSnackbar("GPS Enabled!");
     }
 
