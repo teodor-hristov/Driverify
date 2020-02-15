@@ -69,7 +69,7 @@ public class DataController extends Service {
             }
             if (action.equals(Constants.GPSLiveData)) {
                 if (intent.hasExtra(Constants.GPSPutExtra)) {
-//                    handleLocationLiveData(intent);
+                    handleLocationLiveData(intent);
                 }
             }
 
@@ -139,13 +139,8 @@ public class DataController extends Service {
                         sb.append(" ");
                     }
                     sb.append(timestamp.getTime());
-
-                    if (valueCounter == Constants.valuesPerSave) {
-                        valueCounter = 0;
-                        bluetoothWriter.flush();
-                    }
                     bluetoothWriter.append(sb.toString());
-                    valueCounter++;
+                    autoSave(bluetoothWriter);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.i(TAG, "Could not write to file");
@@ -157,7 +152,8 @@ public class DataController extends Service {
     private void handleLocationLiveData(Intent intent) {
         StringBuilder sb;
         try {
-            if (locationWriter != null) {
+            if (locationWriter == null) {
+                locationWriter = new CSVWriter(Constants.DataLogPath + "/Location/");
                 locationWriter.append("latitude longitude");
             }
         } catch (IOException e) {
@@ -174,7 +170,7 @@ public class DataController extends Service {
                 }
                 if (sb != null)
                     locationWriter.append(sb.toString());
-
+                autoSave(locationWriter);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.i(TAG, "Could not write to file");
@@ -202,5 +198,12 @@ public class DataController extends Service {
     private void filterAddActions(IntentFilter filter, String[] actions) {
         for (String item : actions)
             filter.addAction(item);
+    }
+
+    private void autoSave(CSVWriter fileWriter) throws IOException {
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        if (ts.getSeconds() % Constants.saveSeconds == 0) {
+            fileWriter.flush();
+        }
     }
 }
