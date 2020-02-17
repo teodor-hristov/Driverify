@@ -21,10 +21,10 @@ import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class DataController extends Service {
     private final String TAG = "DataController";
-    private Timestamp timestamp;
     private CSVWriter bluetoothWriter;
     private CSVWriter locationWriter;
     private IntentFilter filter;
@@ -38,8 +38,7 @@ public class DataController extends Service {
             Constants.GPSLiveData,
             Constants.GPSPutExtra
     };
-
-    private int valueCounter = 0;
+    private SimpleDateFormat formatter;
 
     @Nullable
     @Override
@@ -78,24 +77,22 @@ public class DataController extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        /**
-         * TODO: Create files, write in files...
-         */
         filter = new IntentFilter();
         filterAddActions(filter, actions);
         registerReceiver(liveDataReceiever, filter);
+        formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        /**
-         * TODO: Close all writers, save all states, break connections
-         */
+        Log.i(TAG, "DataController is shutting down..");
         unregisterReceiver(liveDataReceiever);
         try {
-            bluetoothWriter.close();
-            locationWriter.close();
+            if (bluetoothWriter != null && locationWriter != null) {
+                bluetoothWriter.close();
+                locationWriter.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -136,7 +133,7 @@ public class DataController extends Service {
                         sb.append(str);
                         sb.append(" ");
                     }
-                    sb.append(new java.util.Date().getTime());
+                    sb.append(formatter.format(new java.util.Date().getTime()));
                     bluetoothWriter.append(sb.toString());
                     autoSave(bluetoothWriter);
                 } catch (IOException e) {
@@ -167,7 +164,7 @@ public class DataController extends Service {
                     sb.append(" ");
                 }
                 if (sb != null) {
-                    sb.append(new java.util.Date().getTime());
+                    sb.append(formatter.format(new java.util.Date().getTime()));
                     locationWriter.append(sb.toString());
                 }
                 autoSave(locationWriter);
@@ -190,7 +187,7 @@ public class DataController extends Service {
 
     private void locationEnabled() {
         try {
-            locationWriter = new CSVWriter(Constants.DataLogPath + "Locations/");
+            locationWriter = new CSVWriter(Constants.DataLogPath + "Location/");
         } catch (IOException e) {
             e.printStackTrace();
         }
