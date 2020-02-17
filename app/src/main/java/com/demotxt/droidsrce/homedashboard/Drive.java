@@ -378,8 +378,8 @@ public final class Drive extends AppCompatActivity {
         if (Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
             stopService(new Intent(getApplicationContext(), DataController.class));
         }
-        if (!Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
-            startService(new Intent(getApplicationContext(), LocationServiceProvider.class));
+        if (Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
+            stopService(new Intent(getApplicationContext(), LocationServiceProvider.class));
         }
         for (TextView v : driveItems)
             v.setText("0");
