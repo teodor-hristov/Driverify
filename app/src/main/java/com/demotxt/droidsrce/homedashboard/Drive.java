@@ -50,10 +50,6 @@ import com.demotxt.droidsrce.homedashboard.services.ObdConnection;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
 import com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview;
 import com.demotxt.droidsrce.homedashboard.ui.camera.GraphicOverlay;
-import com.github.pires.obd.commands.ObdCommand;
-import com.github.pires.obd.commands.SpeedCommand;
-import com.github.pires.obd.commands.control.TroubleCodesCommand;
-import com.github.pires.obd.commands.engine.RPMCommand;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
@@ -99,7 +95,6 @@ public final class Drive extends AppCompatActivity {
     private BluetoothDevice mBtDevice;
     private SharedPreferences prefs;
     private IntentFilter filter;
-    private Intent obdConnection;
 
     private String[] actions = {
             Constants.connected,
@@ -120,6 +115,47 @@ public final class Drive extends AppCompatActivity {
     // Activity Methods
     //==============================================================================================
 
+    private BroadcastReceiver liveDataReceiever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            isRegistered = true;
+            String action = intent.getAction();
+            ObdReaderData data;
+
+            if (action.equals(Constants.connected)) {
+                connectedBluetooth(intent);
+            }
+            if (action.equals(Constants.disconnected)) {
+                connectionLost(intent);
+            }
+            if (action.equals(Constants.GPSEnabled)) {
+                locationEnabled();
+                Log.i(TAG, "Enable");
+            }
+            if (action.equals(Constants.GPSDisabled)) {
+                locationDisabled();
+                Log.i(TAG, "Disable");
+            }
+
+            if (action.equals(Constants.receiveData)) {
+                data = intent.getParcelableExtra(Constants.receiveData);
+                handleBluetoothLiveData(data);
+            }
+            if (action.equals(Constants.GPSLiveData)) {
+                if (intent.hasExtra(Constants.GPSPutExtra)) {
+                    handleLocationLiveData();
+                }
+            }
+
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPreview.stop();
+    }
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -138,7 +174,6 @@ public final class Drive extends AppCompatActivity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         filter = new IntentFilter();
-        obdConnection = new Intent(getApplicationContext(), ObdConnection.class);
         driveItems = new ArrayList<>();
         driveItems.add(rpmText);
         driveItems.add(speedText);
@@ -146,7 +181,7 @@ public final class Drive extends AppCompatActivity {
         driveItems.add(coolantText);
         driveItems.add(oilTemp);
 
-        location = new LocationIO(Drive.this);
+        // location = new LocationIO(Drive.this);
 
         if (btAdapter != null)
             bluetoothDefaultIsEnable = btAdapter.isEnabled();
@@ -182,47 +217,6 @@ public final class Drive extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        mPreview.stop();
-    }
-
-    private BroadcastReceiver liveDataReceiever = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            isRegistered = true;
-            String action = intent.getAction();
-            ObdReaderData data;
-
-            if (action.equals(Constants.connected)) {
-                connectedBluetooth(intent);
-            }
-            if (action.equals(Constants.disconnected)) {
-                connectionLost(intent);
-            }
-            if (action.equals(Constants.GPSEnabled)) {
-                locationEnabled();
-                Log.i(TAG, "Enable");
-            }
-            if (action.equals(Constants.GPSDisabled)) {
-                locationDisabled();
-                Log.i(TAG, "Disable");
-            }
-
-            if (action.equals(Constants.receiveData)) {
-                data = intent.getParcelableExtra(Constants.receiveData);
-                handleBluetoothLiveData(data);
-            }
-            if (action.equals(Constants.GPSLiveData)) {
-                if (intent.hasExtra(Constants.GPSPutExtra)) {
-//                    handleLocationLiveData(intent);
-                }
-            }
-
-        }
-    };
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (btAdapter != null && btAdapter.isEnabled() && !bluetoothDefaultIsEnable)
@@ -255,28 +249,10 @@ public final class Drive extends AppCompatActivity {
                 startActivity(new Intent(this.getApplicationContext(), Preferences.class));
                 break;
             case R.id.start_live_data:
-                ArrayList<ObdCommand> commands = new ArrayList<>();
-                commands.add(new RPMCommand());
-                commands.add(new SpeedCommand());
-                commands.add(new TroubleCodesCommand());
-
-                startService(obdConnection);
-                if (!isRegistered) {
-                    registerReceiver(liveDataReceiever, filter);
-                }
-                makeToast("Live data started.");
+                startLiveData(filter);
                 break;
             case R.id.stop_live_data:
-                if (isRegistered) {
-                    unregisterReceiver(liveDataReceiever);
-                    isRegistered = false;
-                }
-                if (Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
-                    stopService(new Intent(getApplicationContext(), ObdConnection.class));
-                }
-                makeToast("Live data stopped.");
-                for (TextView v : driveItems)
-                    v.setText("0");
+                stopLiveData();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -345,7 +321,7 @@ public final class Drive extends AppCompatActivity {
         }
     }
 
-    private void handleLocationLiveData(Intent intent) {
+    private void handleLocationLiveData() {
         Log.i(TAG, "Getting location data...");
         actionBarMenu.findItem(R.id.locationStatus).setIcon(R.drawable.location_ok);
     }
@@ -355,7 +331,7 @@ public final class Drive extends AppCompatActivity {
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                location.enableGPS();
+                new LocationIO(getAppContext());
             }
         };
         Snackbar.make(mGraphicOverlay,
@@ -379,6 +355,35 @@ public final class Drive extends AppCompatActivity {
     private void filterAddActions(IntentFilter filter, String[] actions) {
         for (String item : actions)
             filter.addAction(item);
+    }
+
+    private void startLiveData(IntentFilter filter) {
+        startService(new Intent(Drive.this, ObdConnection.class));
+        startService(new Intent(Drive.this, DataController.class));
+        startService(new Intent(Drive.this, LocationServiceProvider.class));
+        if (!isRegistered) {
+            registerReceiver(liveDataReceiever, filter);
+        }
+        makeSnackbar("Live data started.");
+    }
+
+    public void stopLiveData() {
+        if (isRegistered) {
+            unregisterReceiver(liveDataReceiever);
+            isRegistered = false;
+        }
+        if (Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
+            stopService(new Intent(getApplicationContext(), ObdConnection.class));
+        }
+        if (Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
+            stopService(new Intent(getApplicationContext(), DataController.class));
+        }
+        if (!Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
+            startService(new Intent(getApplicationContext(), LocationServiceProvider.class));
+        }
+        for (TextView v : driveItems)
+            v.setText("0");
+        makeSnackbar("Live data stopped.");
     }
 
     //region SpeepDetection with GMS
