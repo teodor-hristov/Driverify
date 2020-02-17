@@ -7,11 +7,9 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 public class LocationIO {
-    private final String TAG = getClass().getName();
     private LocationManager locationManager;
     private Location location;
     private final Context context;
@@ -36,16 +34,5 @@ public class LocationIO {
 
     public void enableGPS() {
         context.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Latitude: ");
-        stringBuilder.append(location.getLatitude() + "\n");
-        stringBuilder.append("Longitude: \n");
-        stringBuilder.append(location.getLongitude() + "\n");
-        return stringBuilder.toString();
     }
 }
