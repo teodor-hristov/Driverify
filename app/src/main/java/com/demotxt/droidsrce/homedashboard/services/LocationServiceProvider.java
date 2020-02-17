@@ -24,8 +24,6 @@ public class LocationServiceProvider extends Service {
     private LocationListener listener;
     private LocationManager locationManager;
     private Intent intentToBroadcastReceiver = new Intent();
-    private int timeInterval; //millis
-    private SharedPreferences preferences;
 
 
     @Nullable
@@ -38,8 +36,9 @@ public class LocationServiceProvider extends Service {
     public void onCreate() {
         Log.i(TAG, "Service started!");
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        timeInterval = Methods.millisToSeconds(Integer.parseInt(preferences.getString(Constants.timeIntervalKey, "1000")));
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //millis
+        int timeInterval = Methods.millisToSeconds(Integer.parseInt(preferences.getString(Constants.timeIntervalKey, "1000")));
 
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         listener = new LocationListener() {
@@ -91,6 +90,7 @@ public class LocationServiceProvider extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.i(TAG, "LocationServiceProvider is shutting down..");
         if (locationManager != null) {
             locationManager.removeUpdates(listener);
         }
