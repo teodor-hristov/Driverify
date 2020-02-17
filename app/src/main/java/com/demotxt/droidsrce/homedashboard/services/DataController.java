@@ -122,7 +122,7 @@ public class DataController extends Service {
         try {
             if (bluetoothWriter == null) {
                 bluetoothWriter = new CSVWriter(Constants.DataLogPath);
-                bluetoothWriter.append("rpm speed coolant load timestamp");
+                bluetoothWriter.append(Constants.obdDataCSVHeader);
             }
         } catch (IOException e) {
             e.printStackTrace();
