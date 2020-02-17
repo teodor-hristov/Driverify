@@ -95,7 +95,7 @@ public class DataController extends Service {
         unregisterReceiver(liveDataReceiever);
         try {
             bluetoothWriter.close();
-            //locationWriter.close();
+            locationWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -117,7 +117,6 @@ public class DataController extends Service {
 
     private void handleBluetoothLiveData(ObdReaderData data) {
         Log.i(TAG, "Handle bt data.");
-        timestamp = new Timestamp(System.currentTimeMillis());
         StringBuilder sb;
         try {
             if (bluetoothWriter == null) {
@@ -137,7 +136,7 @@ public class DataController extends Service {
                         sb.append(str);
                         sb.append(" ");
                     }
-                    sb.append(timestamp.getTime());
+                    sb.append(new java.util.Date().getTime());
                     bluetoothWriter.append(sb.toString());
                     autoSave(bluetoothWriter);
                 } catch (IOException e) {
@@ -153,7 +152,7 @@ public class DataController extends Service {
         try {
             if (locationWriter == null) {
                 locationWriter = new CSVWriter(Constants.DataLogPath + "/Location/");
-                locationWriter.append("latitude longitude");
+                locationWriter.append("latitude longitude timestamp");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -168,6 +167,7 @@ public class DataController extends Service {
                     sb.append(" ");
                 }
                 if (sb != null) {
+                    sb.append(new java.util.Date().getTime());
                     locationWriter.append(sb.toString());
                 }
                 autoSave(locationWriter);
