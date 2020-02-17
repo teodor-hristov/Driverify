@@ -78,7 +78,7 @@ public class ObdConnection extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "onDestroy: ok");
+        Log.i(TAG, "ObdConnection is shutting down..");
         makeToast("Bluetooth connection is broken.");
         if (sock != null) {
             try {
