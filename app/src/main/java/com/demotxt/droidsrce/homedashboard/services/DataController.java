@@ -54,13 +54,13 @@ public class DataController extends Service {
             ObdReaderData data;
 
             if (action.equals(Constants.disconnected)) {
-                //connectionLost(intent);
+                connectionLost(intent);
             }
             if (action.equals(Constants.GPSEnabled)) {
-                //locationEnabled();
+                locationEnabled();
             }
             if (action.equals(Constants.GPSDisabled)) {
-                //locationDisabled();
+                locationDisabled();
             }
             if (action.equals(Constants.receiveData)) {
                 data = intent.getParcelableExtra(Constants.receiveData);
@@ -179,6 +179,7 @@ public class DataController extends Service {
     }
 
     private void locationDisabled() {
+        Log.i(TAG, "Location disabled");
         try {
             if (locationWriter != null)
                 locationWriter.close();
