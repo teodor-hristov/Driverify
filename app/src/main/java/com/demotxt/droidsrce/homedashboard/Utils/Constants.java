@@ -14,5 +14,5 @@ public class Constants {
     public static final String timeIntervalKey = "obd_update_period_preference";
 
     public static final int saveSeconds = 10;
-    public static final String obdDataCSVHeader = "rpm speed coolant load timestamp";
+    public static final String obdDataCSVHeader = "rpm speed coolant load fuel_level timestamp";
 }
