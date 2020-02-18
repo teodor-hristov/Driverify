@@ -88,6 +88,7 @@ public class DataController extends Service {
         super.onDestroy();
         Log.i(TAG, "DataController is shutting down..");
         unregisterReceiver(liveDataReceiever);
+        stopLocation();
         try {
             if (bluetoothWriter != null && locationWriter != null) {
                 bluetoothWriter.close();
@@ -149,7 +150,7 @@ public class DataController extends Service {
         try {
             if (locationWriter == null) {
                 locationWriter = new CSVWriter(Constants.DataLogPath + "/Location/");
-                locationWriter.append("latitude longitude timestamp");
+                locationWriter.append("longitude latitude timestamp");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -203,5 +204,9 @@ public class DataController extends Service {
         if (ts.getSeconds() % Constants.saveSeconds == 0) {
             fileWriter.flush();
         }
+    }
+
+    private void stopLocation() {
+
     }
 }
