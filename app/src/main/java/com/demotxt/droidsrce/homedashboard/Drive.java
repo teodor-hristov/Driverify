@@ -308,12 +308,20 @@ public final class Drive extends AppCompatActivity {
     }
 
     private void handleBluetoothLiveData(ObdReaderData data) {
+        ArrayList tempData;
         actionBarMenu.findItem(R.id.bluetoothStatus).setIcon(R.drawable.ic_bluetooth_connected_black_24dp);
-        if (data != null) {
-            for (int i = 0; i < data.getCommands().size(); i++) {
-                driveItems.get(i).setText("" + data.getCommands().get(i));
+        if (data == null) {
+            return;
+        }
+        tempData = data.getCommands();
+        for (int i = 0; i < tempData.size(); i++) {
+            if (tempData.get(i) == null) {
+                driveItems.get(i).setText("NaN");
+            } else {
+                driveItems.get(i).setText(tempData.get(i).toString());
             }
         }
+
     }
 
     private void handleLocationLiveData() {
