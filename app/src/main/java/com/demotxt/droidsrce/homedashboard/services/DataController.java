@@ -27,7 +27,6 @@ public class DataController extends Service {
     private final String TAG = "DataController";
     private CSVWriter bluetoothWriter;
     private CSVWriter locationWriter;
-    private IntentFilter filter;
     private String[] actions = {
             Constants.CONNECTED,
             Constants.DISCONNECTED,
@@ -51,6 +50,8 @@ public class DataController extends Service {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             ObdReaderData data;
+            if (action == null)
+                return;
 
             switch (action) {
                 case Constants.DISCONNECTED:
@@ -81,7 +82,7 @@ public class DataController extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        filter = new IntentFilter();
+        IntentFilter filter = new IntentFilter();
         filterAddActions(filter, actions);
         registerReceiver(liveDataReceiever, filter);
         formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
