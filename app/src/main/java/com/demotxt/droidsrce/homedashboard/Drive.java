@@ -61,6 +61,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public final class Drive extends AppCompatActivity {
     private final String TAG = getClass().getName();
@@ -175,14 +176,7 @@ public final class Drive extends AppCompatActivity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         filter = new IntentFilter();
-        driveItems = new ArrayList<>();
-        driveItems.add(rpmText);
-        driveItems.add(speedText);
-        driveItems.add(engineLoad);
-        driveItems.add(coolantText);
-        driveItems.add(oilTemp);
-
-        // location = new LocationIO(Drive.this);
+        driveItems = new ArrayList<>(Arrays.asList(rpmText, speedText, engineLoad, coolantText, oilTemp));
 
         if (btAdapter != null)
             bluetoothDefaultIsEnable = btAdapter.isEnabled();
