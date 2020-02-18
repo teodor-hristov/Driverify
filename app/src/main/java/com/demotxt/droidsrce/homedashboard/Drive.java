@@ -97,14 +97,14 @@ public final class Drive extends AppCompatActivity {
     private IntentFilter filter;
 
     private String[] actions = {
-            Constants.connected,
-            Constants.disconnected,
-            Constants.receiveData,
-            Constants.extra,
-            Constants.GPSDisabled,
-            Constants.GPSEnabled,
-            Constants.GPSLiveData,
-            Constants.GPSPutExtra
+            Constants.CONNECTED,
+            Constants.DISCONNECTED,
+            Constants.RECEIVE_DATA,
+            Constants.EXTRA,
+            Constants.GPS_DISABLED,
+            Constants.GPS_ENABLED,
+            Constants.GPS_LIVE_DATA,
+            Constants.GPS_PUT_EXTRA
     };
     private Menu actionBarMenu;
 
@@ -122,31 +122,32 @@ public final class Drive extends AppCompatActivity {
             String action = intent.getAction();
             ObdReaderData data;
 
-            if (action.equals(Constants.connected)) {
-                connectedBluetooth(intent);
-            }
-            if (action.equals(Constants.disconnected)) {
-                connectionLost(intent);
-            }
-            if (action.equals(Constants.GPSEnabled)) {
-                locationEnabled();
-                Log.i(TAG, "Enable");
-            }
-            if (action.equals(Constants.GPSDisabled)) {
-                locationDisabled();
-                Log.i(TAG, "Disable");
-            }
+            switch (action) {
+                case Constants.CONNECTED:
+                    connectedBluetooth(intent);
+                    break;
+                case Constants.DISCONNECTED:
+                    connectionLost(intent);
+                    break;
+                case Constants.GPS_ENABLED:
+                    locationEnabled();
+                    Log.i(TAG, "Enable");
+                    break;
+                case Constants.GPS_DISABLED:
+                    locationDisabled();
+                    Log.i(TAG, "Disable");
+                    break;
+                case Constants.GPS_LIVE_DATA:
+                    if (intent.hasExtra(Constants.GPS_PUT_EXTRA)) {
+                        handleLocationLiveData();
+                    }
+                    break;
+                case Constants.RECEIVE_DATA:
+                    data = intent.getParcelableExtra(Constants.RECEIVE_DATA);
+                    handleBluetoothLiveData(data);
+                    break;
 
-            if (action.equals(Constants.receiveData)) {
-                data = intent.getParcelableExtra(Constants.receiveData);
-                handleBluetoothLiveData(data);
             }
-            if (action.equals(Constants.GPSLiveData)) {
-                if (intent.hasExtra(Constants.GPSPutExtra)) {
-                    handleLocationLiveData();
-                }
-            }
-
         }
     };
 
@@ -296,7 +297,7 @@ public final class Drive extends AppCompatActivity {
     }
 
     private void connectedBluetooth(Intent intent) {
-        String connectionStatusMsg = intent.getStringExtra(Constants.extra);
+        String connectionStatusMsg = intent.getStringExtra(Constants.EXTRA);
         makeToast(connectionStatusMsg);
 
         if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {
@@ -305,7 +306,7 @@ public final class Drive extends AppCompatActivity {
     }
 
     private void connectionLost(Intent intent) {
-        String connectionStatusMsg = intent.getStringExtra(Constants.extra);
+        String connectionStatusMsg = intent.getStringExtra(Constants.EXTRA);
         if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {
             makeToast("Connection lost.");
             actionBarMenu.getItem(R.id.bluetoothStatus).setIcon(R.drawable.ic_bluetooth_searching_black_24dp);
@@ -348,7 +349,7 @@ public final class Drive extends AppCompatActivity {
 
     public void makeSnackbar(String string) {
         Snackbar.make(mGraphicOverlay, string,
-                Snackbar.LENGTH_INDEFINITE)
+                Snackbar.LENGTH_SHORT)
                 .show();
     }
 
