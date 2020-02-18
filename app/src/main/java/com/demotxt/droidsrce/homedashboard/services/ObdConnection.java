@@ -36,6 +36,7 @@ import com.github.pires.obd.exceptions.UnsupportedCommandException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
@@ -100,12 +101,12 @@ public class ObdConnection extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         stringCommands = new ArrayList<>();
         stringDtc = new ArrayList<>();
-        ArrayList<ObdCommand> commands = new ArrayList<>();
-        commands.add(new RPMCommand());
-        commands.add(new SpeedCommand());
-        commands.add(new EngineCoolantTemperatureCommand());
-        commands.add(new LoadCommand());
-        commands.add(new FuelLevelCommand());
+        ArrayList<ObdCommand> commands = new ArrayList<>(Arrays.asList(
+                new RPMCommand(),
+                new SpeedCommand(),
+                new EngineCoolantTemperatureCommand(),
+                new LoadCommand(),
+                new FuelLevelCommand()));
         setCmds(commands);
 
         ArrayList<ObdCommand> dtcCommand = new ArrayList<>();
