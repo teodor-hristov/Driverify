@@ -29,14 +29,14 @@ public class DataController extends Service {
     private CSVWriter locationWriter;
     private IntentFilter filter;
     private String[] actions = {
-            Constants.connected,
-            Constants.disconnected,
-            Constants.receiveData,
-            Constants.extra,
-            Constants.GPSDisabled,
-            Constants.GPSEnabled,
-            Constants.GPSLiveData,
-            Constants.GPSPutExtra
+            Constants.CONNECTED,
+            Constants.DISCONNECTED,
+            Constants.RECEIVE_DATA,
+            Constants.EXTRA,
+            Constants.GPS_DISABLED,
+            Constants.GPS_ENABLED,
+            Constants.GPS_LIVE_DATA,
+            Constants.GPS_PUT_EXTRA
     };
     private SimpleDateFormat formatter;
 
@@ -52,25 +52,29 @@ public class DataController extends Service {
             String action = intent.getAction();
             ObdReaderData data;
 
-            if (action.equals(Constants.disconnected)) {
-                connectionLost(intent);
-            }
-            if (action.equals(Constants.GPSEnabled)) {
-                locationEnabled();
-            }
-            if (action.equals(Constants.GPSDisabled)) {
-                locationDisabled();
-            }
-            if (action.equals(Constants.receiveData)) {
-                data = intent.getParcelableExtra(Constants.receiveData);
-                handleBluetoothLiveData(data);
-            }
-            if (action.equals(Constants.GPSLiveData)) {
-                if (intent.hasExtra(Constants.GPSPutExtra)) {
-                    handleLocationLiveData(intent);
-                }
-            }
+            switch (action) {
+                case Constants.DISCONNECTED:
+                    connectionLost(intent);
+                    break;
+                case Constants.GPS_ENABLED:
+                    locationEnabled();
+                    Log.i(TAG, "Enable");
+                    break;
+                case Constants.GPS_DISABLED:
+                    locationDisabled();
+                    Log.i(TAG, "Disable");
+                    break;
+                case Constants.GPS_LIVE_DATA:
+                    if (intent.hasExtra(Constants.GPS_PUT_EXTRA)) {
+                        handleLocationLiveData(intent);
+                    }
+                    break;
+                case Constants.RECEIVE_DATA:
+                    data = intent.getParcelableExtra(Constants.RECEIVE_DATA);
+                    handleBluetoothLiveData(data);
+                    break;
 
+            }
         }
     };
 
@@ -100,7 +104,7 @@ public class DataController extends Service {
     }
 
     private void connectionLost(Intent intent) {
-        String connectionStatusMsg = intent.getStringExtra(Constants.extra);
+        String connectionStatusMsg = intent.getStringExtra(Constants.EXTRA);
         Log.i(TAG, "Connection lost.");
         if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {
             try {
@@ -118,8 +122,8 @@ public class DataController extends Service {
         StringBuilder sb;
         try {
             if (bluetoothWriter == null) {
-                bluetoothWriter = new CSVWriter(Constants.DataLogPath);
-                bluetoothWriter.append(Constants.obdDataCSVHeader);
+                bluetoothWriter = new CSVWriter(Constants.DATA_LOG_PATH);
+                bluetoothWriter.append(Constants.OBD_DATA_HEADER_CSV);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -149,18 +153,18 @@ public class DataController extends Service {
         StringBuilder sb;
         try {
             if (locationWriter == null) {
-                locationWriter = new CSVWriter(Constants.DataLogPath + "/Location/");
-                locationWriter.append("longitude latitude timestamp");
+                locationWriter = new CSVWriter(Constants.DATA_LOG_PATH + "/Location/");
+                locationWriter.append("latitude longitude timestamp");
             }
         } catch (IOException e) {
             e.printStackTrace();
             Log.i(TAG, "Problem with writing location.");
         }
-        if (intent.getStringExtra(Constants.GPSPutExtra) != null) {
-            Log.i(TAG, "" + intent.getStringExtra(Constants.GPSPutExtra));
+        if (intent.getStringExtra(Constants.GPS_PUT_EXTRA) != null) {
+            Log.i(TAG, "" + intent.getStringExtra(Constants.GPS_PUT_EXTRA));
             sb = new StringBuilder();
             try {
-                for (String str : intent.getStringExtra(Constants.GPSPutExtra).split(" ")) {
+                for (String str : intent.getStringExtra(Constants.GPS_PUT_EXTRA).split(" ")) {
                     sb.append(str);
                     sb.append(" ");
                 }
@@ -188,7 +192,7 @@ public class DataController extends Service {
 
     private void locationEnabled() {
         try {
-            locationWriter = new CSVWriter(Constants.DataLogPath + "Location/");
+            locationWriter = new CSVWriter(Constants.DATA_LOG_PATH + "Location/");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -201,7 +205,7 @@ public class DataController extends Service {
 
     private void autoSave(CSVWriter fileWriter) throws IOException {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        if (ts.getSeconds() % Constants.saveSeconds == 0) {
+        if (ts.getSeconds() % Constants.SAVE_SECONDS == 0) {
             fileWriter.flush();
         }
     }

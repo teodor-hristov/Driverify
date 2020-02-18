@@ -137,8 +137,8 @@ public class ObdConnection extends IntentService {
                     new TimeoutCommand(125).run(sock.getInputStream(), sock.getOutputStream());
                     new SelectProtocolCommand(ObdProtocols.AUTO).run(sock.getInputStream(), sock.getOutputStream());
                     Log.i(TAG, "Commands are working and getting data...");
-                    intentToBroadcastReceiver.setAction(Constants.connected);
-                    intentToBroadcastReceiver.putExtra(Constants.extra, getString(R.string.connected_ok));
+                    intentToBroadcastReceiver.setAction(Constants.CONNECTED);
+                    intentToBroadcastReceiver.putExtra(Constants.EXTRA, getString(R.string.connected_ok));
                     sendBroadcast(intentToBroadcastReceiver);
                     makeToast("Data extraction is working.");
                 }
@@ -146,8 +146,8 @@ public class ObdConnection extends IntentService {
             } else {
                 Log.i(TAG, "mbtdevice null");
                 makeToast("The device you selected is not responding to our connection.");
-                intentToBroadcastReceiver.setAction(Constants.connected);
-                intentToBroadcastReceiver.putExtra(Constants.extra, getString(R.string.connect_lost));
+                intentToBroadcastReceiver.setAction(Constants.CONNECTED);
+                intentToBroadcastReceiver.putExtra(Constants.EXTRA, getString(R.string.connect_lost));
                 sendBroadcast(intentToBroadcastReceiver);
             }
 
@@ -177,12 +177,12 @@ public class ObdConnection extends IntentService {
             }
             if (sock.isConnected()) {
                 updateData(sock, cmds, stringCommands);
-                printToIntent(cmds, stringCommands, data, intentToBroadcastReceiver.setAction(Constants.receiveData), Constants.receiveData);
+                printToIntent(cmds, stringCommands, data, intentToBroadcastReceiver.setAction(Constants.RECEIVE_DATA), Constants.RECEIVE_DATA);
 
             } else {
                 Log.i(TAG, "No connection");
-                intentToBroadcastReceiver.setAction(Constants.connected);
-                intentToBroadcastReceiver.putExtra(Constants.extra, Constants.disconnected);
+                intentToBroadcastReceiver.setAction(Constants.CONNECTED);
+                intentToBroadcastReceiver.putExtra(Constants.EXTRA, Constants.DISCONNECTED);
                 sendBroadcast(intentToBroadcastReceiver);
                 try {
                     sock = new BluetoothConnectionIO(mBtDevice).connect();

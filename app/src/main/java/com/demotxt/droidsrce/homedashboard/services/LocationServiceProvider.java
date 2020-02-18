@@ -38,15 +38,15 @@ public class LocationServiceProvider extends Service {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         //millis
-        int timeInterval = Methods.millisToSeconds(Integer.parseInt(preferences.getString(Constants.timeIntervalKey, "1000")));
+        int timeInterval = Methods.millisToSeconds(Integer.parseInt(preferences.getString(Constants.TIME_INTERVAL_KEY, "1000")));
 
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 Log.i(TAG, "Location changed!");
-                intentToBroadcastReceiver.setAction(Constants.GPSLiveData);
-                intentToBroadcastReceiver.putExtra(Constants.GPSPutExtra, location.getLongitude() + " " + location.getLatitude());
+                intentToBroadcastReceiver.setAction(Constants.GPS_LIVE_DATA);
+                intentToBroadcastReceiver.putExtra(Constants.GPS_PUT_EXTRA, location.getLatitude() + " " + location.getLongitude());
                 sendBroadcast(intentToBroadcastReceiver);
             }
 
@@ -58,14 +58,14 @@ public class LocationServiceProvider extends Service {
             @Override
             public void onProviderEnabled(String s) {
                 Log.i(TAG, "Provider started!");
-                intentToBroadcastReceiver.setAction(Constants.GPSEnabled);
+                intentToBroadcastReceiver.setAction(Constants.GPS_ENABLED);
                 sendBroadcast(intentToBroadcastReceiver);
             }
 
             @Override
             public void onProviderDisabled(String s) {
                 Log.i(TAG, "Provider stopped!");
-                intentToBroadcastReceiver.setAction(Constants.GPSDisabled);
+                intentToBroadcastReceiver.setAction(Constants.GPS_DISABLED);
                 sendBroadcast(intentToBroadcastReceiver);
             }
         };
