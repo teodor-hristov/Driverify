@@ -72,9 +72,9 @@ public final class Drive extends AppCompatActivity {
 
     //region CAMERA vars
     private static Context appContext;
-    private CameraSource mCameraSource = null;
-    private CameraSourcePreview mPreview;
-    private GraphicOverlay mGraphicOverlay;
+    private CameraSource cameraSource = null;
+    private CameraSourcePreview preview;
+    private GraphicOverlay graphicOverlay;
     //endregion
 
     //region OBD vars
@@ -93,7 +93,6 @@ public final class Drive extends AppCompatActivity {
     private boolean isRegistered = false;
     private boolean preRequisites = true;
     private BluetoothAdapter btAdapter;
-    private BluetoothDevice mBtDevice;
     private SharedPreferences prefs;
     private IntentFilter filter;
 
@@ -165,8 +164,8 @@ public final class Drive extends AppCompatActivity {
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
 
         appContext = getApplicationContext();
-        mPreview = findViewById(R.id.preview);
-        mGraphicOverlay = findViewById(R.id.faceOverlay);
+        preview = findViewById(R.id.preview);
+        graphicOverlay = findViewById(R.id.faceOverlay);
         rpmText = findViewById(R.id.rpmValue);
         speedText = findViewById(R.id.speedometerValue);
         engineLoad = findViewById(R.id.engineLoadValue);
@@ -337,7 +336,7 @@ public final class Drive extends AppCompatActivity {
                 new LocationIO(getAppContext());
             }
         };
-        Snackbar.make(mGraphicOverlay,
+        Snackbar.make(graphicOverlay,
                 "You turned off GPS, for better usage of this application you have to turn it on.",
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction("Turn on", listener)
@@ -350,7 +349,7 @@ public final class Drive extends AppCompatActivity {
     }
 
     public void makeSnackbar(String string) {
-        Snackbar.make(mGraphicOverlay, string,
+        Snackbar.make(graphicOverlay, string,
                 Snackbar.LENGTH_SHORT)
                 .show();
     }
@@ -415,7 +414,7 @@ public final class Drive extends AppCompatActivity {
             }
         };
 
-        Snackbar.make(mGraphicOverlay, R.string.permission_camera_rationale,
+        Snackbar.make(graphicOverlay, R.string.permission_camera_rationale,
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.ok, listener)
                 .show();
@@ -449,7 +448,7 @@ public final class Drive extends AppCompatActivity {
             Log.w(TAG, "Face detector dependencies are not yet available.");
         }
 
-        mCameraSource = new CameraSource.Builder(context, detector)
+        cameraSource = new CameraSource.Builder(context, detector)
                 .setRequestedPreviewSize(640, 480)
                 .setFacing(CameraSource.CAMERA_FACING_FRONT)
                 .setRequestedFps(30.0f)
@@ -519,13 +518,13 @@ public final class Drive extends AppCompatActivity {
             dlg.show();
         }
 
-        if (mCameraSource != null) {
+        if (cameraSource != null) {
             try {
-                mPreview.start(mCameraSource, mGraphicOverlay);
+                preview.start(cameraSource, graphicOverlay);
             } catch (IOException e) {
                 Log.e(TAG, "Unable to start camera source.", e);
-                mCameraSource.release();
-                mCameraSource = null;
+                cameraSource.release();
+                cameraSource = null;
             }
         }
     }
@@ -537,7 +536,7 @@ public final class Drive extends AppCompatActivity {
     private class GraphicFaceTrackerFactory implements MultiProcessor.Factory<Face> {
         @Override
         public Tracker<Face> create(Face face) {
-            return new GraphicFaceTracker(mGraphicOverlay);
+            return new GraphicFaceTracker(graphicOverlay);
         }
     }
 
