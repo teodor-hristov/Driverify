@@ -77,18 +77,7 @@ public final class Drive extends AppCompatActivity {
     private GraphicOverlay graphicOverlay;
     //endregion
 
-    //region OBD vars
-    private TextView rpmText;
-    private TextView speedText;
-    private TextView engineLoad;
-    private TextView oilTemp;
-    private TextView coolantText;
     private ArrayList<TextView> driveItems;
-    //endregion
-
-    //region Location vars
-    private LocationIO location;
-    //endregion
 
     private boolean isRegistered = false;
     private boolean preRequisites = true;
@@ -149,7 +138,7 @@ public final class Drive extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mPreview.stop();
+        preview.stop();
     }
 
     @Override
@@ -161,11 +150,12 @@ public final class Drive extends AppCompatActivity {
         appContext = getApplicationContext();
         preview = findViewById(R.id.preview);
         graphicOverlay = findViewById(R.id.faceOverlay);
-        rpmText = findViewById(R.id.rpmValue);
-        speedText = findViewById(R.id.speedometerValue);
-        engineLoad = findViewById(R.id.engineLoadValue);
-        oilTemp = findViewById(R.id.oilTemp);
-        coolantText = findViewById(R.id.coolantValue);
+
+        TextView rpmText = findViewById(R.id.rpmValue);
+        TextView speedText = findViewById(R.id.speedometerValue);
+        TextView engineLoad = findViewById(R.id.engineLoadValue);
+        TextView oilTemp = findViewById(R.id.oilTemp);
+        TextView coolantText = findViewById(R.id.coolantValue);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -183,7 +173,6 @@ public final class Drive extends AppCompatActivity {
         if (btAdapter != null) {
             for (BluetoothDevice dev : btAdapter.getBondedDevices()) {
                 if (dev.getAddress().equals(prefs.getString(Preferences.BLUETOOTH_LIST_KEY, "-1"))) {
-                    mBtDevice = dev;
                     break;
                 }
             }
