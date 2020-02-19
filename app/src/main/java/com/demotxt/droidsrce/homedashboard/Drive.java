@@ -37,6 +37,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -112,6 +113,7 @@ public final class Drive extends AppCompatActivity {
             String stringExtra = intent.getStringExtra(Constants.EXTRA);
             ObdReaderData data = intent.getParcelableExtra(Constants.RECEIVE_DATA);
 
+            assert action != null;
             switch (action) {
                 case Constants.CONNECTED:
                     connectedBluetooth(stringExtra);
@@ -453,7 +455,7 @@ public final class Drive extends AppCompatActivity {
      * @see #requestPermissions(String[], int)
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode != RC_HANDLE_CAMERA_PERM) {
             Log.d(TAG, "Got unexpected permission result: " + requestCode);
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
