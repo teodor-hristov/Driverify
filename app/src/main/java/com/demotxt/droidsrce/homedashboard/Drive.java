@@ -120,33 +120,28 @@ public final class Drive extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             isRegistered = true;
             String action = intent.getAction();
-            ObdReaderData data;
+            String stringExtra = intent.getStringExtra(Constants.EXTRA);
+            ObdReaderData data = intent.getParcelableExtra(Constants.RECEIVE_DATA);
 
             switch (action) {
                 case Constants.CONNECTED:
-                    connectedBluetooth(intent);
+                    connectedBluetooth(stringExtra);
                     break;
                 case Constants.DISCONNECTED:
-                    connectionLost(intent);
+                    connectionLost(stringExtra);
                     break;
                 case Constants.GPS_ENABLED:
                     locationEnabled();
-                    Log.i(TAG, "Enable");
                     break;
                 case Constants.GPS_DISABLED:
                     locationDisabled();
-                    Log.i(TAG, "Disable");
                     break;
                 case Constants.GPS_LIVE_DATA:
-                    if (intent.hasExtra(Constants.GPS_PUT_EXTRA)) {
-                        handleLocationLiveData();
-                    }
+                    handleLocationLiveData();
                     break;
                 case Constants.RECEIVE_DATA:
-                    data = intent.getParcelableExtra(Constants.RECEIVE_DATA);
                     handleBluetoothLiveData(data);
                     break;
-
             }
         }
     };
@@ -289,17 +284,14 @@ public final class Drive extends AppCompatActivity {
         Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    private void connectedBluetooth(Intent intent) {
-        String connectionStatusMsg = intent.getStringExtra(Constants.EXTRA);
-        makeToast(connectionStatusMsg);
-
+    private void connectedBluetooth(String connectionStatusMsg) {
+        //makeToast(connectionStatusMsg);
         if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {
             makeToast(getString(R.string.obd_connected));
         }
     }
 
-    private void connectionLost(Intent intent) {
-        String connectionStatusMsg = intent.getStringExtra(Constants.EXTRA);
+    private void connectionLost(String connectionStatusMsg) {
         if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {
             makeToast("Connection lost.");
             actionBarMenu.getItem(R.id.bluetoothStatus).setIcon(R.drawable.ic_bluetooth_searching_black_24dp);
@@ -307,20 +299,20 @@ public final class Drive extends AppCompatActivity {
     }
 
     private void handleBluetoothLiveData(ObdReaderData data) {
-        ArrayList tempData;
+        ArrayList commands;
         actionBarMenu.findItem(R.id.bluetoothStatus).setIcon(R.drawable.ic_bluetooth_connected_black_24dp);
         if (data == null) {
             return;
         }
-        tempData = data.getCommands();
-        for (int i = 0; i < tempData.size(); i++) {
-            if (tempData.get(i) == null) {
+
+        commands = data.getCommands();
+        for (int i = 0; i < commands.size(); i++) {
+            if (commands.get(i) == null) {
                 driveItems.get(i).setText("NaN");
             } else {
-                driveItems.get(i).setText(tempData.get(i).toString());
+                driveItems.get(i).setText(commands.get(i).toString());
             }
         }
-
     }
 
     private void handleLocationLiveData() {
