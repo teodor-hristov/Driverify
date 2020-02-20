@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 public class DataController extends Service {
+    private static final int ASSERTED_COMMANDS_COUNT = 5;
     private final String TAG = "DataController";
     private CSVWriter bluetoothWriter;
     private CSVWriter locationWriter;
@@ -49,32 +50,26 @@ public class DataController extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            ObdReaderData data;
-            if (action == null)
-                return;
+            String stringExtra = intent.getStringExtra(Constants.EXTRA);
+            ObdReaderData data = intent.getParcelableExtra(Constants.RECEIVE_DATA);
 
+            assert action != null;
             switch (action) {
                 case Constants.DISCONNECTED:
-                    connectionLost(intent);
+                    connectionLost(stringExtra);
                     break;
                 case Constants.GPS_ENABLED:
-                    locationEnabled();
-                    Log.i(TAG, "Enable");
+                    //locationEnabled();
                     break;
                 case Constants.GPS_DISABLED:
                     locationDisabled();
-                    Log.i(TAG, "Disable");
                     break;
                 case Constants.GPS_LIVE_DATA:
-                    if (intent.hasExtra(Constants.GPS_PUT_EXTRA)) {
-                        handleLocationLiveData(intent);
-                    }
+                    handleLocationLiveData(stringExtra);
                     break;
                 case Constants.RECEIVE_DATA:
-                    data = intent.getParcelableExtra(Constants.RECEIVE_DATA);
                     handleBluetoothLiveData(data);
                     break;
-
             }
         }
     };
@@ -95,17 +90,13 @@ public class DataController extends Service {
         unregisterReceiver(liveDataReceiever);
         stopLocation();
         try {
-            if (bluetoothWriter != null && locationWriter != null) {
-                bluetoothWriter.close();
-                locationWriter.close();
-            }
+            closeWriters(bluetoothWriter, locationWriter);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void connectionLost(Intent intent) {
-        String connectionStatusMsg = intent.getStringExtra(Constants.EXTRA);
+    private void connectionLost(String connectionStatusMsg) {
         Log.i(TAG, "Connection lost.");
         if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {
             try {
@@ -120,59 +111,60 @@ public class DataController extends Service {
 
     private void handleBluetoothLiveData(ObdReaderData data) {
         Log.i(TAG, "Handle bt data.");
-        StringBuilder sb;
-        try {
-            if (bluetoothWriter == null) {
+        StringBuilder sb = new StringBuilder();
+        if (bluetoothWriter == null) {
+            try {
                 bluetoothWriter = new CSVWriter(Constants.DATA_LOG_PATH);
                 bluetoothWriter.append(Constants.OBD_DATA_HEADER_CSV);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.i(TAG, "Writer initialization problem.");
+                Log.i(TAG, e.getMessage());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.i(TAG, "Writer initialization problem.");
-            Log.i(TAG, e.getMessage());
-        }
-        if (data != null) {
-            sb = new StringBuilder();
-            if (bluetoothWriter != null) {
-                try {
-                    for (String str : data.getCommands()) {
-                        sb.append(str);
-                        sb.append(" ");
-                    }
-                    sb.append(formatter.format(new java.util.Date().getTime()));
-                    bluetoothWriter.append(sb.toString());
-                    autoSave(bluetoothWriter);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.i(TAG, "Could not write to file");
-                }
+        } else {
+            if (data == null || data.getCommands().size() < ASSERTED_COMMANDS_COUNT) {
+                return;
             }
-        }
-    }
 
-    private void handleLocationLiveData(Intent intent) {
-        StringBuilder sb;
-        try {
-            if (locationWriter == null) {
-                locationWriter = new CSVWriter(Constants.DATA_LOG_PATH + "/Location/");
-                locationWriter.append("latitude longitude timestamp");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.i(TAG, "Problem with writing location.");
-        }
-        if (intent.getStringExtra(Constants.GPS_PUT_EXTRA) != null) {
-            Log.i(TAG, "" + intent.getStringExtra(Constants.GPS_PUT_EXTRA));
-            sb = new StringBuilder();
             try {
-                for (String str : intent.getStringExtra(Constants.GPS_PUT_EXTRA).split(" ")) {
+                for (String str : data.getCommands()) {
                     sb.append(str);
                     sb.append(" ");
                 }
-                if (sb != null) {
-                    sb.append(formatter.format(new java.util.Date().getTime()));
-                    locationWriter.append(sb.toString());
+                sb.append(formatter.format(new java.util.Date().getTime()));
+                bluetoothWriter.append(sb.toString());
+                autoSave(bluetoothWriter);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.i(TAG, "Could not write to file");
+            }
+        }
+
+    }
+
+    private void handleLocationLiveData(String gpsExtraString) {
+        StringBuilder sb = new StringBuilder();
+        if (gpsExtraString == null || gpsExtraString.length() < 2) {
+            return;
+        }
+
+        if (locationWriter == null) {
+            try {
+                locationWriter = new CSVWriter(Constants.DATA_LOG_PATH + "/Location/");
+                locationWriter.append("latitude longitude timestamp");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.i(TAG, "Problem with writing location.");
+            }
+        } else {
+            try {
+                for (String str : gpsExtraString.split(" ")) {
+                    sb.append(str);
+                    sb.append(" ");
                 }
+
+                sb.append(formatter.format(new java.util.Date().getTime()));
+                locationWriter.append(sb.toString());
                 autoSave(locationWriter);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -213,5 +205,12 @@ public class DataController extends Service {
 
     private void stopLocation() {
 
+    }
+
+    private void closeWriters(CSVWriter... writers) throws IOException {
+        for (CSVWriter writer : writers) {
+            assert writer != null;
+            writer.close();
+        }
     }
 }
