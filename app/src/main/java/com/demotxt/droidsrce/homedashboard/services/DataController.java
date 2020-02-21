@@ -46,7 +46,7 @@ public class DataController extends Service {
         return null;
     }
 
-    private BroadcastReceiver liveDataReceiever = new BroadcastReceiver() {
+    private BroadcastReceiver liveDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -79,7 +79,7 @@ public class DataController extends Service {
         super.onCreate();
         IntentFilter filter = new IntentFilter();
         filterAddActions(filter, actions);
-        registerReceiver(liveDataReceiever, filter);
+        registerReceiver(liveDataReceiver, filter);
         formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     }
 
@@ -87,7 +87,7 @@ public class DataController extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "DataController is shutting down..");
-        unregisterReceiver(liveDataReceiever);
+        unregisterReceiver(liveDataReceiver);
         stopLocation();
         try {
             closeWriters(bluetoothWriter, locationWriter);
