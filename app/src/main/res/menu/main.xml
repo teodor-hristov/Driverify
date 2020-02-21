@@ -19,16 +19,18 @@
         android:title="@string/settings_dialog"
         app:showAsAction="ifRoom">
         <menu>
-            <item android:id="@+id/start_live_data"
+            <item
+                android:id="@+id/start_live_data"
                 android:title="@string/start_live_data"
-                app:showAsAction="never"/>
-            <item android:id="@+id/stop_live_data"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/stop_live_data"
                 android:title="@string/stop_live_data"
-                app:showAsAction="never"/>
-            <item android:id="@+id/driveSettings"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/driveSettings"
                 android:title="@string/settings_dialog"
-                app:showAsAction="never"/>
-
+                app:showAsAction="never" />
         </menu>
     </item>
 </menu>
