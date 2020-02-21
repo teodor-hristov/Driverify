@@ -6,12 +6,12 @@
     <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
     <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
 
-<!--    Bluetooth dialog-->
+    <!--    Bluetooth dialog-->
     <string name="dialogHead">Choose bluetooth device!</string>
     <string name="error">"There is an error."</string>
     <string name="bluetoothPerm">You cannnot use car monitoring features without connecting to bluetooth ECU device.</string>
-    
-<!--    HOME-->
+
+    <!--    HOME-->
     <string name="homeDrive">Drive</string>
     <string name="homeDriveInfo">Get ready for driving. This monitors car info, drowsiness detection.</string>
     <string name="homeInfo">Info</string>
@@ -23,10 +23,10 @@
     <string name="homeFaultCodes">Fault codes</string>
     <string name="homeFaultCodesInfo">Information about fault codes in the vehicle.</string>
 
-<!--    DRIVE_SETTINGS-->
+    <!--    DRIVE_SETTINGS-->
     <string name="settings_dialog">Settings</string>
 
-<!--    DRIVE-->
+    <!--    DRIVE-->
     <string name="rpmText">Engine RPM</string>
     <string name="coolantText">Coolant temperature (C)</string>
     <string name="maxSpeedText">Max speed (km/h)</string>
@@ -42,7 +42,7 @@
     <string name="start_live_data">Start live data!</string>
     <string name="stop_live_data">Stop live data!</string>
 
-<!--    DTCs-->
+    <!--    DTCs-->
     <string name="get_codes">Get DTCs</string>
     <string name="clear_codes">Clear DTCs</string>
     <string name="copy_codes">Copy DTCs</string>
@@ -52,7 +52,7 @@
     <string name="no_dtc">There is no DTCs stored in your vehicle!</string>
 
 
-<!--    PREFERENCES-->
+    <!--    PREFERENCES-->
     <string name="title_pref_features">Choose features</string>
     <string name="pref_pedestrian_detection">Pedestrian detection.</string>
     <string name="pref_pedestrian_detection_summary">Turn on/off pedestrian detection.</string>
@@ -114,4 +114,5 @@
     <string name="pref_dev_email_title">Developer Email</string>
     <string name="pref_dev_email_summary">Logs will be emailed to this address</string>
     <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="exit">Exit</string>
 </resources>
