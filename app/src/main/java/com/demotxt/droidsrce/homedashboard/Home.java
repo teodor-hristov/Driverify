@@ -78,4 +78,21 @@ public class Home extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.exit:
+                finishAndRemoveTask();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
