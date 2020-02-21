@@ -144,7 +144,7 @@ public class DataController extends Service {
 
     private void handleLocationLiveData(String gpsExtraString) {
         StringBuilder sb = new StringBuilder();
-        if (gpsExtraString == null || gpsExtraString.length() < 2) {
+        if (gpsExtraString == null || gpsExtraString.split(" ").length < 2) {
             return;
         }
 
