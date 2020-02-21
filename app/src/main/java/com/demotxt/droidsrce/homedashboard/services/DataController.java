@@ -209,8 +209,8 @@ public class DataController extends Service {
 
     private void closeWriters(CSVWriter... writers) throws IOException {
         for (CSVWriter writer : writers) {
-            assert writer != null;
-            writer.close();
+            if (writer != null)
+                writer.close();
         }
     }
 }
