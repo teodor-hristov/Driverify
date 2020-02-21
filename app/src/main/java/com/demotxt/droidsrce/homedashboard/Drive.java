@@ -105,7 +105,7 @@ public final class Drive extends AppCompatActivity {
     // Activity Methods
     //==============================================================================================
 
-    private BroadcastReceiver liveDataReceiever = new BroadcastReceiver() {
+    private BroadcastReceiver liveDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             isRegistered = true;
@@ -192,7 +192,7 @@ public final class Drive extends AppCompatActivity {
         }
 
         if (!isRegistered) {
-            registerReceiver(liveDataReceiever, filter);
+            registerReceiver(liveDataReceiver, filter);
         }
     }
 
@@ -203,7 +203,7 @@ public final class Drive extends AppCompatActivity {
             btAdapter.disable();
 
         if (isRegistered) {
-            unregisterReceiver(liveDataReceiever);
+            unregisterReceiver(liveDataReceiver);
             isRegistered = false;
         }
         if (Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
@@ -253,7 +253,7 @@ public final class Drive extends AppCompatActivity {
             preRequisites = btAdapter != null && btAdapter.disable();
         }
         if (!isRegistered) {
-            registerReceiver(liveDataReceiever, filter);
+            registerReceiver(liveDataReceiver, filter);
         }
         if (!Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
             startService(new Intent(getApplicationContext(), ObdConnection.class));
@@ -347,14 +347,14 @@ public final class Drive extends AppCompatActivity {
         startService(new Intent(Drive.this, DataController.class));
         startService(new Intent(Drive.this, LocationServiceProvider.class));
         if (!isRegistered) {
-            registerReceiver(liveDataReceiever, filter);
+            registerReceiver(liveDataReceiver, filter);
         }
         makeSnackbar("Live data started.");
     }
 
     public void stopLiveData() {
         if (isRegistered) {
-            unregisterReceiver(liveDataReceiever);
+            unregisterReceiver(liveDataReceiver);
             isRegistered = false;
         }
         if (Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
