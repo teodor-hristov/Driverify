@@ -15,14 +15,11 @@
  */
 package com.demotxt.droidsrce.homedashboard;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
-import android.view.View;
 
-import com.demotxt.droidsrce.homedashboard.Drive;
 import com.demotxt.droidsrce.homedashboard.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.face.Face;
 
@@ -37,7 +34,8 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     private static final float ID_Y_OFFSET = 50.0f;
     private static final float ID_X_OFFSET = -50.0f;
     private static final float BOX_STROKE_WIDTH = 5.0f;
-    MediaPlayer mp;
+    private static int SLEEPING_CONSTANT = 10;
+    private MediaPlayer mediaPlayer;
 
     private static final int COLOR_CHOICES[] = {
             Color.BLUE,
@@ -105,11 +103,6 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float x = translateX(face.getPosition().x + face.getWidth() / 2);
         float y = translateY(face.getPosition().y + face.getHeight() / 2);
         canvas.drawCircle(x, y, FACE_POSITION_RADIUS, mFacePositionPaint);
-//        canvas.drawText("id: " + mFaceId, x + ID_X_OFFSET, y + ID_Y_OFFSET, mIdPaint);
-//        canvas.drawText("happiness: " + String.format("%.2f", face.getIsSmilingProbability()), x - ID_X_OFFSET, y - ID_Y_OFFSET, mIdPaint);
-//        canvas.drawText("right eye: " + String.format("%.2f", face.getIsRightEyeOpenProbability()), x + ID_X_OFFSET * 2, y + ID_Y_OFFSET * 2, mIdPaint);
-//        canvas.drawText("left eye: " + String.format("%.2f", face.getIsLeftEyeOpenProbability()), x - ID_X_OFFSET * 2, y - ID_Y_OFFSET * 2, mIdPaint);
-
 
         // Draws a bounding box around the face.
         float xOffset = scaleX(face.getWidth() / 2.0f);
@@ -135,7 +128,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         } else {
             timer = 0;
         }
-        if(timer >= 10){
+        if (timer >= SLEEPING_CONSTANT) {
                 play();
 
            canvas.drawText("SLEEPY", x - ID_X_OFFSET * 2, y - ID_Y_OFFSET * 2 - 40, mIdPaint);
@@ -148,24 +141,24 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     }
 
     public void play(){
-        if(mp == null){
-            mp = MediaPlayer.create(Drive.getAppContext(), R.raw.beep);
-            mp.setLooping(true);
-            mp.setVolume(1,1);
-            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(Drive.getAppContext(), R.raw.beep);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.setVolume(1, 1);
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
                     stopPlayer();
                 }
             });
         }
-        mp.start();
+        mediaPlayer.start();
     }
 
     public void pause() {
-        if (mp != null) {
-            mp.reset();
-            mp.pause();
+        if (mediaPlayer != null) {
+            mediaPlayer.reset();
+            mediaPlayer.pause();
         }
     }
     public void stop(){
@@ -173,9 +166,9 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     }
 
     private void stopPlayer(){
-        if(mp != null)  {
-            mp.release();
-            mp = null;
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 }
