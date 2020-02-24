@@ -161,9 +161,6 @@ class FaceGraphic extends GraphicOverlay.Graphic {
             mediaPlayer.pause();
         }
     }
-    public void stop(){
-        stopPlayer();
-    }
 
     private void stopPlayer(){
         if (mediaPlayer != null) {
