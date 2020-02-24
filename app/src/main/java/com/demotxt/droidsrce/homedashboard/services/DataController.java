@@ -24,7 +24,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 public class DataController extends Service {
-    private static final int ASSERTED_COMMANDS_COUNT = 5;
+    private static final int ASSERTED_COMMANDS_COUNT = 4;
     private final String TAG = "DataController";
     private CSVWriter bluetoothWriter;
     private CSVWriter locationWriter;
@@ -110,7 +110,6 @@ public class DataController extends Service {
     }
 
     private void handleBluetoothLiveData(ObdReaderData data) {
-        Log.i(TAG, "Handle bt data.");
         StringBuilder sb = new StringBuilder();
         if (bluetoothWriter == null) {
             try {
@@ -125,7 +124,7 @@ public class DataController extends Service {
             if (data == null || data.getCommands().size() < ASSERTED_COMMANDS_COUNT) {
                 return;
             }
-
+            Log.i(TAG, "Handle data");
             try {
                 for (String str : data.getCommands()) {
                     sb.append(str);
