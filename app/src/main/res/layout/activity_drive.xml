@@ -33,18 +33,18 @@
     </com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview>
 
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:gravity="top">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top"
+        android:orientation="horizontal">
         <androidx.cardview.widget.CardView
-        android:id="@+id/rpmOverylay"
-        android:layout_width="120dp"
-        android:layout_height="130dp"
-        android:layout_margin="10dp"
-        android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        app:cardBackgroundColor="@color/primary"
+            android:id="@+id/rpmOverylay"
+            android:layout_width="120dp"
+            android:layout_height="130dp"
+            android:layout_margin="10dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/primary"
             android:focusable="true">
 
 
@@ -69,21 +69,21 @@
 
         </androidx.cardview.widget.CardView>
 
-    <View
-        android:id="@+id/divider1"
-        android:layout_width="0dp"
-        android:layout_height="163dp"
-        android:layout_weight="1"
-        android:background="?android:attr/listDivider"
-        android:visibility="invisible" />
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="0dp"
+            android:layout_height="163dp"
+            android:layout_weight="1"
+            android:background="?android:attr/listDivider"
+            android:visibility="invisible" />
         <androidx.cardview.widget.CardView
-        android:id="@+id/fuel"
-        android:layout_width="120dp"
-        android:layout_height="150dp"
-        android:layout_margin="10dp"
-        android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        app:cardBackgroundColor="@color/primary"
+            android:id="@+id/fuel"
+            android:layout_width="120dp"
+            android:layout_height="150dp"
+            android:layout_margin="10dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/primary"
             android:focusable="true">
             <TextView
                 android:layout_width="match_parent"
@@ -122,14 +122,14 @@
             android:foreground="?android:attr/selectableItemBackground"
             app:cardBackgroundColor="@color/primary"
             android:focusable="true">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="bottom|center_horizontal"
-                    android:text="@string/speedometerText"
-                    android:textColor="@color/accent"
-                    android:textSize="16sp">
-                </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom|center_horizontal"
+                android:text="@string/speedometerText"
+                android:textColor="@color/accent"
+                android:textSize="16sp"></TextView>
 
             <TextView
                 android:id="@+id/speedometerValue"
@@ -195,15 +195,16 @@
             android:foreground="?android:attr/selectableItemBackground"
             app:cardBackgroundColor="@color/primary"
             android:focusable="true">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="bottom|center_horizontal"
-                    android:text="@string/coolantText"
-                    android:textColor="@color/accent"
-                    android:textSize="18sp">
 
-                </TextView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom|center_horizontal"
+                android:text="@string/coolantText"
+                android:textColor="@color/accent"
+                android:textSize="18sp">
+
+            </TextView>
 
             <TextView
                 android:id="@+id/coolantValue"
