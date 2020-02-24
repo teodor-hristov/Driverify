@@ -24,7 +24,6 @@ import com.github.pires.obd.commands.SpeedCommand;
 import com.github.pires.obd.commands.control.TroubleCodesCommand;
 import com.github.pires.obd.commands.engine.LoadCommand;
 import com.github.pires.obd.commands.engine.RPMCommand;
-import com.github.pires.obd.commands.fuel.FuelLevelCommand;
 import com.github.pires.obd.commands.protocol.EchoOffCommand;
 import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
 import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
@@ -105,8 +104,7 @@ public class ObdConnection extends IntentService {
                 new RPMCommand(),
                 new SpeedCommand(),
                 new EngineCoolantTemperatureCommand(),
-                new LoadCommand(),
-                new FuelLevelCommand()));
+                new LoadCommand()));
         setCmds(commands);
 
         ArrayList<ObdCommand> dtcCommand = new ArrayList<>();
