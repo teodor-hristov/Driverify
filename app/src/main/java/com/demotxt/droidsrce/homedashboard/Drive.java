@@ -146,7 +146,7 @@ public final class Drive extends AppCompatActivity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_drive);
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
 
         appContext = getApplicationContext();
