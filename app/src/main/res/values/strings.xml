@@ -28,7 +28,7 @@
 
     <!--    DRIVE-->
     <string name="rpmText">Engine RPM</string>
-    <string name="coolantText">Coolant temperature (C)</string>
+    <string name="coolantText">Coolant (C)</string>
     <string name="maxSpeedText">Max speed (km/h)</string>
     <string name="oilTempText">Oil temperature (C)</string>
     <string name="engineLoadText">Engine load</string>
