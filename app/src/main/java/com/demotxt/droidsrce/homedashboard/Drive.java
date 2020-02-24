@@ -146,7 +146,7 @@ public final class Drive extends AppCompatActivity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        setContentView(R.layout.activity_drive);
+        setContentView(R.layout.activity_main);
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
 
         appContext = getApplicationContext();
@@ -154,9 +154,9 @@ public final class Drive extends AppCompatActivity {
         graphicOverlay = findViewById(R.id.faceOverlay);
 
         TextView rpmText = findViewById(R.id.rpmValue);
-        TextView speedText = findViewById(R.id.speedometerValue);
+        TextView speedText = findViewById(R.id.speedValue);
         TextView engineLoad = findViewById(R.id.engineLoadValue);
-        TextView oilTemp = findViewById(R.id.oilTemp);
+        TextView oilTemp = findViewById(R.id.oilValue);
         TextView coolantText = findViewById(R.id.coolantValue);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
