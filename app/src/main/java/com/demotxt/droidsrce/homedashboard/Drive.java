@@ -373,9 +373,6 @@ public final class Drive extends AppCompatActivity {
 
     //region SpeepDetection with GMS
 
-    /**
-     * Broadcast Receiver to receive OBD connection status and real time data
-     */
     private void requestCameraPermission() {
         Log.w(TAG, "Camera permission is not granted. Requesting permission");
 
