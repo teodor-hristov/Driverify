@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CSVWriter {
@@ -25,7 +26,7 @@ public class CSVWriter {
         this.isOpened = true;
         this.PATH = PATH;
         File lvFile = new File(PATH);
-        File lvLogFile = new File(PATH + new Date().toGMTString() + FILE_FORMAT);
+        File lvLogFile = new File(PATH + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date()) + FILE_FORMAT);
         if (!lvFile.exists()) {
             lvFile.mkdirs();
         }
