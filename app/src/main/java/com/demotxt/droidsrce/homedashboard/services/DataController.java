@@ -130,7 +130,7 @@ public class DataController extends Service {
                     sb.append(str);
                     sb.append(" ");
                 }
-                sb.append(formatter.format(new java.util.Date().getTime()));
+                sb.append(System.currentTimeMillis());
                 bluetoothWriter.append(sb.toString());
                 autoSave(bluetoothWriter);
             } catch (IOException e) {
