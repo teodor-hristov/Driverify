@@ -32,6 +32,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Tips"></activity>
         <activity
             android:name=".Drive"
             android:parentActivityName=".Home" />
