@@ -53,7 +53,7 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        tips = new Intent(this, Tips.class);
+        tips = new Intent(this, TripViewer.class);
         tipsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
