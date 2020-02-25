@@ -26,8 +26,8 @@ public class Home extends AppCompatActivity {
             Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION};
-    CardView troubleView, driveView;
-    Intent drive, troubleCodes;
+    CardView troubleView, tipsView, driveView;
+    Intent drive, tips, troubleCodes;
     LinearLayout ll;
 
     @Override
@@ -42,6 +42,7 @@ public class Home extends AppCompatActivity {
 
         ll = findViewById(R.id.ll);
         driveView = findViewById(R.id.driveId);
+        tipsView = findViewById(R.id.tipsId);
         troubleView = findViewById(R.id.troubleCodes);
 
         drive = new Intent(this, Drive.class);
@@ -49,6 +50,14 @@ public class Home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(drive);
+            }
+        });
+
+        tips = new Intent(this, Tips.class);
+        tipsView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(tips);
             }
         });
 
