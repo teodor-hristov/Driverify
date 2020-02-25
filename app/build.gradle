@@ -25,6 +25,7 @@ dependencies {
     })
     implementation 'com.github.pires:obd-java-api:1.0'
     implementation 'com.sohrab:obd-reader:1.0.0'
+    implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
     implementation 'com.google.android.gms:play-services-vision:19.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
