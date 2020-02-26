@@ -35,7 +35,8 @@ public class DataControllerService extends Service {
             Constants.GPS_DISABLED,
             Constants.GPS_ENABLED,
             Constants.GPS_LIVE_DATA,
-            Constants.GPS_PUT_EXTRA
+            Constants.GPS_PUT_EXTRA,
+            Constants.FACE_DATA
     };
     private SimpleDateFormat formatter;
 
@@ -71,6 +72,7 @@ public class DataControllerService extends Service {
                     break;
                 case Constants.FACE_DATA:
                     handleFaceLiveData(stringExtra);
+                    Log.i("Test", "face data");
                     break;
             }
         }
@@ -92,7 +94,7 @@ public class DataControllerService extends Service {
         unregisterReceiver(liveDataReceiver);
         stopLocation();
         try {
-            closeWriters(bluetoothWriter, locationWriter);
+            closeWriters(bluetoothWriter, locationWriter, faceDataWriter);
         } catch (IOException e) {
             e.printStackTrace();
         }
