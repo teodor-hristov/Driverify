@@ -72,7 +72,6 @@ public class DataControllerService extends Service {
                     break;
                 case Constants.FACE_DATA:
                     handleFaceLiveData(stringExtra);
-                    Log.i("Test", "face data");
                     break;
             }
         }
@@ -160,6 +159,10 @@ public class DataControllerService extends Service {
             }
         } else {
             try {
+                for (String str : data.split(" ")) {
+                    sb.append(str);
+                    sb.append(" ");
+                }
                 sb.append(System.currentTimeMillis());
                 faceDataWriter.append(sb.toString());
                 autoSave(faceDataWriter);
