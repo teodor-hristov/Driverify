@@ -32,7 +32,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TripViewer"></activity>
+        <activity
+            android:name=".Trip"
+            android:parentActivityName=".Home"></activity>
+        <activity android:name=".display.TripViewer" />
         <activity
             android:name=".Drive"
             android:parentActivityName=".Home" />
