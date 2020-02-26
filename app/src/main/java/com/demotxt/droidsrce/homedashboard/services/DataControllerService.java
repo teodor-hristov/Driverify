@@ -26,8 +26,7 @@ import java.text.SimpleDateFormat;
 public class DataControllerService extends Service {
     private static final int ASSERTED_COMMANDS_COUNT = 4;
     private final String TAG = "DataControllerService";
-    private CSVWriter bluetoothWriter;
-    private CSVWriter locationWriter;
+    private CSVWriter bluetoothWriter, locationWriter, faceDataWriter;
     private String[] actions = {
             Constants.CONNECTED,
             Constants.DISCONNECTED,
@@ -145,7 +144,28 @@ public class DataControllerService extends Service {
 
     private void handleFaceLiveData(String data) {
         StringBuilder sb = new StringBuilder();
+        if (data == null || data.split(" ").length != 2) {
+            return;
+        }
 
+        if (faceDataWriter == null) {
+            try {
+                faceDataWriter = new CSVWriter(Constants.FACE_DATA_PATH);
+                faceDataWriter.append(Constants.FACE_DATA_HEADER);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.i(TAG, "Problem with writing face data.");
+            }
+        } else {
+            try {
+                sb.append(formatter.format(new java.util.Date().getTime()));
+                faceDataWriter.append(sb.toString());
+                autoSave(faceDataWriter);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.i(TAG, "Could not write to file");
+            }
+        }
     }
 
     private void handleLocationLiveData(String gpsExtraString) {
