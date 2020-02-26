@@ -1,4 +1,4 @@
-package com.demotxt.droidsrce.homedashboard;
+package com.demotxt.droidsrce.homedashboard.display;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +17,7 @@ import com.anychart.enums.Anchor;
 import com.anychart.enums.MarkerType;
 import com.anychart.enums.TooltipPositionMode;
 import com.anychart.graphics.vector.Stroke;
+import com.demotxt.droidsrce.homedashboard.R;
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 
 import java.io.File;
