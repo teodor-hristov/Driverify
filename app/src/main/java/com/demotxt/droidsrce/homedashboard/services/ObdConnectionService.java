@@ -39,8 +39,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
-public class ObdConnection extends IntentService {
-    private static final String TAG = ObdConnection.class.getName();
+public class ObdConnectionService extends IntentService {
+    private static final String TAG = ObdConnectionService.class.getName();
 
     private ArrayList<ObdCommand> cmds;
     private BluetoothAdapter btAdapter;
@@ -56,8 +56,8 @@ public class ObdConnection extends IntentService {
 
     private SharedPreferences prefs;
 
-    public ObdConnection() {
-        super(ObdConnection.class.getName());
+    public ObdConnectionService() {
+        super(ObdConnectionService.class.getName());
     }
 
     public ArrayList<ObdCommand> getCmds() {
@@ -78,7 +78,7 @@ public class ObdConnection extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "ObdConnection is shutting down..");
+        Log.i(TAG, "ObdConnectionService is shutting down..");
         makeToast("Bluetooth connection is broken.");
         if (sock != null) {
             try {
@@ -110,7 +110,7 @@ public class ObdConnection extends IntentService {
         ArrayList<ObdCommand> dtcCommand = new ArrayList<>();
         dtcCommand.add(new TroubleCodesCommand());
 
-        Log.i(TAG, "ObdConnection service started");
+        Log.i(TAG, "ObdConnectionService service started");
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();

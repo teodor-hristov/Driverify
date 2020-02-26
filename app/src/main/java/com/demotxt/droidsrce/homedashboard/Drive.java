@@ -45,9 +45,9 @@ import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.Utils.Methods;
 import com.demotxt.droidsrce.homedashboard.io.LocationIO;
 import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
-import com.demotxt.droidsrce.homedashboard.services.DataController;
+import com.demotxt.droidsrce.homedashboard.services.DataControllerService;
 import com.demotxt.droidsrce.homedashboard.services.LocationServiceProvider;
-import com.demotxt.droidsrce.homedashboard.services.ObdConnection;
+import com.demotxt.droidsrce.homedashboard.services.ObdConnectionService;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
 import com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview;
 import com.demotxt.droidsrce.homedashboard.ui.camera.GraphicOverlay;
@@ -206,11 +206,11 @@ public final class Drive extends AppCompatActivity {
             unregisterReceiver(liveDataReceiver);
             isRegistered = false;
         }
-        if (Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
-            stopService(new Intent(getApplicationContext(), ObdConnection.class));
+        if (Methods.isServiceRunning(getAppContext(), ObdConnectionService.class)) {
+            stopService(new Intent(getApplicationContext(), ObdConnectionService.class));
         }
         if (Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
-            stopService(new Intent(getApplicationContext(), DataController.class));
+            stopService(new Intent(getApplicationContext(), DataControllerService.class));
         }
     }
 
@@ -255,11 +255,11 @@ public final class Drive extends AppCompatActivity {
         if (!isRegistered) {
             registerReceiver(liveDataReceiver, filter);
         }
-        if (!Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
-            startService(new Intent(getApplicationContext(), ObdConnection.class));
+        if (!Methods.isServiceRunning(getAppContext(), ObdConnectionService.class)) {
+            startService(new Intent(getApplicationContext(), ObdConnectionService.class));
         }
-        if (!Methods.isServiceRunning(getAppContext(), DataController.class)) {
-            startService(new Intent(getApplicationContext(), DataController.class));
+        if (!Methods.isServiceRunning(getAppContext(), DataControllerService.class)) {
+            startService(new Intent(getApplicationContext(), DataControllerService.class));
         }
         if (!Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
             startService(new Intent(getApplicationContext(), LocationServiceProvider.class));
@@ -343,8 +343,8 @@ public final class Drive extends AppCompatActivity {
     }
 
     private void startLiveData(IntentFilter filter) {
-        startService(new Intent(Drive.this, ObdConnection.class));
-        startService(new Intent(Drive.this, DataController.class));
+        startService(new Intent(Drive.this, ObdConnectionService.class));
+        startService(new Intent(Drive.this, DataControllerService.class));
         startService(new Intent(Drive.this, LocationServiceProvider.class));
         if (!isRegistered) {
             registerReceiver(liveDataReceiver, filter);
@@ -357,11 +357,11 @@ public final class Drive extends AppCompatActivity {
             unregisterReceiver(liveDataReceiver);
             isRegistered = false;
         }
-        if (Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
-            stopService(new Intent(getApplicationContext(), ObdConnection.class));
+        if (Methods.isServiceRunning(getAppContext(), ObdConnectionService.class)) {
+            stopService(new Intent(getApplicationContext(), ObdConnectionService.class));
         }
-        if (Methods.isServiceRunning(getAppContext(), ObdConnection.class)) {
-            stopService(new Intent(getApplicationContext(), DataController.class));
+        if (Methods.isServiceRunning(getAppContext(), ObdConnectionService.class)) {
+            stopService(new Intent(getApplicationContext(), DataControllerService.class));
         }
         if (Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
             stopService(new Intent(getApplicationContext(), LocationServiceProvider.class));

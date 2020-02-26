@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
-public class DataController extends Service {
+public class DataControllerService extends Service {
     private static final int ASSERTED_COMMANDS_COUNT = 4;
-    private final String TAG = "DataController";
+    private final String TAG = "DataControllerService";
     private CSVWriter bluetoothWriter;
     private CSVWriter locationWriter;
     private String[] actions = {
@@ -86,7 +86,7 @@ public class DataController extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "DataController is shutting down..");
+        Log.i(TAG, "DataControllerService is shutting down..");
         unregisterReceiver(liveDataReceiver);
         stopLocation();
         try {

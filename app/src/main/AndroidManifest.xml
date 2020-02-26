@@ -63,13 +63,13 @@
             android:theme="@style/FullscreenTheme" />
 
         <service
-            android:name=".services.ObdConnection"
+            android:name=".services.ObdConnectionService"
             android:exported="false" />
         <service
             android:name=".services.LocationServiceProvider"
             android:exported="false" />
         <service
-            android:name=".services.DataController"
+            android:name=".services.DataControllerService"
             android:exported="false" />
     </application>
 

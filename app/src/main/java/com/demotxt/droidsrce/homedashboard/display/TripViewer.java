@@ -1,7 +1,6 @@
 package com.demotxt.droidsrce.homedashboard.display;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -34,7 +33,7 @@ public class TripViewer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_view);
-
+        String filePath = getIntent().getStringExtra(Constants.CHECKOUT_TRIP);
         AnyChartView anyChartView = findViewById(R.id.any_chart_view);
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
@@ -51,14 +50,14 @@ public class TripViewer extends AppCompatActivity {
 
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
 
-        cartesian.title("Data saved on: ");
+        cartesian.title("Data: " + new File(filePath).getName());
 
         cartesian.yAxis(0).title("RPM");
         cartesian.xAxis(0).labels().padding(5d, 5d, 5d, 5d);
 
         Set set = Set.instantiate();
         try {
-            set.data(ReadCSV(Constants.DATA_LOG_PATH));
+            set.data(ReadCSV(filePath));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -97,19 +96,9 @@ public class TripViewer extends AppCompatActivity {
     }
 
     private List<DataEntry> ReadCSV(String path) throws FileNotFoundException {
-        Log.i(TAG, "ReadCSV: started");
-        File dir = new File(path);
-        File[] files = dir.listFiles();
-        File lastFile = files[0];
+        File file = new File(path);
 
-        for (File item : files) {
-            if (item.isFile()) {
-                if (lastFile.getName().compareTo(item.getName()) < 0)
-                    lastFile = item;
-            }
-        }
-
-        Scanner fileReader = new Scanner(lastFile);
+        Scanner fileReader = new Scanner(file);
         List<DataEntry> customDataEntries = new ArrayList<>();
         fileReader.nextLine();
         while (fileReader.hasNextLine()) {

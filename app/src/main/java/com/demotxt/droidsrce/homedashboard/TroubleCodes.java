@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -22,21 +21,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
-import com.demotxt.droidsrce.homedashboard.io.BluetoothConnectionIO;
-import com.demotxt.droidsrce.homedashboard.services.ObdConnection;
+import com.demotxt.droidsrce.homedashboard.services.ObdConnectionService;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
-import com.github.pires.obd.commands.control.TroubleCodesCommand;
-import com.github.pires.obd.commands.protocol.EchoOffCommand;
-import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
 import com.github.pires.obd.commands.protocol.ResetTroubleCodesCommand;
-import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
-import com.github.pires.obd.commands.protocol.TimeoutCommand;
-import com.github.pires.obd.enums.ObdProtocols;
 import com.sohrab.obd.reader.service.ObdReaderService;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.TimeoutException;
 
 import static com.sohrab.obd.reader.constants.DefineObdReader.ACTION_OBD_CONNECTED;
 
@@ -125,7 +115,7 @@ public class TroubleCodes extends AppCompatActivity {
                 if(codes.getText().length() > CODE_LEN || codes.getText() != null)
                 {
                     try{
-                        if(isServiceRunning(ObdConnection.class) && isRegistered) {
+                        if (isServiceRunning(ObdConnectionService.class) && isRegistered) {
                             new ResetTroubleCodesCommand();
                             makeToast(getString(R.string.dtc_cleared));
                         }
