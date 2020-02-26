@@ -15,11 +15,15 @@
  */
 package com.demotxt.droidsrce.homedashboard;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
+import android.util.Log;
 
+import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.face.Face;
 
@@ -115,7 +119,8 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     }
 
 
-    public void checkIfSleepy(Canvas canvas) {
+    public void checkIfSleepy(Context ctx, Canvas canvas) {
+        int sleep = 0;
         Face face = mFace;
         if (face == null) {
             return;
@@ -129,15 +134,19 @@ class FaceGraphic extends GraphicOverlay.Graphic {
             timer = 0;
         }
         if (timer >= SLEEPING_CONSTANT) {
-                play();
-
-           canvas.drawText("SLEEPY", x - ID_X_OFFSET * 2, y - ID_Y_OFFSET * 2 - 40, mIdPaint);
+            sleep = 1;
+            play();
         }
         else{
+            sleep = 0;
             pause();
-            canvas.drawText("NOT SLEEPY", x - ID_X_OFFSET * 2, y - ID_Y_OFFSET * 2 - 40, mIdPaint);
         }
         canvas.drawText(Integer.toString(timer),x - ID_X_OFFSET * 2, y - ID_Y_OFFSET * 2 - 60, mIdPaint);
+        Intent intent = new Intent(Constants.FACE_DATA);
+        mFaceHappiness = face.getIsSmilingProbability();
+        intent.putExtra(Constants.EXTRA, "" + sleep + " " + mFaceHappiness);
+        ctx.sendBroadcast(intent);
+        Log.i("Test", mFaceHappiness + "");
     }
 
     public void play(){
