@@ -34,6 +34,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,6 +80,7 @@ public final class Drive extends AppCompatActivity {
     //endregion
 
     private ArrayList<TextView> driveItems;
+    private ArrayList<ProgressBar> progressBars;
 
     private boolean isRegistered = false;
     private boolean preRequisites = true;
@@ -146,7 +148,7 @@ public final class Drive extends AppCompatActivity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        setContentView(R.layout.activity_drive);
+        setContentView(R.layout.prototype);
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
 
         appContext = getApplicationContext();
@@ -155,14 +157,24 @@ public final class Drive extends AppCompatActivity {
 
         TextView rpmText = findViewById(R.id.rpmValue);
         TextView speedText = findViewById(R.id.speedValue);
-        TextView engineLoad = findViewById(R.id.engineLoadValue);
-        TextView oilTemp = findViewById(R.id.oilValue);
+        TextView engineLoad = findViewById(R.id.loadValue);
         TextView coolantText = findViewById(R.id.coolantValue);
+
+        ProgressBar rpmProgress = findViewById(R.id.rpmProgress);
+        ProgressBar speedProgress = findViewById(R.id.speedProgress);
+        ProgressBar coolantProgress = findViewById(R.id.coolantProgress);
+        ProgressBar loadProgress = findViewById(R.id.loadProgress);
+
+        rpmProgress.setMax(7000);
+        speedProgress.setMax(260);
+        coolantProgress.setMax(180);
+        loadProgress.setMax(100);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         filter = new IntentFilter();
-        driveItems = new ArrayList<>(Arrays.asList(rpmText, speedText, engineLoad, coolantText, oilTemp));
+        driveItems = new ArrayList<>(Arrays.asList(rpmText, speedText, coolantText, engineLoad));
+        progressBars = new ArrayList<>(Arrays.asList(rpmProgress, speedProgress, coolantProgress, loadProgress));
 
         if (btAdapter != null)
             bluetoothDefaultIsEnable = btAdapter.isEnabled();
@@ -300,8 +312,10 @@ public final class Drive extends AppCompatActivity {
         for (int i = 0; i < commands.size(); i++) {
             if (commands.get(i) == null) {
                 driveItems.get(i).setText("NaN");
+                progressBars.get(i).setProgress(0);
             } else {
                 driveItems.get(i).setText(commands.get(i).toString());
+                progressBars.get(i).setProgress((int) Double.parseDouble(commands.get(i).toString()));
             }
         }
     }
@@ -368,6 +382,8 @@ public final class Drive extends AppCompatActivity {
         }
         for (TextView v : driveItems)
             v.setText("0");
+        for (ProgressBar bar : progressBars)
+            bar.setProgress(0);
         makeSnackbar("Live data stopped.");
     }
 
