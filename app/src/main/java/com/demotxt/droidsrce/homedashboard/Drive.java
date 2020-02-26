@@ -165,10 +165,10 @@ public final class Drive extends AppCompatActivity {
         ProgressBar coolantProgress = findViewById(R.id.coolantProgress);
         ProgressBar loadProgress = findViewById(R.id.loadProgress);
 
-        rpmProgress.setMax(7000);
-        speedProgress.setMax(260);
-        coolantProgress.setMax(180);
-        loadProgress.setMax(100);
+        rpmProgress.setMax(Constants.MAX_RPM);
+        speedProgress.setMax(Constants.MAX_SPEED);
+        coolantProgress.setMax(Constants.MAX_COOLANT);
+        loadProgress.setMax(Constants.MAX_LOAD);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
