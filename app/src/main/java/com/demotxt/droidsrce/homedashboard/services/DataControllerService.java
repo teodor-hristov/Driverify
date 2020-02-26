@@ -160,7 +160,7 @@ public class DataControllerService extends Service {
             }
         } else {
             try {
-                sb.append(formatter.format(new java.util.Date().getTime()));
+                sb.append(System.currentTimeMillis());
                 faceDataWriter.append(sb.toString());
                 autoSave(faceDataWriter);
             } catch (IOException e) {
@@ -191,7 +191,7 @@ public class DataControllerService extends Service {
                     sb.append(" ");
                 }
 
-                sb.append(formatter.format(new java.util.Date().getTime()));
+                sb.append(System.currentTimeMillis());
                 locationWriter.append(sb.toString());
                 autoSave(locationWriter);
             } catch (IOException e) {
