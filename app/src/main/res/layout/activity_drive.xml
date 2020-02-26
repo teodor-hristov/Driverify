@@ -157,7 +157,7 @@
         tools:ignore="MissingConstraints" />
 
     <ProgressBar
-        android:id="@+id/progressBar6"
+        android:id="@+id/speedProgress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="122dp"
         android:layout_height="110dp"
