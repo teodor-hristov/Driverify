@@ -13,6 +13,9 @@ public class Constants {
     public static final String DATA_LOG_PATH = "storage/emulated/0/Driverify/Logs/";
     public static final String TIME_INTERVAL_KEY = "obd_update_period_preference";
     public static final int SAVE_SECONDS = 10;
-    public static final String OBD_DATA_HEADER_CSV = "rpm speed coolant load sleep happiness timestamp";
+    public static final String OBD_DATA_HEADER_CSV = "id rpm speed coolant load timestamp";
     public static final String CHECKOUT_TRIP = "checkout_trip";
+    public static final String FACE_DATA = "FACE_DATA";
+    public static final String FACE_DATA_HEADER = "sleep happiness timestamp";
+
 }

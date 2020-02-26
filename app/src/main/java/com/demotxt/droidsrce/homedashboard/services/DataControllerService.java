@@ -70,6 +70,9 @@ public class DataControllerService extends Service {
                 case Constants.RECEIVE_DATA:
                     handleBluetoothLiveData(data);
                     break;
+                case Constants.FACE_DATA:
+                    handleFaceLiveData(stringExtra);
+                    break;
             }
         }
     };
@@ -138,6 +141,10 @@ public class DataControllerService extends Service {
                 Log.i(TAG, "Could not write to file");
             }
         }
+    }
+
+    private void handleFaceLiveData(String data) {
+        StringBuilder sb = new StringBuilder();
 
     }
 
