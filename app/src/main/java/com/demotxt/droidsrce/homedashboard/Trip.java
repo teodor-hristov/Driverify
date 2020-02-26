@@ -11,6 +11,7 @@ import com.demotxt.droidsrce.homedashboard.display.ListViewTripDisplayAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Trip extends AppCompatActivity {
@@ -34,7 +35,7 @@ public class Trip extends AppCompatActivity {
                 files.add(file);
             }
         }
-
+        Collections.sort(files, Collections.<File>reverseOrder());
         mAdapter = new ListViewTripDisplayAdapter(getApplicationContext(), files);
     }
 
