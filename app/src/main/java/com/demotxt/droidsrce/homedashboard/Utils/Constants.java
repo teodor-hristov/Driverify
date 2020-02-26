@@ -18,5 +18,9 @@ public class Constants {
     public static final String CHECKOUT_TRIP = "checkout_trip";
     public static final String FACE_DATA = "FACE_DATA";
     public static final String FACE_DATA_HEADER = "sleep happiness timestamp";
+    public static final int MAX_RPM = 7000;
+    public static final int MAX_COOLANT = 180;
+    public static final int MAX_SPEED = 260;
+    public static final int MAX_LOAD = 1000;
 
 }
