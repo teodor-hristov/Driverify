@@ -144,6 +144,10 @@ public final class Drive extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         preview.stop();
+        if (isRegistered) {
+            unregisterReceiver(liveDataReceiver);
+            isRegistered = false;
+        }
     }
 
     @Override
