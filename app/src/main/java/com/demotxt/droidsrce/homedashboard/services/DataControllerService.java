@@ -55,7 +55,7 @@ public class DataControllerService extends Service {
             assert action != null;
             switch (action) {
                 case Constants.DISCONNECTED:
-                    connectionLost(stringExtra);
+                    connectionLost();
                     break;
                 case Constants.GPS_ENABLED:
                     //locationEnabled();
@@ -98,7 +98,7 @@ public class DataControllerService extends Service {
         }
     }
 
-    private void connectionLost(String connectionStatusMsg) {
+    private void connectionLost() {
         Log.i(TAG, "Connection lost.");
             try {
                 if (bluetoothWriter != null)
