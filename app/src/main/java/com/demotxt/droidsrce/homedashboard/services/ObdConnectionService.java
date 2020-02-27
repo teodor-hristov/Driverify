@@ -114,12 +114,7 @@ public class ObdConnectionService extends IntentService {
                 sock = new BluetoothConnectionIO(bluetoothDevice).connect();
                 sock.connect();
                 if (sock.isConnected()) {
-                    Log.i(TAG, "Connection is now created.");
-                    Log.i(TAG, "Testing OBD commands...");
-                    new EchoOffCommand().run(sock.getInputStream(), sock.getOutputStream());
-                    new LineFeedOffCommand().run(sock.getInputStream(), sock.getOutputStream());
-                    new TimeoutCommand(125).run(sock.getInputStream(), sock.getOutputStream());
-                    new SelectProtocolCommand(ObdProtocols.AUTO).run(sock.getInputStream(), sock.getOutputStream());
+                    sendBaseCommands(sock);
                     Log.i(TAG, "Commands are working and getting data...");
                     intentToBroadcastReceiver.setAction(Constants.CONNECTED);
                     intentToBroadcastReceiver.putExtra(Constants.EXTRA, getString(R.string.connected_ok));
@@ -164,7 +159,6 @@ public class ObdConnectionService extends IntentService {
             if (sock.isConnected()) {
                 updateData(sock, cmds, stringCommands);
                 printToIntent(cmds, stringCommands, data, intentToBroadcastReceiver.setAction(Constants.RECEIVE_DATA), Constants.RECEIVE_DATA);
-
             } else {
                 Log.i(TAG, "No connection");
                 intentToBroadcastReceiver.setAction(Constants.CONNECTED);
@@ -229,5 +223,14 @@ public class ObdConnectionService extends IntentService {
 
             sendBroadcast(intent);
         }
+    }
+
+    private void sendBaseCommands(BluetoothSocket socket) throws IOException, InterruptedException {
+        Log.i(TAG, "Connection is now created.");
+        Log.i(TAG, "Testing OBD commands...");
+        new EchoOffCommand().run(socket.getInputStream(), socket.getOutputStream());
+        new LineFeedOffCommand().run(socket.getInputStream(), socket.getOutputStream());
+        new TimeoutCommand(125).run(socket.getInputStream(), socket.getOutputStream());
+        new SelectProtocolCommand(ObdProtocols.AUTO).run(socket.getInputStream(), socket.getOutputStream());
     }
 }
