@@ -86,6 +86,10 @@ public class ObdConnectionService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        boolean prereq;
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int sleepPrefs = Integer.parseInt(Objects.requireNonNull(prefs.getString(Preferences.UPDATE_PERIOD, "-1")));
         ArrayList<String> stringCommands = new ArrayList<>();
         ArrayList<String> stringDtc = new ArrayList<>();
         ArrayList<ObdCommand> commands = new ArrayList<>(Arrays.asList(
@@ -98,9 +102,6 @@ public class ObdConnectionService extends IntentService {
         Log.i(TAG, "ObdConnectionService service started");
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
 
-        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        int sleepPrefs = Integer.parseInt(Objects.requireNonNull(prefs.getString(Preferences.UPDATE_PERIOD, "-1")));
         sock = null;
         ObdReaderData data = new ObdReaderData(stringCommands);
         ObdReaderData dtc = new ObdReaderData(stringDtc);
@@ -153,7 +154,7 @@ public class ObdConnectionService extends IntentService {
             makeToast("Unsupported command.");
         }
 
-        boolean prereq = bluetoothDevice != null && sock != null && sock.isConnected();
+        prereq = bluetoothDevice != null && sock != null && sock.isConnected();
         while (prereq) {
             try {
                 Thread.sleep(sleepPrefs);
