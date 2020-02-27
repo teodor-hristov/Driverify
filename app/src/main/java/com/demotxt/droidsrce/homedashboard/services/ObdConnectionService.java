@@ -87,6 +87,9 @@ public class ObdConnectionService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         boolean prereq;
+        ObdReaderData data;
+        BluetoothDevice bluetoothDevice;
+        Intent intentToBroadcastReceiver = new Intent();
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         int sleepPrefs = Integer.parseInt(Objects.requireNonNull(prefs.getString(Preferences.UPDATE_PERIOD, "-1")));
@@ -102,10 +105,8 @@ public class ObdConnectionService extends IntentService {
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
 
         sock = null;
-        ObdReaderData data = new ObdReaderData(stringCommands);
-        Intent intentToBroadcastReceiver = new Intent();
-
-        BluetoothDevice bluetoothDevice = updateSelectedDevice(btAdapter, prefs);
+        data = new ObdReaderData(stringCommands);
+        bluetoothDevice = updateSelectedDevice(btAdapter, prefs);
 
         try {
             if (bluetoothDevice != null) {
