@@ -288,7 +288,6 @@ public final class Drive extends AppCompatActivity {
     }
 
     private void connectedBluetooth(String connectionStatusMsg) {
-        //makeToast(connectionStatusMsg);
         if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {
             makeToast(getString(R.string.obd_connected));
         }
