@@ -105,8 +105,6 @@ public final class Drive extends AppCompatActivity {
     };
     private Menu actionBarMenu;
 
-    private int rc;
-
 
     //==============================================================================================
     // Activity Methods
@@ -207,7 +205,7 @@ public final class Drive extends AppCompatActivity {
 
         filterAddActions(filter, actions);
 
-        rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
             createCameraSource();
         } else {
