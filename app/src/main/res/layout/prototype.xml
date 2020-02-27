@@ -219,7 +219,8 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textSize="24sp"
-                    app:layout_constraintBottom_toTopOf="@+id/coolantProgress"
+                    android:keepScreenOn="true"
+                    app:layout_constraintBottom_toTopOf="@+id/loadProgress"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
