@@ -95,9 +95,6 @@ public class ObdConnectionService extends IntentService {
                 new LoadCommand()));
         setCmds(commands);
 
-        ArrayList<ObdCommand> dtcCommand = new ArrayList<>();
-        dtcCommand.add(new TroubleCodesCommand());
-
         Log.i(TAG, "ObdConnectionService service started");
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
 
