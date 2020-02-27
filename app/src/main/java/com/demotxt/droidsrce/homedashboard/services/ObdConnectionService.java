@@ -183,7 +183,7 @@ public class ObdConnectionService extends IntentService {
                 }
             }
             stringCommands.clear();
-            prereq = bluetoothDevice != null && sock != null && sock.isConnected() && btAdapter.isEnabled();
+            prereq = sock != null && sock.isConnected() && btAdapter.isEnabled();
         }
     }
 
