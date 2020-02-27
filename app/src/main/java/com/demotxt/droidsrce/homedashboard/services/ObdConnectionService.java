@@ -42,18 +42,7 @@ public class ObdConnectionService extends IntentService {
     private static final String TAG = ObdConnectionService.class.getName();
 
     private ArrayList<ObdCommand> cmds;
-    private BluetoothAdapter btAdapter;
-    private BluetoothDevice mBtDevice;
     private BluetoothSocket sock;
-    private boolean prereq = false;
-    private ObdReaderData data;
-    private ObdReaderData dtc;
-    private ArrayList<String> stringCommands;
-    private ArrayList<String> stringDtc;
-    private Intent intentToBroadcastReceiver;
-    private int sleepPrefs;
-
-    private SharedPreferences prefs;
 
     public ObdConnectionService() {
         super(ObdConnectionService.class.getName());
@@ -97,8 +86,8 @@ public class ObdConnectionService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        stringCommands = new ArrayList<>();
-        stringDtc = new ArrayList<>();
+        ArrayList<String> stringCommands = new ArrayList<>();
+        ArrayList<String> stringDtc = new ArrayList<>();
         ArrayList<ObdCommand> commands = new ArrayList<>(Arrays.asList(
                 new RPMCommand(),
                 new SpeedCommand(),
@@ -112,13 +101,13 @@ public class ObdConnectionService extends IntentService {
         Log.i(TAG, "ObdConnectionService service started");
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
 
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        sleepPrefs = Integer.parseInt(Objects.requireNonNull(prefs.getString(Preferences.UPDATE_PERIOD, "-1")));
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int sleepPrefs = Integer.parseInt(Objects.requireNonNull(prefs.getString(Preferences.UPDATE_PERIOD, "-1")));
         sock = null;
-        data = new ObdReaderData(stringCommands);
-        dtc = new ObdReaderData(stringDtc);
-        intentToBroadcastReceiver = new Intent();
+        ObdReaderData data = new ObdReaderData(stringCommands);
+        ObdReaderData dtc = new ObdReaderData(stringDtc);
+        Intent intentToBroadcastReceiver = new Intent();
 
         BluetoothDevice bluetoothDevice = updateSelectedDevice(btAdapter, prefs);
 
@@ -155,6 +144,7 @@ public class ObdConnectionService extends IntentService {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
+            Log.i(TAG, e.getMessage());
         } catch (TimeoutException e) {
             e.printStackTrace();
             Log.e(TAG, "Not responding");
@@ -195,7 +185,7 @@ public class ObdConnectionService extends IntentService {
                 }
             }
             stringCommands.clear();
-            prereq = mBtDevice != null && sock != null && sock.isConnected() && btAdapter.isEnabled();
+            prereq = bluetoothDevice != null && sock != null && sock.isConnected() && btAdapter.isEnabled();
         }
     }
 
