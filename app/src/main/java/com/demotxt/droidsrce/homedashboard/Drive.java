@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -42,6 +43,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.demotxt.droidsrce.homedashboard.Utils.Alarm;
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.Utils.Methods;
 import com.demotxt.droidsrce.homedashboard.io.LocationIO;
@@ -73,6 +75,8 @@ public final class Drive extends AppCompatActivity {
     private static final int RC_HANDLE_CAMERA_PERM = 2;
     private static boolean bluetoothDefaultIsEnable = false;
 
+    private MediaPlayer mediaPlayer;
+    private Alarm alarm;
     //region CAMERA vars
     private static Context appContext;
     private CameraSource cameraSource = null;
@@ -159,6 +163,8 @@ public final class Drive extends AppCompatActivity {
         appContext = getApplicationContext();
         preview = findViewById(R.id.preview);
         graphicOverlay = findViewById(R.id.faceOverlay);
+
+        alarm = new Alarm(mediaPlayer);
 
         TextView rpmText = findViewById(R.id.rpmValue);
         TextView speedText = findViewById(R.id.speedValue);
@@ -544,6 +550,18 @@ public final class Drive extends AppCompatActivity {
         }
     }
 
+    public boolean checkIfSleeping() {
+        boolean isSleeping = false;
+
+        if (Integer.parseInt(((TextView) findViewById(R.id.speedValue)).getText().toString()) > 5) {
+            alarm.play();
+            isSleeping = true;
+        }
+
+        return isSleeping;
+    }
+    //endregion
+
     /**
      * Face tracker for each detected individual. This maintains a face graphic within the app's
      * associated face overlay.
@@ -572,6 +590,8 @@ public final class Drive extends AppCompatActivity {
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
             mOverlay.add(mFaceGraphic);
             mFaceGraphic.updateFace(face);
+            Log.i(TAG, "THERE IS FACE");
+            alarm.pause();
         }
 
         /**
@@ -582,6 +602,9 @@ public final class Drive extends AppCompatActivity {
         @Override
         public void onMissing(FaceDetector.Detections<Face> detectionResults) {
             mOverlay.remove(mFaceGraphic);
+            Log.i(TAG, "NO FACE");
+            checkIfSleeping();
+
         }
 
         /**
@@ -593,7 +616,5 @@ public final class Drive extends AppCompatActivity {
             mOverlay.remove(mFaceGraphic);
         }
     }
-    //endregion
-
 
 }
