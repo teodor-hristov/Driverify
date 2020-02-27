@@ -379,13 +379,17 @@ public final class Drive extends AppCompatActivity {
         if (Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
             stopService(new Intent(getApplicationContext(), LocationServiceProvider.class));
         }
-        for (TextView v : driveItems)
+        clearViewItems(driveItems, progressBars);
+    }
+
+
+    private void clearViewItems(List<TextView> driveData, List<ProgressBar> progressData) {
+        for (TextView v : driveData)
             v.setText("0");
-        for (ProgressBar bar : progressBars)
+        for (ProgressBar bar : progressData)
             bar.setProgress(0);
         makeSnackbar("Live data stopped.");
     }
-
     //region SpeepDetection with GMS
 
     private void requestCameraPermission() {
