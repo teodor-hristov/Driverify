@@ -110,11 +110,14 @@ public class ObdConnectionService extends IntentService {
 
         try {
             if (bluetoothDevice != null) {
+
                 Log.i(TAG, "Entering communication test...");
                 sock = new BluetoothConnectionIO(bluetoothDevice).connect();
                 sock.connect();
+
                 if (sock.isConnected()) {
                     sendBaseCommands(sock);
+
                     Log.i(TAG, "Commands are working and getting data...");
                     intentToBroadcastReceiver.setAction(Constants.CONNECTED);
                     intentToBroadcastReceiver.putExtra(Constants.EXTRA, getString(R.string.connected_ok));
@@ -157,7 +160,11 @@ public class ObdConnectionService extends IntentService {
             }
 
             if (sock.isConnected()) {
-                updateData(sock, cmds, stringCommands);
+                if (!updateData(sock, cmds, stringCommands)) {
+                    sendBroadcast(new Intent((Constants.DISCONNECTED)));
+                    break;
+                }
+
                 printToIntent(cmds, stringCommands, data, intentToBroadcastReceiver.setAction(Constants.RECEIVE_DATA), Constants.RECEIVE_DATA);
             } else {
                 Log.i(TAG, "No connection");
@@ -184,23 +191,21 @@ public class ObdConnectionService extends IntentService {
         Toast.makeText(Drive.getAppContext(), txt, Toast.LENGTH_SHORT).show();
     }
 
-    public void updateData(BluetoothSocket sock, ArrayList<ObdCommand> cmds, ArrayList<String> stringCommands) {
-        if (cmds.size() > 0) {
-            for (ObdCommand var : cmds) {
-                try {
-                    var.run(sock.getInputStream(), sock.getOutputStream());
-                    stringCommands.add(var.getCalculatedResult());
-                } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedCommandException e) {
-                    e.printStackTrace();
-                    makeToast("Unsupported command" + var.getName());
-                } catch (UnableToConnectException e) {
-                    e.printStackTrace();
-                    makeToast("Unable to connect." + var.getName());
-                }
+    public boolean updateData(BluetoothSocket sock, ArrayList<ObdCommand> cmds, ArrayList<String> stringCommands) {
+        Boolean isEverythingOk = true;
+        for (ObdCommand var : cmds) {
+            try {
+                var.run(sock.getInputStream(), sock.getOutputStream());
+                stringCommands.add(var.getCalculatedResult());
+            } catch (UnsupportedCommandException | IOException | InterruptedException e) {
+                e.printStackTrace();
+                isEverythingOk = false;
+            } catch (UnableToConnectException e) {
+                makeToast("Unable to connect.");
+                isEverythingOk = false;
             }
         }
+        return isEverythingOk;
     }
 
     public BluetoothDevice updateSelectedDevice(BluetoothAdapter btAdapter, SharedPreferences prefs) {
