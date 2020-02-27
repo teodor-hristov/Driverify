@@ -64,6 +64,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public final class Drive extends AppCompatActivity {
     private final String TAG = getClass().getName();
@@ -121,7 +122,7 @@ public final class Drive extends AppCompatActivity {
                     connectedBluetooth(stringExtra);
                     break;
                 case Constants.DISCONNECTED:
-                    connectionLost(stringExtra);
+                    connectionLost();
                     break;
                 case Constants.GPS_ENABLED:
                     locationEnabled();
@@ -293,11 +294,10 @@ public final class Drive extends AppCompatActivity {
         }
     }
 
-    private void connectionLost(String connectionStatusMsg) {
-        if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {
-            makeToast("Connection lost.");
-            actionBarMenu.getItem(R.id.bluetoothStatus).setIcon(R.drawable.ic_bluetooth_searching_black_24dp);
-        }
+    private void connectionLost() {
+        makeToast("Connection lost.");
+        clearViewItems(driveItems, progressBars);
+        actionBarMenu.findItem(R.id.bluetoothStatus).setIcon(R.drawable.ic_bluetooth_searching_black_24dp);
     }
 
     private void handleBluetoothLiveData(ObdReaderData data) {
