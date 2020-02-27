@@ -21,7 +21,6 @@ import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
 import com.github.pires.obd.commands.ObdCommand;
 import com.github.pires.obd.commands.SpeedCommand;
-import com.github.pires.obd.commands.control.TroubleCodesCommand;
 import com.github.pires.obd.commands.engine.LoadCommand;
 import com.github.pires.obd.commands.engine.RPMCommand;
 import com.github.pires.obd.commands.protocol.EchoOffCommand;
@@ -121,12 +120,12 @@ public class ObdConnectionService extends IntentService {
         dtc = new ObdReaderData(stringDtc);
         intentToBroadcastReceiver = new Intent();
 
-        mBtDevice = updateSelectedDevice(btAdapter, prefs);
+        BluetoothDevice bluetoothDevice = updateSelectedDevice(btAdapter, prefs);
 
         try {
-            if (mBtDevice != null) {
+            if (bluetoothDevice != null) {
                 Log.i(TAG, "Entering communication test...");
-                sock = new BluetoothConnectionIO(mBtDevice).connect();
+                sock = new BluetoothConnectionIO(bluetoothDevice).connect();
                 sock.connect();
                 if (sock.isConnected()) {
                     Log.i(TAG, "Connection is now created.");
@@ -143,7 +142,7 @@ public class ObdConnectionService extends IntentService {
                 }
 
             } else {
-                Log.i(TAG, "mbtdevice null");
+                Log.i(TAG, "bluetoothDevice null");
                 makeToast("The device you selected is not responding to our connection.");
                 intentToBroadcastReceiver.setAction(Constants.CONNECTED);
                 intentToBroadcastReceiver.putExtra(Constants.EXTRA, getString(R.string.connect_lost));
@@ -167,13 +166,14 @@ public class ObdConnectionService extends IntentService {
             makeToast("Unsupported command.");
         }
 
-        prereq = mBtDevice != null && sock != null && sock.isConnected();
+        boolean prereq = bluetoothDevice != null && sock != null && sock.isConnected();
         while (prereq) {
             try {
                 Thread.sleep(sleepPrefs);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
             if (sock.isConnected()) {
                 updateData(sock, cmds, stringCommands);
                 printToIntent(cmds, stringCommands, data, intentToBroadcastReceiver.setAction(Constants.RECEIVE_DATA), Constants.RECEIVE_DATA);
@@ -184,7 +184,7 @@ public class ObdConnectionService extends IntentService {
                 intentToBroadcastReceiver.putExtra(Constants.EXTRA, Constants.DISCONNECTED);
                 sendBroadcast(intentToBroadcastReceiver);
                 try {
-                    sock = new BluetoothConnectionIO(mBtDevice).connect();
+                    sock = new BluetoothConnectionIO(bluetoothDevice).connect();
                     sock.connect();
                 } catch (IOException e) {
                     e.printStackTrace();
