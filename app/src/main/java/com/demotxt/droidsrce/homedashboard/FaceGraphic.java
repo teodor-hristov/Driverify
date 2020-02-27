@@ -22,6 +22,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
 
+import com.demotxt.droidsrce.homedashboard.Utils.Alarm;
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.face.Face;
@@ -38,6 +39,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     private static final float ID_X_OFFSET = -50.0f;
     private static final float BOX_STROKE_WIDTH = 5.0f;
     private static int SLEEPING_CONSTANT = 10;
+    private Alarm alarm;
     private MediaPlayer mediaPlayer;
 
     private static final int COLOR_CHOICES[] = {
@@ -78,6 +80,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         mBoxPaint.setStrokeWidth(BOX_STROKE_WIDTH);
 
         mFaceHappiness = 0;
+        alarm = new Alarm(mediaPlayer);
     }
 
     void setId(int id) {
@@ -136,44 +139,15 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         }
         if (timer >= SLEEPING_CONSTANT) {
             sleep = 1;
-            play();
+            alarm.play();
         }
         else{
             sleep = 0;
-            pause();
+            alarm.pause();
         }
         canvas.drawText(Integer.toString(timer),x - ID_X_OFFSET * 2, y - ID_Y_OFFSET * 2 - 60, mIdPaint);
 
         sendData(ctx, face, sleep);
-    }
-
-    public void play(){
-        if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer.create(Drive.getAppContext(), R.raw.beep);
-            mediaPlayer.setLooping(true);
-            mediaPlayer.setVolume(1, 1);
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    stopPlayer();
-                }
-            });
-        }
-        mediaPlayer.start();
-    }
-
-    public void pause() {
-        if (mediaPlayer != null) {
-            mediaPlayer.reset();
-            mediaPlayer.pause();
-        }
-    }
-
-    private void stopPlayer(){
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
     }
 
     private void sendData(Context context, Face face, int sleep) {
