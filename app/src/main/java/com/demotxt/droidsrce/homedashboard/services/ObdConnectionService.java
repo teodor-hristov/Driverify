@@ -91,7 +91,6 @@ public class ObdConnectionService extends IntentService {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         int sleepPrefs = Integer.parseInt(Objects.requireNonNull(prefs.getString(Preferences.UPDATE_PERIOD, "-1")));
         ArrayList<String> stringCommands = new ArrayList<>();
-        ArrayList<String> stringDtc = new ArrayList<>();
         ArrayList<ObdCommand> commands = new ArrayList<>(Arrays.asList(
                 new RPMCommand(),
                 new SpeedCommand(),
@@ -104,7 +103,6 @@ public class ObdConnectionService extends IntentService {
 
         sock = null;
         ObdReaderData data = new ObdReaderData(stringCommands);
-        ObdReaderData dtc = new ObdReaderData(stringDtc);
         Intent intentToBroadcastReceiver = new Intent();
 
         BluetoothDevice bluetoothDevice = updateSelectedDevice(btAdapter, prefs);
