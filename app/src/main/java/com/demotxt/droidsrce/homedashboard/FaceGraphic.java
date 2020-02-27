@@ -121,7 +121,6 @@ class FaceGraphic extends GraphicOverlay.Graphic {
 
 
     public void checkIfSleepy(Context ctx, Canvas canvas) {
-        Intent intent = null;
         int sleep = 0;
         Face face = mFace;
         if (face == null) {
@@ -145,7 +144,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         }
         canvas.drawText(Integer.toString(timer),x - ID_X_OFFSET * 2, y - ID_Y_OFFSET * 2 - 60, mIdPaint);
 
-        sendData(intent, ctx, face, sleep);
+        sendData(ctx, face, sleep);
     }
 
     public void play(){
@@ -177,8 +176,8 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         }
     }
 
-    private void sendData(Intent intent, Context context, Face face, int sleep) {
-        intent = new Intent(Constants.FACE_DATA);
+    private void sendData(Context context, Face face, int sleep) {
+        Intent intent = new Intent(Constants.FACE_DATA);
         mFaceHappiness = face.getIsSmilingProbability();
         intent.putExtra(Constants.EXTRA, "" + sleep + " " + mFaceHappiness);
         context.sendBroadcast(intent);
