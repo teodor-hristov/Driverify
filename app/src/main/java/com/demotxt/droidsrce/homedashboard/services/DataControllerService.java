@@ -14,7 +14,6 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.demotxt.droidsrce.homedashboard.R;
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.io.CSVWriter;
 import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
@@ -101,14 +100,12 @@ public class DataControllerService extends Service {
 
     private void connectionLost(String connectionStatusMsg) {
         Log.i(TAG, "Connection lost.");
-        if (connectionStatusMsg.equals(getString(R.string.connect_lost))) {
             try {
                 if (bluetoothWriter != null)
                     bluetoothWriter.close();
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.i(TAG, "Problem with file close");
-            }
         }
     }
 
