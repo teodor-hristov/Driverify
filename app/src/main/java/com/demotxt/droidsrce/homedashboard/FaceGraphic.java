@@ -121,7 +121,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
 
 
     public void checkIfSleepy(Context ctx, Canvas canvas) {
-        int sleep = 0;
+        int sleep;
         Face face = mFace;
         if (face == null) {
             return;
