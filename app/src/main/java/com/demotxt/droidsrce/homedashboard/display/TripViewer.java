@@ -1,5 +1,6 @@
 package com.demotxt.droidsrce.homedashboard.display;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -133,8 +134,16 @@ public class TripViewer extends AppCompatActivity implements OnMapReadyCallback 
         return customDataEntries;
     }
 
-    private List<PolylineOptions> setColoredPolylinesOnTheMap() {
-        List<PolylineOptions> polylines = null;
+    private List<PolylineOptions> setColoredPolylinesOnTheMap(List<LatLng> points) {
+        List<PolylineOptions> polylines = new ArrayList<>();
+
+        for (int i = 1; i < points.size(); i++) {
+            if (i % 2 == 0) {
+                polylines.add(new PolylineOptions().add(points.get(i), points.get(i - 1)).color(Color.RED));
+            } else {
+                polylines.add(new PolylineOptions().add(points.get(i), points.get(i - 1)).color(Color.BLACK));
+            }
+        }
 
         return polylines;
     }
@@ -151,11 +160,14 @@ public class TripViewer extends AppCompatActivity implements OnMapReadyCallback 
         }
         for (LatLng marker : latLngList) {
             googleMap.addMarker(new MarkerOptions().position(marker)
-                    .alpha(0)
+                    .alpha(0.1f)
                     .title("Current point info: ")
                     .snippet("speed: 150 rpm: 3840 load: 48%"));
         }
-        googleMap.addPolyline(polylineOptions.addAll(latLngList));
+        for (PolylineOptions option : setColoredPolylinesOnTheMap((latLngList))) {
+            googleMap.addPolyline(option);
+        }
+        //googleMap.addPolyline(polylineOptions.addAll(latLngList));
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngList.get(0), 15));
         googleMap.animateCamera(CameraUpdateFactory.zoomIn());
