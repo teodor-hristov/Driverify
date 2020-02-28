@@ -24,6 +24,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -119,14 +120,40 @@ public class TripViewer extends AppCompatActivity implements OnMapReadyCallback 
         return customDataEntries;
     }
 
+    private List<LatLng> LatLongReadCSV(String path) throws FileNotFoundException {
+        File file = new File(path);
+
+        Scanner fileReader = new Scanner(file);
+        List<LatLng> customDataEntries = new ArrayList<>();
+        fileReader.nextLine();
+        while (fileReader.hasNextLine()) {
+            String[] array = fileReader.nextLine().split(",");
+            customDataEntries.add(new LatLng(Double.parseDouble(array[0]), Double.parseDouble(array[1])));
+        }
+        return customDataEntries;
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
-        LatLng sydney = new LatLng(-33.852, 151.211);
-        googleMap.addMarker(new MarkerOptions().position(sydney)
-                .title("Marker in Sydney"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        String fileName = "2020-02-25T14:02:11.csv";
+        List<LatLng> latLngList = null;
+        PolylineOptions polylineOptions = new PolylineOptions().clickable(true);
+        try {
+            latLngList = LatLongReadCSV(Constants.LOCATON_LIVE_DATA_PATH + "/" + fileName);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        for (LatLng marker : latLngList) {
+            googleMap.addMarker(new MarkerOptions().position(marker)
+                    .alpha(0)
+                    .title("speed: 150 \n rpm: 3840 \n load: 48%"));
+        }
+        googleMap.addPolyline(polylineOptions.addAll(latLngList));
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngList.get(0), 15));
+        googleMap.animateCamera(CameraUpdateFactory.zoomIn());
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
     }
 
     private class CustomDataEntry extends ValueDataEntry {
