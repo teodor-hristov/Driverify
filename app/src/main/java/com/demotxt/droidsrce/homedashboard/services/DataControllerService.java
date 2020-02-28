@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 
 public class DataControllerService extends Service {
     private static final int ASSERTED_COMMANDS_COUNT = 4;
+    private static final int ASSERTED_LOCATION_DATA_COUNT = 3;
     private final String TAG = "DataControllerService";
     private CSVWriter bluetoothWriter, locationWriter, faceDataWriter;
     private String[] actions = {
@@ -172,7 +173,7 @@ public class DataControllerService extends Service {
 
     private void handleLocationLiveData(String gpsExtraString) {
         StringBuilder sb = new StringBuilder();
-        if (gpsExtraString == null || gpsExtraString.split(" ").length < 2) {
+        if (gpsExtraString == null || gpsExtraString.split(" ").length < ASSERTED_LOCATION_DATA_COUNT) {
             return;
         }
 
