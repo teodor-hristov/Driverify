@@ -73,7 +73,6 @@ import java.util.List;
 public final class Drive extends AppCompatActivity {
     private final String TAG = getClass().getName();
 
-    private static final float AMBIENT_LIGHT_CONSTANT_FOR_NIGHT = 20;
     private static final int RC_HANDLE_GMS = 9001;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
     private static boolean bluetoothDefaultIsEnable = false;
@@ -106,6 +105,13 @@ public final class Drive extends AppCompatActivity {
             Constants.GPS_LIVE_DATA,
             Constants.GPS_PUT_EXTRA,
             Constants.AMBIENT_LIGHT_DATA
+    };
+
+    private Class[] services = {
+            ObdConnectionService.class,
+            DataControllerService.class,
+            LocationServiceProvider.class,
+            AmbientLightService.class
     };
     private Menu actionBarMenu;
 
@@ -235,12 +241,7 @@ public final class Drive extends AppCompatActivity {
             unregisterReceiver(liveDataReceiver);
             isRegistered = false;
         }
-        if (Methods.isServiceRunning(getAppContext(), ObdConnectionService.class)) {
-            stopService(new Intent(getApplicationContext(), ObdConnectionService.class));
-        }
-        if (Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
-            stopService(new Intent(getApplicationContext(), DataControllerService.class));
-        }
+        stopServices(services);
     }
 
     @Override
@@ -284,16 +285,8 @@ public final class Drive extends AppCompatActivity {
         if (!isRegistered) {
             registerReceiver(liveDataReceiver, filter);
         }
-        if (!Methods.isServiceRunning(getAppContext(), ObdConnectionService.class)) {
-            startService(new Intent(getApplicationContext(), ObdConnectionService.class));
-        }
-        if (!Methods.isServiceRunning(getAppContext(), DataControllerService.class)) {
-            startService(new Intent(getApplicationContext(), DataControllerService.class));
-        }
-        if (!Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
-            startService(new Intent(getApplicationContext(), LocationServiceProvider.class));
-        }
 
+        startServices(services);
     }
 
     public static Context getAppContext() {
@@ -372,10 +365,7 @@ public final class Drive extends AppCompatActivity {
     }
 
     private void startLiveData(IntentFilter filter) {
-        startService(new Intent(Drive.this, ObdConnectionService.class));
-        startService(new Intent(Drive.this, DataControllerService.class));
-        startService(new Intent(Drive.this, LocationServiceProvider.class));
-        startService(new Intent(getApplicationContext(), AmbientLightService.class));
+        startServices(services);
         if (!isRegistered) {
             registerReceiver(liveDataReceiver, filter);
         }
@@ -387,18 +377,7 @@ public final class Drive extends AppCompatActivity {
             unregisterReceiver(liveDataReceiver);
             isRegistered = false;
         }
-        if (Methods.isServiceRunning(getAppContext(), ObdConnectionService.class)) {
-            stopService(new Intent(getApplicationContext(), ObdConnectionService.class));
-        }
-        if (Methods.isServiceRunning(getAppContext(), ObdConnectionService.class)) {
-            stopService(new Intent(getApplicationContext(), DataControllerService.class));
-        }
-        if (Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
-            stopService(new Intent(getApplicationContext(), LocationServiceProvider.class));
-        }
-        if (Methods.isServiceRunning(getAppContext(), AmbientLightService.class)) {
-            stopService(new Intent(getApplicationContext(), AmbientLightService.class));
-        }
+        stopServices(services);
         clearViewItems(driveItems, progressBars);
     }
 
@@ -412,7 +391,7 @@ public final class Drive extends AppCompatActivity {
     }
 
     private void handleAmbientLightData(String data) {
-        if (Float.parseFloat(data) < AMBIENT_LIGHT_CONSTANT_FOR_NIGHT) {
+        if (Float.parseFloat(data) < Constants.AMBIENT_LIGHT_CONSTANT_FOR_NIGHT) {
             nightMode();
         } else {
             dayMode();
@@ -594,18 +573,6 @@ public final class Drive extends AppCompatActivity {
         }
     }
 
-    public boolean checkIfSleeping() {
-        boolean isSleeping = false;
-        boolean isDay = ((TextView) findViewById(R.id.speedValue)).getCurrentTextColor() == Color.parseColor(Constants.DAY_TEXT_COLOR);
-
-        if (Integer.parseInt(((TextView) findViewById(R.id.speedValue)).getText().toString())
-                > Constants.CONSTANT_SPEED_TO_CHECK_IF_DRIVER_IS_SLEEPING && isDay) {
-            alarm.play();
-            isSleeping = true;
-        }
-
-        return isSleeping;
-    }
     //endregion
 
     /**
@@ -636,7 +603,6 @@ public final class Drive extends AppCompatActivity {
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
             mOverlay.add(mFaceGraphic);
             mFaceGraphic.updateFace(face);
-            Log.i(TAG, "THERE IS FACE");
             alarm.pause();
         }
 
@@ -648,7 +614,6 @@ public final class Drive extends AppCompatActivity {
         @Override
         public void onMissing(FaceDetector.Detections<Face> detectionResults) {
             mOverlay.remove(mFaceGraphic);
-            Log.i(TAG, "NO FACE");
             checkIfSleeping();
 
         }
@@ -663,4 +628,32 @@ public final class Drive extends AppCompatActivity {
         }
     }
 
+    public boolean checkIfSleeping() {
+        boolean isSleeping = false;
+        boolean isDay = ((TextView) findViewById(R.id.speedValue)).getCurrentTextColor() == Color.parseColor(Constants.DAY_TEXT_COLOR);
+
+        if (Integer.parseInt(((TextView) findViewById(R.id.speedValue)).getText().toString())
+                > Constants.CONSTANT_SPEED_TO_CHECK_IF_DRIVER_IS_SLEEPING && isDay) {
+            alarm.play();
+            isSleeping = true;
+        }
+
+        return isSleeping;
+    }
+
+    public void stopServices(Class... className) {
+        for (Class item : className) {
+            if (Methods.isServiceRunning(getAppContext(), item)) {
+                stopService(new Intent(getApplicationContext(), item));
+            }
+        }
+    }
+
+    public void startServices(Class... className) {
+        for (Class item : className) {
+            if (!Methods.isServiceRunning(getAppContext(), item)) {
+                startService(new Intent(getApplicationContext(), item));
+            }
+        }
+    }
 }
