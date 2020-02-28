@@ -22,5 +22,6 @@ public class Constants {
     public static final int MAX_COOLANT = 180;
     public static final int MAX_SPEED = 260;
     public static final int MAX_LOAD = 1000;
+    public static final String AMBIENT_LIGHT_DATA = "ambient_light";
 
 }
