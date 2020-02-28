@@ -410,6 +410,40 @@ public final class Drive extends AppCompatActivity {
             bar.setProgress(0);
         makeSnackbar("Live data stopped.");
     }
+
+    private void handleAmbientLightData(String data) {
+        if (Float.parseFloat(data) < AMBIENT_LIGHT_CONSTANT_FOR_NIGHT) {
+            nightMode();
+        } else {
+            dayMode();
+        }
+    }
+
+    private void nightMode() {
+        List<TextView> texts = new ArrayList<>(Arrays.asList(
+                (TextView) findViewById(R.id.speedValue), (TextView) findViewById(R.id.rpmValue),
+                (TextView) findViewById(R.id.coolantValue), (TextView) findViewById(R.id.loadValue),
+                (TextView) findViewById(R.id.textView1), (TextView) findViewById(R.id.textView2),
+                (TextView) findViewById(R.id.textView3), (TextView) findViewById(R.id.textView16)));
+
+        findViewById(R.id.backgroundPrototype).setBackgroundColor(Color.parseColor("#4d4646"));
+        for (TextView view : texts) {
+            view.setTextColor(Color.parseColor("#f5eaea"));
+        }
+    }
+
+    private void dayMode() {
+        List<TextView> texts = new ArrayList<>(Arrays.asList(
+                (TextView) findViewById(R.id.speedValue), (TextView) findViewById(R.id.rpmValue),
+                (TextView) findViewById(R.id.coolantValue), (TextView) findViewById(R.id.loadValue),
+                (TextView) findViewById(R.id.textView1), (TextView) findViewById(R.id.textView2),
+                (TextView) findViewById(R.id.textView3), (TextView) findViewById(R.id.textView16)));
+
+        findViewById(R.id.backgroundPrototype).setBackgroundColor(Color.parseColor("#f4f4f4"));
+        for (TextView view : texts) {
+            view.setTextColor(Color.parseColor("#FF212121"));
+        }
+    }
     //region SpeepDetection with GMS
 
     private void requestCameraPermission() {
