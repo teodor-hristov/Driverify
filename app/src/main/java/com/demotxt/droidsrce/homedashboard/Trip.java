@@ -27,6 +27,11 @@ public class Trip extends AppCompatActivity {
         setupRecyclerView();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
     private void setFileDataAdapter() {
         File directory = new File(Constants.DATA_LOG_PATH);
         List<File> files = new ArrayList<>();
