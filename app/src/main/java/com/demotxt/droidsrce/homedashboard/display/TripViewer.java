@@ -18,6 +18,12 @@ import com.anychart.enums.TooltipPositionMode;
 import com.anychart.graphics.vector.Stroke;
 import com.demotxt.droidsrce.homedashboard.R;
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class TripViewer extends AppCompatActivity {
+public class TripViewer extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = "TripViewer";
 
@@ -33,6 +39,11 @@ public class TripViewer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_view);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
         String filePath = getIntent().getStringExtra(Constants.CHECKOUT_TRIP);
         AnyChartView anyChartView = findViewById(R.id.any_chart_view);
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
@@ -106,6 +117,16 @@ public class TripViewer extends AppCompatActivity {
             customDataEntries.add(new CustomDataEntry(array[4], Integer.parseInt(array[0]), Integer.parseInt(array[1]), 1));
         }
         return customDataEntries;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        // Add a marker in Sydney, Australia,
+        // and move the map's camera to the same location.
+        LatLng sydney = new LatLng(-33.852, 151.211);
+        googleMap.addMarker(new MarkerOptions().position(sydney)
+                .title("Marker in Sydney"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
     private class CustomDataEntry extends ValueDataEntry {
