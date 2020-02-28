@@ -178,8 +178,8 @@ public class DataControllerService extends Service {
 
         if (locationWriter == null) {
             try {
-                locationWriter = new CSVWriter(Constants.DATA_LOG_PATH + "/Location/");
-                locationWriter.append("latitude longitude timestamp");
+                locationWriter = new CSVWriter(Constants.LOCATON_LIVE_DATA_PATH);
+                locationWriter.append(Constants.LOCATION_HEADER_CSV);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.i(TAG, "Problem with writing location.");
