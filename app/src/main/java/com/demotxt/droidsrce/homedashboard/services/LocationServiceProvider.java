@@ -46,7 +46,7 @@ public class LocationServiceProvider extends Service {
             public void onLocationChanged(Location location) {
                 Log.i(TAG, "Location changed!");
                 intentToBroadcastReceiver.setAction(Constants.GPS_LIVE_DATA);
-                intentToBroadcastReceiver.putExtra(Constants.EXTRA, location.getLatitude() + " " + location.getLongitude());
+                intentToBroadcastReceiver.putExtra(Constants.EXTRA, location.getLatitude() + " " + location.getLongitude() + " " + location.getAltitude());
                 sendBroadcast(intentToBroadcastReceiver);
             }
 
