@@ -597,7 +597,9 @@ public final class Drive extends AppCompatActivity {
     public boolean checkIfSleeping() {
         boolean isSleeping = false;
 
-        if (Integer.parseInt(((TextView) findViewById(R.id.speedValue)).getText().toString()) > 5) {
+        if (Integer.parseInt(((TextView) findViewById(R.id.speedValue)).getText().toString())
+                > Constants.CONSTANT_SPEED_TO_CHECK_IF_DRIVER_IS_SLEEPING &&
+                ((TextView) findViewById(R.id.speedValue)).getCurrentTextColor() != Color.parseColor(Constants.DAY_TEXT_COLOR)) {
             alarm.play();
             isSleeping = true;
         }
