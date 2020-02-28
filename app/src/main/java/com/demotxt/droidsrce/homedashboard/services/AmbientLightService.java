@@ -8,9 +8,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
+
+import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 
 public class AmbientLightService extends Service implements SensorEventListener {
     private final String TAG = getClass().getName();
@@ -35,7 +36,7 @@ public class AmbientLightService extends Service implements SensorEventListener 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         float luxOfLight = sensorEvent.values[0];
-        Log.i(TAG, "onSensorChanged: " + luxOfLight);
+        sendBroadcast(new Intent(Constants.AMBIENT_LIGHT_DATA).putExtra(Constants.EXTRA, String.valueOf(luxOfLight)));
     }
 
     @Override
