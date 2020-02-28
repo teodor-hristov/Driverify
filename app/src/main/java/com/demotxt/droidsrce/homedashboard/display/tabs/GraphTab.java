@@ -1,4 +1,6 @@
 package com.demotxt.droidsrce.homedashboard.display.tabs;
 
-public class GraphTab {
+import androidx.fragment.app.Fragment;
+
+public class GraphTab extends Fragment {
 }
