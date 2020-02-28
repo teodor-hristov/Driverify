@@ -426,9 +426,9 @@ public final class Drive extends AppCompatActivity {
                 (TextView) findViewById(R.id.textView1), (TextView) findViewById(R.id.textView2),
                 (TextView) findViewById(R.id.textView3), (TextView) findViewById(R.id.textView16)));
 
-        findViewById(R.id.backgroundPrototype).setBackgroundColor(Color.parseColor("#4d4646"));
+        findViewById(R.id.backgroundPrototype).setBackgroundColor(Color.parseColor(Constants.NIGHT_BG_COLOR));
         for (TextView view : texts) {
-            view.setTextColor(Color.parseColor("#f5eaea"));
+            view.setTextColor(Color.parseColor(Constants.NIGHT_TEXT_COLOR));
         }
     }
 
@@ -439,9 +439,9 @@ public final class Drive extends AppCompatActivity {
                 (TextView) findViewById(R.id.textView1), (TextView) findViewById(R.id.textView2),
                 (TextView) findViewById(R.id.textView3), (TextView) findViewById(R.id.textView16)));
 
-        findViewById(R.id.backgroundPrototype).setBackgroundColor(Color.parseColor("#f4f4f4"));
+        findViewById(R.id.backgroundPrototype).setBackgroundColor(Color.parseColor(Constants.DAY_BG_COLOR));
         for (TextView view : texts) {
-            view.setTextColor(Color.parseColor("#FF212121"));
+            view.setTextColor(Color.parseColor(Constants.DAY_TEXT_COLOR));
         }
     }
     //region SpeepDetection with GMS
