@@ -104,7 +104,8 @@ public final class Drive extends AppCompatActivity {
             Constants.GPS_DISABLED,
             Constants.GPS_ENABLED,
             Constants.GPS_LIVE_DATA,
-            Constants.GPS_PUT_EXTRA
+            Constants.GPS_PUT_EXTRA,
+            Constants.AMBIENT_LIGHT_DATA
     };
     private Menu actionBarMenu;
 
