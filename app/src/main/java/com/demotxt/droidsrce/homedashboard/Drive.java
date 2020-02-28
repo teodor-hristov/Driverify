@@ -141,6 +141,10 @@ public final class Drive extends AppCompatActivity {
                 case Constants.RECEIVE_DATA:
                     handleBluetoothLiveData(data);
                     break;
+                case Constants.AMBIENT_LIGHT_DATA:
+                    handleAmbientLightData(stringExtra);
+                    break;
+
             }
         }
     };
