@@ -133,6 +133,12 @@ public class TripViewer extends AppCompatActivity implements OnMapReadyCallback 
         return customDataEntries;
     }
 
+    private List<PolylineOptions> setColoredPolylinesOnTheMap() {
+        List<PolylineOptions> polylines = null;
+
+        return polylines;
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         String fileName = "2020-02-25T14:02:11.csv";
@@ -146,7 +152,8 @@ public class TripViewer extends AppCompatActivity implements OnMapReadyCallback 
         for (LatLng marker : latLngList) {
             googleMap.addMarker(new MarkerOptions().position(marker)
                     .alpha(0)
-                    .title("speed: 150 \n rpm: 3840 \n load: 48%"));
+                    .title("Current point info: ")
+                    .snippet("speed: 150 rpm: 3840 load: 48%"));
         }
         googleMap.addPolyline(polylineOptions.addAll(latLngList));
 
