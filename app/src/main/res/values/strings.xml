@@ -115,4 +115,7 @@
     <string name="pref_dev_email_summary">Logs will be emailed to this address</string>
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="exit">Exit</string>
+    <string name="title_activity_data_view">DataView</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
 </resources>

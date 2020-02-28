@@ -43,7 +43,7 @@ public class ListViewTripDisplayAdapter extends RecyclerView.Adapter<ListViewTri
             @Override
             public void onClick(View view) {
                 TransitionManager.beginDelayedTransition(holder.click);
-                Intent intent = new Intent(_context, TripViewer.class);
+                Intent intent = new Intent(_context, DataView.class);
                 intent.putExtra(Constants.CHECKOUT_TRIP, files.get(holder.getAdapterPosition()).getAbsolutePath());
                 _context.startActivity(intent);
             }
