@@ -156,14 +156,8 @@ public final class Drive extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        preview.stop();
-        if (isRegistered) {
-            unregisterReceiver(liveDataReceiver);
-            isRegistered = false;
-        }
+    public static Context getAppContext() {
+        return appContext;
     }
 
     @Override
@@ -232,6 +226,24 @@ public final class Drive extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        preview.stop();
+        if (isRegistered) {
+            unregisterReceiver(liveDataReceiver);
+            isRegistered = false;
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        actionBarMenu = menu;
+        return super.onCreateOptionsMenu(menu);
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (btAdapter != null && btAdapter.isEnabled() && !bluetoothDefaultIsEnable)
@@ -242,14 +254,6 @@ public final class Drive extends AppCompatActivity {
             isRegistered = false;
         }
         stopServices(services);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        actionBarMenu = menu;
-        return super.onCreateOptionsMenu(menu);
-
     }
 
     @Override
@@ -268,34 +272,6 @@ public final class Drive extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        startCameraSource();
-        if (btAdapter != null)
-            bluetoothDefaultIsEnable = btAdapter.isEnabled();
-
-        preRequisites = btAdapter != null && btAdapter.isEnabled();
-        if (!preRequisites && prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
-            preRequisites = btAdapter != null && btAdapter.enable();
-        }
-        if (preRequisites && !prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
-            preRequisites = btAdapter != null && btAdapter.disable();
-        }
-        if (!isRegistered) {
-            registerReceiver(liveDataReceiver, filter);
-        }
-
-        startServices(services);
-    }
-
-    public static Context getAppContext() {
-        return appContext;
-    }
-
-    public void makeToast(String msg) {
-        Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
-    }
 
     private void connectedBluetooth(String connectionStatusMsg) {
         if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {
@@ -353,17 +329,6 @@ public final class Drive extends AppCompatActivity {
         makeSnackbar("GPS Enabled!");
     }
 
-    public void makeSnackbar(String string) {
-        Snackbar.make(graphicOverlay, string,
-                Snackbar.LENGTH_SHORT)
-                .show();
-    }
-
-    private void filterAddActions(IntentFilter filter, String[] actions) {
-        for (String item : actions)
-            filter.addAction(item);
-    }
-
     private void startLiveData(IntentFilter filter) {
         startServices(services);
         if (!isRegistered) {
@@ -379,15 +344,6 @@ public final class Drive extends AppCompatActivity {
         }
         stopServices(services);
         clearViewItems(driveItems, progressBars);
-    }
-
-
-    private void clearViewItems(List<TextView> driveData, List<ProgressBar> progressData) {
-        for (TextView v : driveData)
-            v.setText("0");
-        for (ProgressBar bar : progressData)
-            bar.setProgress(0);
-        makeSnackbar("Live data stopped.");
     }
 
     private void handleAmbientLightData(String data) {
@@ -656,4 +612,49 @@ public final class Drive extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startCameraSource();
+        if (btAdapter != null)
+            bluetoothDefaultIsEnable = btAdapter.isEnabled();
+
+        preRequisites = btAdapter != null && btAdapter.isEnabled();
+        if (!preRequisites && prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
+            preRequisites = btAdapter != null && btAdapter.enable();
+        }
+        if (preRequisites && !prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
+            preRequisites = btAdapter != null && btAdapter.disable();
+        }
+        if (!isRegistered) {
+            registerReceiver(liveDataReceiver, filter);
+        }
+
+        startServices(services);
+    }
+
+    private void clearViewItems(List<TextView> driveData, List<ProgressBar> progressData) {
+        for (TextView v : driveData)
+            v.setText("0");
+        for (ProgressBar bar : progressData)
+            bar.setProgress(0);
+        makeSnackbar("Live data stopped.");
+    }
+
+    public void makeToast(String msg) {
+        Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public void makeSnackbar(String string) {
+        Snackbar.make(graphicOverlay, string,
+                Snackbar.LENGTH_SHORT)
+                .show();
+    }
+
+    private void filterAddActions(IntentFilter filter, String[] actions) {
+        for (String item : actions)
+            filter.addAction(item);
+    }
+
 }
