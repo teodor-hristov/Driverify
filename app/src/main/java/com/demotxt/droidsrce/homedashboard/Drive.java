@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -48,6 +49,7 @@ import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.Utils.Methods;
 import com.demotxt.droidsrce.homedashboard.io.LocationIO;
 import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
+import com.demotxt.droidsrce.homedashboard.services.AmbientLightService;
 import com.demotxt.droidsrce.homedashboard.services.DataControllerService;
 import com.demotxt.droidsrce.homedashboard.services.LocationServiceProvider;
 import com.demotxt.droidsrce.homedashboard.services.ObdConnectionService;
@@ -71,6 +73,7 @@ import java.util.List;
 public final class Drive extends AppCompatActivity {
     private final String TAG = getClass().getName();
 
+    private static final float AMBIENT_LIGHT_CONSTANT_FOR_NIGHT = 20;
     private static final int RC_HANDLE_GMS = 9001;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
     private static boolean bluetoothDefaultIsEnable = false;
@@ -367,6 +370,7 @@ public final class Drive extends AppCompatActivity {
         startService(new Intent(Drive.this, ObdConnectionService.class));
         startService(new Intent(Drive.this, DataControllerService.class));
         startService(new Intent(Drive.this, LocationServiceProvider.class));
+        startService(new Intent(getApplicationContext(), AmbientLightService.class));
         if (!isRegistered) {
             registerReceiver(liveDataReceiver, filter);
         }
@@ -386,6 +390,9 @@ public final class Drive extends AppCompatActivity {
         }
         if (Methods.isServiceRunning(getAppContext(), LocationServiceProvider.class)) {
             stopService(new Intent(getApplicationContext(), LocationServiceProvider.class));
+        }
+        if (Methods.isServiceRunning(getAppContext(), AmbientLightService.class)) {
+            stopService(new Intent(getApplicationContext(), AmbientLightService.class));
         }
         clearViewItems(driveItems, progressBars);
     }
