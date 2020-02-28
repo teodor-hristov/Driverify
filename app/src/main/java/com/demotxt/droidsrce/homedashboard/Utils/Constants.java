@@ -28,7 +28,8 @@ public class Constants {
     public static final String NIGHT_TEXT_COLOR = "#f5eaea";
     public static final String DAY_BG_COLOR = "#f4f4f4";
     public static final String DAY_TEXT_COLOR = "#FF212121";
+    public static final float AMBIENT_LIGHT_CONSTANT_FOR_NIGHT = 20;
 
-    public static final int CONSTANT_SPEED_TO_CHECK_IF_DRIVER_IS_SLEEPING = 5;
+    public static final int CONSTANT_SPEED_TO_CHECK_IF_DRIVER_IS_SLEEPING = 10;
 
 }
