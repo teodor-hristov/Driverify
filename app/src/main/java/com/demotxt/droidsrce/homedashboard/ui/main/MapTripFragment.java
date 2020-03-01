@@ -2,6 +2,7 @@ package com.demotxt.droidsrce.homedashboard.ui.main;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +23,19 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
 public class MapTripFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     private Bundle arguments;
+    private String filePath = null;
+    private File mapDataFile = null;
 
     public MapTripFragment() {
         // Required empty public constructor
@@ -49,10 +56,47 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        File file;
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            filePath = bundle.getString("file_name", "");
+        }
+        file = new File(filePath);
+        File[] dir = new File(Constants.LOCATON_LIVE_DATA_PATH).listFiles();
+
+        long min = Math.abs(parse(dir[0].getName()).getTime() - parse(file.getName()).getTime());
+        long reckoning;
+        File neededFile = null;
+
+        for (File item : new File(Constants.LOCATON_LIVE_DATA_PATH).listFiles()) {
+            if (item.isFile()) {
+                reckoning = Math.abs(parse(item.getName()).getTime() - parse(file.getName()).getTime());
+                if (min >= reckoning && reckoning < 300000) {
+                    min = reckoning;
+                    neededFile = item;
+                }
+                Log.i("Test", "min: " + min);
+                Log.i("Test", "reckoning: " + reckoning);
+            }
+        }
+        mapDataFile = neededFile;
+
         mapView = view.findViewById(R.id.map2);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
         mapView.getMapAsync(this);
+    }
+
+    private Date parse(String fileName) {
+        Date date = null;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            date = dateFormat.parse(fileName.substring(0, 19));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
     private List<LatLng> LatLongReadCSV(String path) throws FileNotFoundException {
@@ -85,11 +129,10 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        String fileName = "2020-02-25T14:02:11.csv";
         List<LatLng> latLngList = null;
-        PolylineOptions polylineOptions = new PolylineOptions().clickable(true);
+
         try {
-            latLngList = LatLongReadCSV(Constants.LOCATON_LIVE_DATA_PATH + fileName);
+            latLngList = LatLongReadCSV(mapDataFile.getAbsolutePath());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
