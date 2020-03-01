@@ -150,24 +150,24 @@ public class TripViewer extends AppCompatActivity implements OnMapReadyCallback 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        String fileName = "2020-02-25T14:02:11.csv";
+        String fileName = Constants.DATA_LOG_PATH + "2020-02-25T14:02:11.csv";
         List<LatLng> latLngList = null;
-        PolylineOptions polylineOptions = new PolylineOptions().clickable(true);
         try {
             latLngList = LatLongReadCSV(Constants.LOCATON_LIVE_DATA_PATH + "/" + fileName);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
         for (LatLng marker : latLngList) {
             googleMap.addMarker(new MarkerOptions().position(marker)
                     .alpha(0.1f)
                     .title("Current point info: ")
                     .snippet("speed: 150 rpm: 3840 load: 48%"));
         }
+
         for (PolylineOptions option : setColoredPolylinesOnTheMap((latLngList))) {
             googleMap.addPolyline(option);
         }
-        //googleMap.addPolyline(polylineOptions.addAll(latLngList));
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngList.get(0), 15));
         googleMap.animateCamera(CameraUpdateFactory.zoomIn());
