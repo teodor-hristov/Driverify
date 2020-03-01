@@ -2,7 +2,6 @@ package com.demotxt.droidsrce.homedashboard.ui.main;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 
@@ -76,8 +78,6 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
                     min = reckoning;
                     neededFile = item;
                 }
-                Log.i("Test", "min: " + min);
-                Log.i("Test", "reckoning: " + reckoning);
             }
         }
         mapDataFile = neededFile;
@@ -125,6 +125,49 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
         }
 
         return polylines;
+    }
+
+    private String[] ReadCSV(String path) throws FileNotFoundException {
+        File file = new File(path);
+        Scanner fileReader = new Scanner(file);
+        List<String> data = new ArrayList<>();
+
+        fileReader.nextLine();
+        while (fileReader.hasNextLine()) {
+            data.add(fileReader.nextLine());
+        }
+        return Arrays.asList(data.toArray()).toArray(new String[data.toArray().length]);
+    }
+
+    private void addMarkersWithValues(GoogleMap googleMap, File locationDataFile, File carDataFile) throws FileNotFoundException {
+//        for (LatLng marker : points) {
+//            googleMap.addMarker(new MarkerOptions().position(marker)
+//                    .alpha(0)
+//                    .title("Current point info: ")
+//                    .snippet("speed: 150 rpm: 3840 load: 48%"));
+//        }
+        String[] carDataPoints = ReadCSV(carDataFile.getAbsolutePath());
+        String[] locationDataPoints = ReadCSV(locationDataFile.getAbsolutePath());
+        Dictionary indexes = new Hashtable<String, Integer>();
+        indexes.put("rpm", 0);
+        indexes.put("speed", 1);
+        indexes.put("load", 3);
+        indexes.put("lat", 0);
+        indexes.put("long", 1);
+
+
+        for (String locationPoint : locationDataPoints) {
+            for (String carPoint : carDataPoints) {
+//                if(locationPoint.split(",")[3] == carPoint.split(",")[4]){
+                googleMap.addMarker(new MarkerOptions().position(
+                        new LatLng(Double.parseDouble(locationPoint.split(",")[0]),
+                                Double.parseDouble(locationPoint.split(",")[1])))
+                        .alpha(0.1f)
+                        .title("Current point info: ")
+                        .snippet("speed: 150 rpm: 3840 load: 48%"));
+                //}
+            }
+        }
     }
 
     @Override
