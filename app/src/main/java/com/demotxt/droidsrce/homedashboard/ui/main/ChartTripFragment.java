@@ -1,7 +1,6 @@
 package com.demotxt.droidsrce.homedashboard.ui.main;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,13 +41,13 @@ public class ChartTripFragment extends Fragment {
 
     private List<DataEntry> ReadCSV(String path) throws FileNotFoundException {
         File file = new File(path);
-
         Scanner fileReader = new Scanner(file);
         List<DataEntry> customDataEntries = new ArrayList<>();
+
         fileReader.nextLine();
         while (fileReader.hasNextLine()) {
             String[] array = fileReader.nextLine().split(",");
-            customDataEntries.add(new CustomDataEntry(array[4], Integer.parseInt(array[0]), Integer.parseInt(array[1]), 1));
+            customDataEntries.add(new CustomDataEntry(array[4], Double.parseDouble(array[0]) / 100, Integer.parseInt(array[1]), 1));
         }
         return customDataEntries;
     }
@@ -68,8 +67,6 @@ public class ChartTripFragment extends Fragment {
         if (bundle != null) {
             filePath = bundle.getString("file_name", "");
         }
-
-        Log.i("Test", "onViewCreated: " + filePath);
 
         AnyChartView anyChartView = view.findViewById(R.id.any_chart_view2);
         anyChartView.setProgressBar(view.findViewById(R.id.progress_bar2));
@@ -102,7 +99,7 @@ public class ChartTripFragment extends Fragment {
         Mapping series2Mapping = set.mapAs("{ x: 'x', value: 'value2' }");
 
         Line series1 = cartesian.line(series1Mapping);
-        series1.name("RPM");
+        series1.name("RPM / 100");
         series1.hovered().markers().enabled(true);
         series1.hovered().markers()
                 .type(MarkerType.CIRCLE)
