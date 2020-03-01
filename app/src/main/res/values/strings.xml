@@ -116,6 +116,6 @@
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="exit">Exit</string>
     <string name="title_activity_data_view">DataView</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_1">Map graphing</string>
+    <string name="tab_text_2">Charts</string>
 </resources>
