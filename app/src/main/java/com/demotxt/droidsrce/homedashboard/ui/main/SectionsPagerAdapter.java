@@ -36,7 +36,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         bundle.putString("file_name", fileName);
         switch (position) {
             case 0:
-                return new MapTripFragment();
+                fragment = new MapTripFragment();
+                fragment.setArguments(bundle);
+                return fragment;
             case 1:
                 fragment = new ChartTripFragment();
                 fragment.setArguments(bundle);
