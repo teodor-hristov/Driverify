@@ -1,6 +1,7 @@
 package com.demotxt.droidsrce.homedashboard.ui.main;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -19,17 +20,30 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2};
     private final Context mContext;
+    private String fileName;
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm) {
+    public SectionsPagerAdapter(Context context, FragmentManager fm, String fileName) {
         super(fm);
         mContext = context;
+        this.fileName = fileName;
     }
 
     @Override
     public Fragment getItem(int position) {
-        // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
-        return PlaceholderFragment.newInstance(position + 1);
+        Fragment fragment;
+
+        Bundle bundle = new Bundle();
+        bundle.putString("file_name", fileName);
+        switch (position) {
+            case 0:
+                return new MapTripFragment();
+            case 1:
+                fragment = new ChartTripFragment();
+                fragment.setArguments(bundle);
+                return fragment;
+            default:
+                return null;
+        }
     }
 
     @Nullable
@@ -40,7 +54,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // Show 2 total pages.
         return 2;
     }
 }
