@@ -16,7 +16,7 @@
     <string name="homeDriveInfo">Get ready for driving. This monitors car info, drowsiness detection.</string>
     <string name="homeInfo">Info</string>
     <string name="homeInfoInfo">Information about the driver and the car.</string>
-    <string name="homeTips">Tips</string>
+    <string name="homeTips">Trip</string>
     <string name="homeTipsInfo">Graphs and tips for safe and economical driving.</string>
     <string name="homeBlackBox">Black box</string>
     <string name="homeBlackBoxInfo">The information stored in this can be used by police in case of crash.</string>
