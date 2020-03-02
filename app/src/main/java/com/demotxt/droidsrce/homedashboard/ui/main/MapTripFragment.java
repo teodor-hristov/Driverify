@@ -1,5 +1,6 @@
 package com.demotxt.droidsrce.homedashboard.ui.main;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.demotxt.droidsrce.homedashboard.Home;
 import com.demotxt.droidsrce.homedashboard.R;
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -80,6 +82,10 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
         }
+
+        if(neededFile == null){
+            startActivity(new Intent(getContext(), Home.class));
+        }
         mapDataFile = neededFile;
 
         mapView = view.findViewById(R.id.map2);
@@ -140,12 +146,6 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void addMarkersWithValues(GoogleMap googleMap, File locationDataFile, File carDataFile) throws FileNotFoundException {
-//        for (LatLng marker : points) {
-//            googleMap.addMarker(new MarkerOptions().position(marker)
-//                    .alpha(0)
-//                    .title("Current point info: ")
-//                    .snippet("speed: 150 rpm: 3840 load: 48%"));
-//        }
         String[] carDataPoints = ReadCSV(carDataFile.getAbsolutePath());
         String[] locationDataPoints = ReadCSV(locationDataFile.getAbsolutePath());
         Dictionary indexes = new Hashtable<String, Integer>();
@@ -158,14 +158,12 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
 
         for (String locationPoint : locationDataPoints) {
             for (String carPoint : carDataPoints) {
-//                if(locationPoint.split(",")[3] == carPoint.split(",")[4]){
                 googleMap.addMarker(new MarkerOptions().position(
                         new LatLng(Double.parseDouble(locationPoint.split(",")[0]),
                                 Double.parseDouble(locationPoint.split(",")[1])))
                         .alpha(0.1f)
                         .title("Current point info: ")
                         .snippet("speed: 150 rpm: 3840 load: 48%"));
-                //}
             }
         }
     }
