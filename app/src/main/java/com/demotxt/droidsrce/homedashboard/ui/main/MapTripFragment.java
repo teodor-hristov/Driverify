@@ -117,11 +117,11 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
         List<PolylineOptions> polylines = new ArrayList<>();
 
         for (int i = 1; i < points.size(); i++) {
-            if (i % 2 == 0) {
-                polylines.add(new PolylineOptions().add(points.get(i), points.get(i - 1)).color(Color.RED));
-            } else {
+//            if (i % 2 == 0) {
+//                polylines.add(new PolylineOptions().add(points.get(i), points.get(i - 1)).color(Color.RED));
+//            } else {
                 polylines.add(new PolylineOptions().add(points.get(i), points.get(i - 1)).color(Color.BLACK));
-            }
+            //}
         }
 
         return polylines;
