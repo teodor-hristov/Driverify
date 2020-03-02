@@ -22,6 +22,7 @@ import com.anychart.enums.MarkerType;
 import com.anychart.enums.TooltipPositionMode;
 import com.anychart.graphics.vector.Stroke;
 import com.demotxt.droidsrce.homedashboard.R;
+import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,9 +46,25 @@ public class ChartTripFragment extends Fragment {
         List<DataEntry> customDataEntries = new ArrayList<>();
 
         fileReader.nextLine();
+
+        String prevLine = null;
+        String currentLine;
+        String[] currLineArray;
+        String[] prevLineArray;
         while (fileReader.hasNextLine()) {
-            String[] array = fileReader.nextLine().split(",");
-            customDataEntries.add(new CustomDataEntry(array[4], Double.parseDouble(array[0]) / 100, Integer.parseInt(array[1]), 1));
+            currentLine = fileReader.nextLine();
+            if (prevLine != null) {
+                currLineArray = currentLine.split(",");
+                prevLineArray = prevLine.split(",");
+                customDataEntries.add(new CustomDataEntry(currLineArray[4],
+                        Double.parseDouble(currLineArray[1]) - Double.parseDouble(prevLineArray[1]),
+                        Double.parseDouble(currLineArray[3]) / 10,
+                        (Double.parseDouble(currLineArray[1]) - Double.parseDouble(prevLineArray[1])) *
+                                Double.parseDouble(currLineArray[3])
+                ));
+            }
+
+            prevLine = currentLine;
         }
         return customDataEntries;
     }
@@ -86,7 +103,7 @@ public class ChartTripFragment extends Fragment {
 
         cartesian.title("Data: " + new File(filePath).getName());
 
-        cartesian.yAxis(0).title("RPM");
+        cartesian.yAxis(0).title("Load & Acceleration");
         cartesian.xAxis(0).labels().padding(5d, 5d, 5d, 5d);
 
         Set set = Set.instantiate();
@@ -97,9 +114,12 @@ public class ChartTripFragment extends Fragment {
         }
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'value' }");
         Mapping series2Mapping = set.mapAs("{ x: 'x', value: 'value2' }");
+        Mapping series3Mapping = set.mapAs("{ x: 'x', value: 'value3' }");
+        Mapping series4Mapping = set.mapAs("{ x: 'x', value: 'value4' }");
+
 
         Line series1 = cartesian.line(series1Mapping);
-        series1.name("RPM / 100");
+        series1.name("Acceleration");
         series1.hovered().markers().enabled(true);
         series1.hovered().markers()
                 .type(MarkerType.CIRCLE)
@@ -111,7 +131,7 @@ public class ChartTripFragment extends Fragment {
                 .offsetY(5d);
 
         Line series2 = cartesian.line(series2Mapping);
-        series2.name("Speed");
+        series2.name("Engine load / 10 ");
         series2.hovered().markers().enabled(true);
         series2.hovered().markers()
                 .type(MarkerType.CIRCLE)
@@ -122,18 +142,45 @@ public class ChartTripFragment extends Fragment {
                 .offsetX(5d)
                 .offsetY(5d);
 
+        Line series3 = cartesian.line(series3Mapping);
+        series3.name("Fuel economy border");
+        series3.hovered().markers().enabled(true);
+        series3.hovered().markers()
+                .type(MarkerType.CIRCLE)
+                .size(4d);
+        series3.tooltip()
+                .position("right")
+                .anchor(Anchor.LEFT_CENTER)
+                .offsetX(5d)
+                .offsetY(5d);
+
+        Line series4 = cartesian.line(series4Mapping);
+        series4.name("Current fuel economy");
+        series4.hovered().markers().enabled(true);
+        series4.hovered().markers()
+                .type(MarkerType.CIRCLE)
+                .size(4d);
+        series4.tooltip()
+                .position("right")
+                .anchor(Anchor.LEFT_CENTER)
+                .offsetX(5d)
+                .offsetY(5d);
+
         cartesian.legend().enabled(true);
         cartesian.legend().fontSize(13d);
         cartesian.legend().padding(0d, 0d, 10d, 0d);
 
+        anyChartView.setZoomEnabled(true);
         anyChartView.setChart(cartesian);
     }
 
     private class CustomDataEntry extends ValueDataEntry {
 
-        CustomDataEntry(String x, Number value, Number value2, Number value3) {
+        CustomDataEntry(String x, Number value, Number value2, Number value4) {
             super(x, value);
             setValue("value2", value2);
+            setValue("value3", Constants.FUEL_ECONOMY_CONSTANT);
+            setValue("value4", value4);
         }
 
     }
