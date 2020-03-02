@@ -33,5 +33,6 @@ public class Constants {
     public static final float AMBIENT_LIGHT_CONSTANT_FOR_NIGHT = 13;
 
     public static final int CONSTANT_SPEED_TO_CHECK_IF_DRIVER_IS_SLEEPING = 10;
+    public static final double FUEL_ECONOMY_CONSTANT = 88.4;
 
 }
