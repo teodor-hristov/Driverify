@@ -1,37 +1,37 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
-INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
-INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
-INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
-INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
-INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
-INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
+ADDED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
+INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
+INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
+INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
+INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
+INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
+INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:2:1-8:12
 	package
-		ADDED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:3:7-27
-		INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml
+		ADDED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:3:7-27
+		INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml
 	android:versionName
-		ADDED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:5:7-34
-		INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml
+		ADDED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:5:7-34
+		INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:2:11-69
+		ADDED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:2:11-69
 	android:versionCode
-		ADDED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:4:7-33
-		INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml
+		ADDED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:4:7-33
+		INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml
 uses-sdk
-ADDED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:7:5-47
-INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:7:5-47
-INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:7:5-47
-INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:7:5-47
-INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:7:5-47
+ADDED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:7:5-47
+INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:7:5-47
+INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:7:5-47
+INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:7:5-47
+INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:7:5-47
 	android:targetSdkVersion
-		ADDED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:7:15-44
-		INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml
+		ADDED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:7:15-44
+		INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml
-		ADDED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml:7:5-47
-		INJECTED from C:\Users\tedot\OneDrive\Desktop\DoNotSleep\openCVLibrary343\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml
+		ADDED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml:7:5-47
+		INJECTED from C:\Users\tedot\OneDrive\Desktop\Driverify\openCVLibrary343\src\main\AndroidManifest.xml
