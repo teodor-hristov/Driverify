@@ -153,12 +153,6 @@ public class ObdConnectionService extends IntentService {
 
         prereq = bluetoothDevice != null && sock != null && sock.isConnected();
         while (prereq) {
-            try {
-                Thread.sleep(sleepPrefs);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             if (sock.isConnected()) {
                 if (!updateData(sock, cmds, stringCommands)) {
                     sendBroadcast(new Intent((Constants.DISCONNECTED)));
