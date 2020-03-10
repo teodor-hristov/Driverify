@@ -16,11 +16,13 @@ import androidx.annotation.Nullable;
 
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.io.CSVWriter;
+import com.demotxt.droidsrce.homedashboard.io.DataSynchronizer;
 import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
 
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
 
 public class DataControllerService extends Service {
     private static final int ASSERTED_COMMANDS_COUNT = 4;
@@ -38,6 +40,7 @@ public class DataControllerService extends Service {
             Constants.GPS_PUT_EXTRA,
             Constants.FACE_DATA
     };
+    DataSynchronizer pesho;
     private SimpleDateFormat formatter;
 
     @Nullable
@@ -84,6 +87,7 @@ public class DataControllerService extends Service {
         filterAddActions(filter, actions);
         registerReceiver(liveDataReceiver, filter);
         formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        pesho = new DataSynchronizer(new LinkedList<String>(), new LinkedList<String>());
     }
 
     @Override
@@ -101,12 +105,12 @@ public class DataControllerService extends Service {
 
     private void connectionLost() {
         Log.i(TAG, "Connection lost.");
-            try {
-                if (bluetoothWriter != null)
-                    bluetoothWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.i(TAG, "Problem with file close");
+        try {
+            if (bluetoothWriter != null)
+                bluetoothWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.i(TAG, "Problem with file close");
         }
     }
 
@@ -115,7 +119,7 @@ public class DataControllerService extends Service {
         if (bluetoothWriter == null) {
             try {
                 bluetoothWriter = new CSVWriter(Constants.DATA_LOG_PATH);
-                bluetoothWriter.append(Constants.OBD_DATA_HEADER_CSV);
+                bluetoothWriter.append(Constants.UNITED_DATA_HEADER);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.i(TAG, "Writer initialization problem.");
@@ -132,7 +136,10 @@ public class DataControllerService extends Service {
                     sb.append(" ");
                 }
                 sb.append(System.currentTimeMillis());
-                bluetoothWriter.append(sb.toString());
+
+                pesho.appendObdData(sb.toString());
+
+                bluetoothWriter.append(pesho.getSynchronizedData());
                 autoSave(bluetoothWriter);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -193,6 +200,9 @@ public class DataControllerService extends Service {
                 }
 
                 sb.append(System.currentTimeMillis());
+
+                pesho.appendLocation(sb.toString());
+
                 locationWriter.append(sb.toString());
                 autoSave(locationWriter);
             } catch (IOException e) {

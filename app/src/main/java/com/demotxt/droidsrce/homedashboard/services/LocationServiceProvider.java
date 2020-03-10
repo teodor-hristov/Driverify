@@ -25,7 +25,6 @@ public class LocationServiceProvider extends Service {
     private LocationManager locationManager;
     private Intent intentToBroadcastReceiver = new Intent();
 
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
