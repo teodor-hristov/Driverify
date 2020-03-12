@@ -24,14 +24,13 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 
@@ -67,13 +66,13 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
             filePath = bundle.getString("file_name", "");
         }
         file = new File(filePath);
-        File[] dir = new File(Constants.LOCATON_LIVE_DATA_PATH).listFiles();
+        File[] dir = new File(Constants.DATA_LOG_PATH).listFiles();
 
         long min = Math.abs(parse(dir[0].getName()).getTime() - parse(file.getName()).getTime());
         long reckoning;
         File neededFile = null;
 
-        for (File item : new File(Constants.LOCATON_LIVE_DATA_PATH).listFiles()) {
+        for (File item : dir) {
             if (item.isFile()) {
                 reckoning = Math.abs(parse(item.getName()).getTime() - parse(file.getName()).getTime());
                 if (min >= reckoning && reckoning < 300000) {
@@ -83,7 +82,7 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
             }
         }
 
-        if(neededFile == null){
+        if (neededFile == null) {
             startActivity(new Intent(getContext(), Home.class));
         }
         dataFile = neededFile;
@@ -107,13 +106,17 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
 
     private List<LatLng> LatLongReadCSV(String path) throws FileNotFoundException {
         File file = new File(path);
-
         Scanner fileReader = new Scanner(file);
         List<LatLng> customDataEntries = new ArrayList<>();
+        String lat, lon;
+
         fileReader.nextLine();
         while (fileReader.hasNextLine()) {
             String[] array = fileReader.nextLine().split(",");
-            customDataEntries.add(new LatLng(Double.parseDouble(array[0]), Double.parseDouble(array[1])));
+            lat = array[4];
+            lon = array[5];
+            if (!lat.equals("N/A") && !lon.equals("N/A"))
+                customDataEntries.add(new LatLng(Double.parseDouble(lat), Double.parseDouble(lon)));
         }
         fileReader.close();
         return customDataEntries;
@@ -126,7 +129,7 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
 //            if (i % 2 == 0) {
 //                polylines.add(new PolylineOptions().add(points.get(i), points.get(i - 1)).color(Color.RED));
 //            } else {
-                polylines.add(new PolylineOptions().add(points.get(i), points.get(i - 1)).color(Color.BLACK));
+            polylines.add(new PolylineOptions().add(points.get(i), points.get(i - 1)).color(Color.BLACK));
             //}
         }
 
@@ -183,14 +186,7 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
             e.printStackTrace();
         }
 
-        for (LatLng marker : latLngList) {
-            googleMap.addMarker(new MarkerOptions().position(marker)
-                    .alpha(0)
-                    .title("Current point info: ")
-                    .snippet("speed: 150 rpm: 3840 load: 48%"));
-        }
-
-        for (PolylineOptions option : setColoredPolylinesOnTheMap((latLngList))) {
+        for (PolylineOptions option : setColoredPolylinesOnTheMap(latLngList)) {
             googleMap.addPolyline(option);
         }
 
