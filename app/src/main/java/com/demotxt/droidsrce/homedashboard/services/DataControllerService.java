@@ -87,7 +87,7 @@ public class DataControllerService extends Service {
         filterAddActions(filter, actions);
         registerReceiver(liveDataReceiver, filter);
         formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        pesho = new DataSynchronizer(new LinkedList<String>(), new LinkedList<String>());
+        pesho = new DataSynchronizer(new LinkedList<String>(), new LinkedList<String>(), new LinkedList<String>());
     }
 
     @Override
@@ -139,7 +139,11 @@ public class DataControllerService extends Service {
 
                 pesho.appendObdData(sb.toString());
 
-                bluetoothWriter.append(pesho.getSynchronizedData());
+                if (pesho.Length() >= 5) {
+                    for (String str : pesho.getSynchronizedData())
+                        bluetoothWriter.append(str);
+                }
+
                 autoSave(bluetoothWriter);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -169,6 +173,9 @@ public class DataControllerService extends Service {
                     sb.append(" ");
                 }
                 sb.append(System.currentTimeMillis());
+
+                pesho.appendFaceData(sb.toString());
+
                 faceDataWriter.append(sb.toString());
                 autoSave(faceDataWriter);
             } catch (IOException e) {
@@ -202,6 +209,11 @@ public class DataControllerService extends Service {
                 sb.append(System.currentTimeMillis());
 
                 pesho.appendLocation(sb.toString());
+
+                if (pesho.Length() >= 5) {
+                    for (String str : pesho.getSynchronizedData())
+                        bluetoothWriter.append(str);
+                }
 
                 locationWriter.append(sb.toString());
                 autoSave(locationWriter);
