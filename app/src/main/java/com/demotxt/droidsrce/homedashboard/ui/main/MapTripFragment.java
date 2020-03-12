@@ -145,25 +145,29 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
         return Arrays.asList(data.toArray()).toArray(new String[data.toArray().length]);
     }
 
-    private void addMarkersWithValues(GoogleMap googleMap, File locationDataFile, File carDataFile) throws FileNotFoundException {
-        String[] carDataPoints = ReadCSV(carDataFile.getAbsolutePath());
-        String[] locationDataPoints = ReadCSV(locationDataFile.getAbsolutePath());
-        Dictionary indexes = new Hashtable<String, Integer>();
-        indexes.put("rpm", 0);
-        indexes.put("speed", 1);
-        indexes.put("load", 3);
-        indexes.put("lat", 0);
-        indexes.put("long", 1);
+    private void addMarkersWithValues(GoogleMap googleMap, File dataFile) throws FileNotFoundException {
+        String[] dataPoints = ReadCSV(dataFile.getAbsolutePath());
+        String[] currentLine;
+        String rpm, speed, load, lat, lon, alt, time;
 
+        for (String dataPoint : dataPoints) {
+            currentLine = dataPoint.split(",");
+            lat = currentLine[4];
+            lon = currentLine[5];
+            alt = currentLine[6];
+            rpm = currentLine[0];
+            speed = currentLine[1];
+            load = currentLine[3];
+            time = new Date(new Timestamp(Long.parseLong(currentLine[9])).getTime()).toString();
 
-        for (String locationPoint : locationDataPoints) {
-            for (String carPoint : carDataPoints) {
+            if (lat.equals("N/A") || lon.equals("N/A") || alt.equals("N/A")) {
+            } else {
                 googleMap.addMarker(new MarkerOptions().position(
-                        new LatLng(Double.parseDouble(locationPoint.split(",")[0]),
-                                Double.parseDouble(locationPoint.split(",")[1])))
-                        .alpha(0.1f)
-                        .title("Current point info: ")
-                        .snippet("speed: 150 rpm: 3840 load: 48%"));
+                        new LatLng(Double.parseDouble(lat),
+                                Double.parseDouble(lon)))
+                        .alpha(0)
+                        .title("Current info on " + time + ": ")
+                        .snippet("speed: " + speed + " km/h rpm: " + rpm + " load: " + load + "%"));
             }
         }
     }
