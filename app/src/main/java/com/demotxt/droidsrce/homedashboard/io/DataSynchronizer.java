@@ -79,11 +79,13 @@ public class DataSynchronizer {
             if (obdLoc <= 1000) {
                 obdPart = obdLine[0] + " " + obdLine[1] + " " + obdLine[2] + " " + obdLine[3] + " ";
                 locPart = locationLine[0] + " " + locationLine[1] + " " + locationLine[2] + " ";
+
                 if (obdFace <= 1000) {
                     facePart = faceLine[0] + " " + faceLine[1] + " " + faceLine[2];
                 } else {
                     facePart = "N/A N/A " + obdTime;
                 }
+
             } else {
                 if (obdTime == 0) {
                     obdPart = "N/A " + "N/A " + "N/A " + "N/A ";
@@ -102,7 +104,7 @@ public class DataSynchronizer {
                 }
 
             }
-            if (!faceLine[2].equals("0")) {
+            if (obdTime != 0) {
                 builder.append(obdPart + locPart + facePart);
                 arrayList.add(builder.toString());
                 builder = new StringBuilder();
