@@ -39,7 +39,7 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     private Bundle arguments;
     private String filePath = null;
-    private File mapDataFile = null;
+    private File dataFile = null;
 
     public MapTripFragment() {
         // Required empty public constructor
@@ -86,7 +86,7 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
         if(neededFile == null){
             startActivity(new Intent(getContext(), Home.class));
         }
-        mapDataFile = neededFile;
+        dataFile = neededFile;
 
         mapView = view.findViewById(R.id.map2);
         mapView.onCreate(savedInstanceState);
@@ -173,7 +173,8 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
         List<LatLng> latLngList = null;
 
         try {
-            latLngList = LatLongReadCSV(mapDataFile.getAbsolutePath());
+            addMarkersWithValues(googleMap, dataFile);
+            latLngList = LatLongReadCSV(dataFile.getAbsolutePath());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
