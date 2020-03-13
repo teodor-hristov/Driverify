@@ -236,6 +236,28 @@ public final class Drive extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        startCameraSource();
+        if (btAdapter != null)
+            bluetoothDefaultIsEnable = btAdapter.isEnabled();
+
+        preRequisites = btAdapter != null && btAdapter.isEnabled();
+        if (!preRequisites && prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
+            preRequisites = btAdapter != null && btAdapter.enable();
+        }
+        if (preRequisites && !prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
+            preRequisites = btAdapter != null && btAdapter.disable();
+        }
+        if (!isRegistered) {
+            registerReceiver(liveDataReceiver, filter);
+        }
+
+        startServices(services);
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         actionBarMenu = menu;
@@ -379,6 +401,62 @@ public final class Drive extends AppCompatActivity {
             view.setTextColor(Color.parseColor(Constants.DAY_TEXT_COLOR));
         }
     }
+
+    public boolean checkIfSleeping() {
+        boolean isSleeping = false;
+
+        if (Integer.parseInt(((TextView) findViewById(R.id.speedValue)).getText().toString())
+                > Constants.CONSTANT_SPEED_TO_CHECK_IF_DRIVER_IS_SLEEPING && isDay()) {
+            alarm.play();
+            isSleeping = true;
+        }
+
+        return isSleeping;
+    }
+
+    public void stopServices(Class... className) {
+        for (Class item : className) {
+            if (Methods.isServiceRunning(getAppContext(), item)) {
+                stopService(new Intent(getApplicationContext(), item));
+            }
+        }
+    }
+
+    public void startServices(Class... className) {
+        for (Class item : className) {
+            if (!Methods.isServiceRunning(getAppContext(), item)) {
+                startService(new Intent(getApplicationContext(), item));
+            }
+        }
+    }
+
+    private void clearViewItems(List<TextView> driveData, List<ProgressBar> progressData) {
+        for (TextView v : driveData)
+            v.setText("0");
+        for (ProgressBar bar : progressData)
+            bar.setProgress(0);
+        makeSnackbar("Live data stopped.");
+    }
+
+    public boolean isDay() {
+        return ((TextView) findViewById(R.id.speedValue)).getCurrentTextColor() == Color.parseColor(Constants.DAY_TEXT_COLOR);
+    }
+
+    public void makeToast(String msg) {
+        Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public void makeSnackbar(String string) {
+        Snackbar.make(graphicOverlay, string,
+                Snackbar.LENGTH_SHORT)
+                .show();
+    }
+
+    private void filterAddActions(IntentFilter filter, String[] actions) {
+        for (String item : actions)
+            filter.addAction(item);
+    }
+
     //region SpeepDetection with GMS
 
     private void requestCameraPermission() {
@@ -529,8 +607,6 @@ public final class Drive extends AppCompatActivity {
         }
     }
 
-    //endregion
-
     /**
      * Face tracker for each detected individual. This maintains a face graphic within the app's
      * associated face overlay.
@@ -581,80 +657,10 @@ public final class Drive extends AppCompatActivity {
         @Override
         public void onDone() {
             mOverlay.remove(mFaceGraphic);
+            alarm.pause();
         }
     }
 
-    public boolean checkIfSleeping() {
-        boolean isSleeping = false;
-        boolean isDay = ((TextView) findViewById(R.id.speedValue)).getCurrentTextColor() == Color.parseColor(Constants.DAY_TEXT_COLOR);
-
-        if (Integer.parseInt(((TextView) findViewById(R.id.speedValue)).getText().toString())
-                > Constants.CONSTANT_SPEED_TO_CHECK_IF_DRIVER_IS_SLEEPING && isDay) {
-            alarm.play();
-            isSleeping = true;
-        }
-
-        return isSleeping;
-    }
-
-    public void stopServices(Class... className) {
-        for (Class item : className) {
-            if (Methods.isServiceRunning(getAppContext(), item)) {
-                stopService(new Intent(getApplicationContext(), item));
-            }
-        }
-    }
-
-    public void startServices(Class... className) {
-        for (Class item : className) {
-            if (!Methods.isServiceRunning(getAppContext(), item)) {
-                startService(new Intent(getApplicationContext(), item));
-            }
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        startCameraSource();
-        if (btAdapter != null)
-            bluetoothDefaultIsEnable = btAdapter.isEnabled();
-
-        preRequisites = btAdapter != null && btAdapter.isEnabled();
-        if (!preRequisites && prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
-            preRequisites = btAdapter != null && btAdapter.enable();
-        }
-        if (preRequisites && !prefs.getBoolean(Preferences.BLUETOOTH_ENABLE, false)) {
-            preRequisites = btAdapter != null && btAdapter.disable();
-        }
-        if (!isRegistered) {
-            registerReceiver(liveDataReceiver, filter);
-        }
-
-        startServices(services);
-    }
-
-    private void clearViewItems(List<TextView> driveData, List<ProgressBar> progressData) {
-        for (TextView v : driveData)
-            v.setText("0");
-        for (ProgressBar bar : progressData)
-            bar.setProgress(0);
-        makeSnackbar("Live data stopped.");
-    }
-
-    public void makeToast(String msg) {
-        Toast.makeText(Drive.this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    public void makeSnackbar(String string) {
-        Snackbar.make(graphicOverlay, string,
-                Snackbar.LENGTH_SHORT)
-                .show();
-    }
-
-    private void filterAddActions(IntentFilter filter, String[] actions) {
-        for (String item : actions)
-            filter.addAction(item);
-    }
+    //endregion
 
 }
