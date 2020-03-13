@@ -26,7 +26,9 @@ import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -56,12 +58,14 @@ public class ChartTripFragment extends Fragment {
             if (prevLine != null) {
                 currLineArray = currentLine.split(",");
                 prevLineArray = prevLine.split(",");
-                customDataEntries.add(new CustomDataEntry(currLineArray[4],
-                        Double.parseDouble(currLineArray[1]) - Double.parseDouble(prevLineArray[1]),
-                        Double.parseDouble(currLineArray[3]) / 10,
-                        (Double.parseDouble(currLineArray[1]) - Double.parseDouble(prevLineArray[1])) *
-                                Double.parseDouble(currLineArray[3])
-                ));
+                if (!currLineArray[0].equals("N/A") && !prevLineArray.equals("N/A")) {
+                    customDataEntries.add(new CustomDataEntry(currLineArray[9],
+                            Double.parseDouble(currLineArray[1]) - Double.parseDouble(prevLineArray[1]),
+                            Double.parseDouble(currLineArray[3]) / 10,
+                            (Double.parseDouble(currLineArray[1]) - Double.parseDouble(prevLineArray[1])) *
+                                    Double.parseDouble(currLineArray[3])
+                    ));
+                }
             }
 
             prevLine = currentLine;
@@ -168,6 +172,7 @@ public class ChartTripFragment extends Fragment {
 
         cartesian.legend().enabled(true);
         cartesian.legend().fontSize(13d);
+        cartesian.xScroller(true);
         cartesian.legend().padding(0d, 0d, 10d, 0d);
 
         anyChartView.setZoomEnabled(true);
@@ -177,7 +182,7 @@ public class ChartTripFragment extends Fragment {
     private class CustomDataEntry extends ValueDataEntry {
 
         CustomDataEntry(String x, Number value, Number value2, Number value4) {
-            super(x, value);
+            super(new Date(new Timestamp(Long.parseLong(x)).getTime()).toString(), value);
             setValue("value2", value2);
             setValue("value3", Constants.FUEL_ECONOMY_CONSTANT);
             setValue("value4", value4);
