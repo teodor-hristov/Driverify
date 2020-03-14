@@ -17,4 +17,8 @@ public class Methods {
     public static int millisToSeconds(int millis) {
         return millis / 1000;
     }
+
+    public static int secondsToMillis(int millis) {
+        return millis * 1000;
+    }
 }
