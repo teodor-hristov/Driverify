@@ -66,5 +66,16 @@ public class NightModeSleepDetector extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(receiver);
+        Log.i(TAG, NightModeSleepDetector.class.getSimpleName() + " stopped...");
+    }
+
+    private void startSleepPrevention() {
+        Intent intent = new Intent(Constants.NIGHT_SLEEP_PREVENTION);
+        sendBroadcast(intent);
+    }
+
+    private void manageSleepPreventionInterval() {
+
     }
 }
