@@ -35,6 +35,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -191,6 +193,8 @@ public final class Drive extends AppCompatActivity {
         coolantProgress.setMax(Constants.MAX_COOLANT);
         loadProgress.setMax(Constants.MAX_LOAD);
 
+        View sleepPrevention = findViewById(R.id.sleepPrevention);
+
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         filter = new IntentFilter();
@@ -226,6 +230,17 @@ public final class Drive extends AppCompatActivity {
         if (!isRegistered) {
             registerReceiver(liveDataReceiver, filter);
         }
+
+        sleepPrevention.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent("click");
+                intent.putExtra("clickTime", System.currentTimeMillis());
+                sendBroadcast(intent);
+                view.animate().cancel();
+                view.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     @Override
@@ -258,7 +273,6 @@ public final class Drive extends AppCompatActivity {
 
         startServices(services);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -383,13 +397,30 @@ public final class Drive extends AppCompatActivity {
 
     private void turnViewOn() {
         View view = findViewById(R.id.sleepPrevention);
-        view.setVisibility(View.VISIBLE);
+        animateSleepPrevention(view);
+    }
 
-        Intent intent = new Intent("click");
-        intent.putExtra("clickTime", System.currentTimeMillis());
+    public void animateSleepPrevention(final View view) {
+        Animation fade = new AlphaAnimation(0.00f, 1.00f);
+        fade.setDuration(3000);
+        fade.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                view.setVisibility(View.INVISIBLE);
+            }
 
-        sendBroadcast(intent);
-        view.setVisibility(View.INVISIBLE);
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        view.startAnimation(fade);
     }
 
     private void nightMode() {
