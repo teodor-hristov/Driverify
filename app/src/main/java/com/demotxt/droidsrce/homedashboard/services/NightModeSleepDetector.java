@@ -50,16 +50,23 @@ public class NightModeSleepDetector extends IntentService {
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
         registerReceiver(receiver, new IntentFilter("click"));
 
-        timeChecker(startTime, timeInterval);
+        timeChecker();
     }
 
-    private void timeChecker(long startTime, int timeInterval) {
+    private void timeChecker() {
         long currentTime;
-
+        startTime = System.currentTimeMillis();
         while (true) {
+            if (status) {
+                break;
+            }
+
             currentTime = System.currentTimeMillis();
             if (Math.abs(startTime - currentTime) >= Methods.secondsToMillis(timeInterval)) {
+
                 startSleepPrevention();
+                startTime = System.currentTimeMillis();
+                Log.i(TAG, "puskam beliq ekran");
             }
         }
     }
@@ -73,6 +80,7 @@ public class NightModeSleepDetector extends IntentService {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+        status = true;
         Log.i(TAG, NightModeSleepDetector.class.getSimpleName() + " stopped...");
     }
 
