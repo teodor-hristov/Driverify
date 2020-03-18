@@ -431,8 +431,8 @@ public final class Drive extends AppCompatActivity {
                     }
                 });
 
-        if (Integer.parseInt(((TextView) findViewById(R.id.speedValue)).getText().toString())
-                > Constants.CONSTANT_SPEED_TO_CHECK_IF_DRIVER_IS_SLEEPING && isDay()) {
+        if (speed > 1 && isDay()) {
+            snackbar.show();
             alarm.play();
             isSleeping = true;
         }
