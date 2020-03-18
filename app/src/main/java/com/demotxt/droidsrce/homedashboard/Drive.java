@@ -381,6 +381,19 @@ public final class Drive extends AppCompatActivity {
         }
     }
 
+    private void turnViewOn() {
+        View view = findViewById(R.id.sleepPrevention);
+        view.setVisibility(View.VISIBLE);
+
+        Intent intent = new Intent("click");
+        intent.putExtra("clickTime", System.currentTimeMillis());
+
+        Log.i("Test", "turnViewOn: ok");
+        sendBroadcast(intent);
+        Log.i("Test", "turnViewOn: sent");
+        view.setVisibility(View.INVISIBLE);
+    }
+
     private void nightMode() {
         List<TextView> texts = new ArrayList<>(Arrays.asList(
                 (TextView) findViewById(R.id.speedValue), (TextView) findViewById(R.id.rpmValue),
