@@ -5,11 +5,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.demotxt.droidsrce.homedashboard.Utils.Alarm;
 import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.Utils.Methods;
 
@@ -18,6 +20,8 @@ public class NightModeSleepDetector extends IntentService {
     private double timeInterval = Constants.STARTING_TIME_INTERVAL_NIGHT_DRIVE;
     private long startTime = 0;
     private boolean status = false;
+    private Alarm alarm;
+    private MediaPlayer mediaPlayer;
 
     @Nullable
     @Override
@@ -38,6 +42,7 @@ public class NightModeSleepDetector extends IntentService {
                 case "click":
                     stopTimestamp = intent.getLongExtra("clickTime", 0);
                     manageSleepPreventionInterval(stopTimestamp);
+                    alarm.pause();
                     Log.i(TAG, "caknah beliq ekran");
                     break;
             }
@@ -48,6 +53,7 @@ public class NightModeSleepDetector extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         Log.i(TAG, NightModeSleepDetector.class.getSimpleName() + " started...");
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
+        alarm = new Alarm(mediaPlayer);
         registerReceiver(receiver, new IntentFilter("click"));
 
         timeChecker();
@@ -59,11 +65,9 @@ public class NightModeSleepDetector extends IntentService {
         while (true) {
             if (status) {
                 break;
-            }
 
             currentTime = System.currentTimeMillis();
             if (Math.abs(startTime - currentTime) >= Methods.secondsToMillis(timeInterval)) {
-
                 startSleepPrevention();
                 startTime = System.currentTimeMillis();
                 Log.i(TAG, "puskam beliq ekran");
@@ -74,6 +78,12 @@ public class NightModeSleepDetector extends IntentService {
     private void startSleepPrevention() {
         Intent intent = new Intent(Constants.NIGHT_SLEEP_PREVENTION);
         sendBroadcast(intent);
+        try {
+            Thread.sleep(2800);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        alarm.play();
     }
 
     @Override
