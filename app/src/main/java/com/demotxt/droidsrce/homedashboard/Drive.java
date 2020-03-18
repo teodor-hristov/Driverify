@@ -460,7 +460,7 @@ public final class Drive extends AppCompatActivity {
                     }
                 });
 
-        if (speed > 1 && isDay()) {
+        if (speed > Constants.CONSTANT_SPEED_TO_CHECK_IF_DRIVER_IS_SLEEPING && isDay()) {
             snackbar.show();
             alarm.play();
             isSleeping = true;
