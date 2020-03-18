@@ -14,11 +14,12 @@ public class Methods {
         return false;
     }
 
-    public static int millisToSeconds(int millis) {
-        return millis / 1000;
+    public static int millisToSeconds(long millis) {
+        return (int) millis / 1000;
     }
 
-    public static int secondsToMillis(int millis) {
+    public static double secondsToMillis(double millis) {
         return millis * 1000;
     }
+    //TODO: Make this methods generic
 }
