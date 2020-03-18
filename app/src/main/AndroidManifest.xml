@@ -88,6 +88,10 @@
         <service
             android:name=".services.AmbientLightService"
             android:exported="false" />
+
+        <service
+            android:name=".services.NightModeSleepDetector"
+            android:exported="false" />
     </application>
 
 </manifest>
