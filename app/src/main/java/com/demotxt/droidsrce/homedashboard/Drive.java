@@ -52,6 +52,7 @@ import com.demotxt.droidsrce.homedashboard.io.ObdReaderData;
 import com.demotxt.droidsrce.homedashboard.services.AmbientLightService;
 import com.demotxt.droidsrce.homedashboard.services.DataControllerService;
 import com.demotxt.droidsrce.homedashboard.services.LocationServiceProvider;
+import com.demotxt.droidsrce.homedashboard.services.NightModeSleepDetector;
 import com.demotxt.droidsrce.homedashboard.services.ObdConnectionService;
 import com.demotxt.droidsrce.homedashboard.settings.Preferences;
 import com.demotxt.droidsrce.homedashboard.ui.camera.CameraSourcePreview;
@@ -213,7 +214,6 @@ public final class Drive extends AppCompatActivity {
 
 
         }
-
         filterAddActions(filter, actions);
 
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
@@ -374,10 +374,10 @@ public final class Drive extends AppCompatActivity {
     private void handleAmbientLightData(String data) {
         if (Float.parseFloat(data) < Constants.AMBIENT_LIGHT_CONSTANT_FOR_NIGHT) {
             nightMode();
-            //startServices(NightModeSleepDetector.class);
+            startServices(NightModeSleepDetector.class);
         } else {
             dayMode();
-            //stopServices(NightModeSleepDetector.class);
+            stopServices(NightModeSleepDetector.class);
         }
     }
 
