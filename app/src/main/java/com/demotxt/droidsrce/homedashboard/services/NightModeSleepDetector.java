@@ -63,7 +63,7 @@ public class NightModeSleepDetector extends IntentService {
         long currentTime;
         startTime = System.currentTimeMillis();
         while (true) {
-            if (status) {
+            if (status)
                 break;
 
             currentTime = System.currentTimeMillis();
@@ -96,12 +96,15 @@ public class NightModeSleepDetector extends IntentService {
 
     private void manageSleepPreventionInterval(long stopTimestamp) {
         int difference = Methods.millisToSeconds(stopTimestamp - startTime);
-        if (difference >= 0 && difference <= 10) {
-            timeInterval += 0.3 * timeInterval; // 1/10
-            Log.i(TAG, "+= (1/10)*timeInterval;");
-        } else if (difference > 10 && difference <= 30) {
-            timeInterval = 0.25 * timeInterval; // 1/4
-            Log.i(TAG, "= (1/4)*timeInterval;");
+        if (difference >= 0 && difference <= 4) {
+            timeInterval += 0.5 * timeInterval;
+            Log.i(TAG, "+= 0.5 * timeInterval;");
+        } else if (difference > 4 && difference <= 7) {
+            timeInterval += 0.3 * timeInterval;
+            Log.i(TAG, "+= 0.3 * timeInterval;");
+        } else if (difference > 7 && difference <= 10) {
+            timeInterval -= 0.8 * timeInterval;
+            Log.i(TAG, "-= 0.8 * timeInterval;");
         } else {
             timeInterval = 1;
             Log.i(TAG, "= 1;");
