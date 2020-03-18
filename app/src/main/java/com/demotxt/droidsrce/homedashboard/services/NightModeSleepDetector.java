@@ -49,8 +49,6 @@ public class NightModeSleepDetector extends IntentService {
         Log.i(TAG, NightModeSleepDetector.class.getSimpleName() + " started...");
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
         registerReceiver(receiver, new IntentFilter("click"));
-        long startTime = System.currentTimeMillis();
-        int timeInterval = Constants.STARTING_TIME_INTERVAL_NIGHT_DRIVE;
 
         timeChecker(startTime, timeInterval);
     }
