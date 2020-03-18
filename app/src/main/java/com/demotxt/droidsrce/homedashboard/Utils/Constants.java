@@ -35,6 +35,6 @@ public class Constants {
 
     public static final int CONSTANT_SPEED_TO_CHECK_IF_DRIVER_IS_SLEEPING = 10;
     public static final double FUEL_ECONOMY_CONSTANT = 88.4;
-    public static final int STARTING_TIME_INTERVAL_NIGHT_DRIVE = 3;
+    public static final int STARTING_TIME_INTERVAL_NIGHT_DRIVE = 30;
 
 }
