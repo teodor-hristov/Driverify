@@ -17,7 +17,6 @@ package com.demotxt.droidsrce.homedashboard;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -41,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -77,8 +77,8 @@ public final class Drive extends AppCompatActivity {
     private static final int RC_HANDLE_CAMERA_PERM = 2;
     private static boolean bluetoothDefaultIsEnable = false;
 
-    private MediaPlayer mediaPlayer;
     private Alarm alarm;
+    private MediaPlayer mediaPlayer;
     //region CAMERA vars
     private static Context appContext;
     private CameraSource cameraSource = null;
@@ -104,7 +104,8 @@ public final class Drive extends AppCompatActivity {
             Constants.GPS_ENABLED,
             Constants.GPS_LIVE_DATA,
             Constants.GPS_PUT_EXTRA,
-            Constants.AMBIENT_LIGHT_DATA
+            Constants.AMBIENT_LIGHT_DATA,
+            Constants.NIGHT_SLEEP_PREVENTION
     };
 
     private Class[] services = {
@@ -151,6 +152,9 @@ public final class Drive extends AppCompatActivity {
                 case Constants.AMBIENT_LIGHT_DATA:
                     handleAmbientLightData(stringExtra);
                     break;
+//                case Constants.NIGHT_SLEEP_PREVENTION:
+//                    turnViewOn();
+//                    break;
 
             }
         }
@@ -165,7 +169,6 @@ public final class Drive extends AppCompatActivity {
         super.onCreate(icicle);
         setContentView(R.layout.prototype);
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
-
         appContext = getApplicationContext();
         preview = findViewById(R.id.preview);
         graphicOverlay = findViewById(R.id.faceOverlay);
@@ -371,8 +374,10 @@ public final class Drive extends AppCompatActivity {
     private void handleAmbientLightData(String data) {
         if (Float.parseFloat(data) < Constants.AMBIENT_LIGHT_CONSTANT_FOR_NIGHT) {
             nightMode();
+            //startServices(NightModeSleepDetector.class);
         } else {
             dayMode();
+            //stopServices(NightModeSleepDetector.class);
         }
     }
 
