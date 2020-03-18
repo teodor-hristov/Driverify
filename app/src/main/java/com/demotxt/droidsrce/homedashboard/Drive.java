@@ -409,6 +409,14 @@ public final class Drive extends AppCompatActivity {
 
     public boolean checkIfSleeping() {
         boolean isSleeping = false;
+        int speed = Integer.parseInt(((TextView) findViewById(R.id.speedValue)).getText().toString());
+        Snackbar snackbar = Snackbar.make(graphicOverlay, "Warning! \nFace is not detected!", Snackbar.LENGTH_LONG)
+                .setAction("Stop", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alarm.pause();
+                    }
+                });
 
         if (Integer.parseInt(((TextView) findViewById(R.id.speedValue)).getText().toString())
                 > Constants.CONSTANT_SPEED_TO_CHECK_IF_DRIVER_IS_SLEEPING && isDay()) {
@@ -662,7 +670,7 @@ public final class Drive extends AppCompatActivity {
         @Override
         public void onDone() {
             mOverlay.remove(mFaceGraphic);
-            alarm.pause();
+//            alarm.pause();
         }
     }
 
