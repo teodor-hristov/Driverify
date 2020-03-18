@@ -153,9 +153,9 @@ public final class Drive extends AppCompatActivity {
                 case Constants.AMBIENT_LIGHT_DATA:
                     handleAmbientLightData(stringExtra);
                     break;
-//                case Constants.NIGHT_SLEEP_PREVENTION:
-//                    turnViewOn();
-//                    break;
+                case Constants.NIGHT_SLEEP_PREVENTION:
+                    turnViewOn();
+                    break;
 
             }
         }
@@ -388,9 +388,7 @@ public final class Drive extends AppCompatActivity {
         Intent intent = new Intent("click");
         intent.putExtra("clickTime", System.currentTimeMillis());
 
-        Log.i("Test", "turnViewOn: ok");
         sendBroadcast(intent);
-        Log.i("Test", "turnViewOn: sent");
         view.setVisibility(View.INVISIBLE);
     }
 
