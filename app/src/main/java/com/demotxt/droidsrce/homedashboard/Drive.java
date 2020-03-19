@@ -421,9 +421,11 @@ public final class Drive extends AppCompatActivity {
         if (Float.parseFloat(data) < Constants.AMBIENT_LIGHT_CONSTANT_FOR_NIGHT) {
             nightMode();
             startServices(NightModeSleepDetector.class);
+            sensorManager.registerListener(proximitySensorEventListener, proximitySensor, Constants.SAMPLING_PERIOD_PROXIMITY_SENSOR);
         } else {
             dayMode();
             stopServices(NightModeSleepDetector.class);
+            sensorManager.unregisterListener(proximitySensorEventListener);
         }
     }
 
