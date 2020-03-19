@@ -28,6 +28,10 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -118,6 +122,10 @@ public final class Drive extends AppCompatActivity {
             AmbientLightService.class
     };
     private Menu actionBarMenu;
+
+    private SensorManager sensorManager;
+    private Sensor proximitySensor;
+    private SensorEventListener proximitySensorEventListener;
 
 
     //==============================================================================================
@@ -241,6 +249,31 @@ public final class Drive extends AppCompatActivity {
                 view.setVisibility(View.INVISIBLE);
             }
         });
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        proximitySensorEventListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                View view = findViewById(R.id.sleepPrevention);
+
+                if (sensorEvent.values[0] < proximitySensor.getMaximumRange()) {
+                    if (view.getVisibility() == View.VISIBLE) {
+                        Intent intent = new Intent("click");
+                        intent.putExtra("clickTime", System.currentTimeMillis());
+                        sendBroadcast(intent);
+                        view.animate().cancel();
+                        view.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+
+            }
+        };
+
     }
 
     @Override
@@ -310,7 +343,6 @@ public final class Drive extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     private void connectedBluetooth(String connectionStatusMsg) {
         if (connectionStatusMsg.equals(getString(R.string.obd_connected))) {
