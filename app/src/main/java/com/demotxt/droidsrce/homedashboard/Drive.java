@@ -242,11 +242,7 @@ public final class Drive extends AppCompatActivity {
         sleepPrevention.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent("click");
-                intent.putExtra("clickTime", System.currentTimeMillis());
-                sendBroadcast(intent);
-                view.animate().cancel();
-                view.setVisibility(View.INVISIBLE);
+                stopNightAlarm(view);
             }
         });
 
@@ -259,11 +255,7 @@ public final class Drive extends AppCompatActivity {
 
                 if (sensorEvent.values[0] < proximitySensor.getMaximumRange()) {
                     if (view.getVisibility() == View.VISIBLE) {
-                        Intent intent = new Intent("click");
-                        intent.putExtra("clickTime", System.currentTimeMillis());
-                        sendBroadcast(intent);
-                        view.animate().cancel();
-                        view.setVisibility(View.INVISIBLE);
+                        stopNightAlarm(view);
                     }
                 }
             }
@@ -432,6 +424,14 @@ public final class Drive extends AppCompatActivity {
     private void turnViewOn() {
         View view = findViewById(R.id.sleepPrevention);
         animateSleepPrevention(view);
+    }
+
+    private void stopNightAlarm(View view) {
+        Intent intent = new Intent("click");
+        intent.putExtra("clickTime", System.currentTimeMillis());
+        sendBroadcast(intent);
+        view.animate().cancel();
+        view.setVisibility(View.INVISIBLE);
     }
 
     public void animateSleepPrevention(final View view) {
