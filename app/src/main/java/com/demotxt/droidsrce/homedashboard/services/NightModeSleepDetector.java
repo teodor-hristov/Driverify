@@ -16,7 +16,7 @@ import com.demotxt.droidsrce.homedashboard.Utils.Constants;
 import com.demotxt.droidsrce.homedashboard.Utils.Methods;
 
 public class NightModeSleepDetector extends IntentService {
-    private static String TAG = "Test";
+    private static String TAG = NightModeSleepDetector.class.getSimpleName();
     private double timeInterval = Constants.STARTING_TIME_INTERVAL_NIGHT_DRIVE;
     private long startTime = 0;
     private boolean status = false;
@@ -43,7 +43,6 @@ public class NightModeSleepDetector extends IntentService {
                     stopTimestamp = intent.getLongExtra("clickTime", 0);
                     manageSleepPreventionInterval(stopTimestamp);
                     alarm.pause();
-                    Log.i(TAG, "caknah beliq ekran");
                     break;
             }
         }
@@ -70,7 +69,6 @@ public class NightModeSleepDetector extends IntentService {
             if (Math.abs(startTime - currentTime) >= Methods.secondsToMillis(timeInterval)) {
                 startSleepPrevention();
                 startTime = System.currentTimeMillis();
-                Log.i(TAG, "puskam beliq ekran");
             }
         }
     }
@@ -111,6 +109,5 @@ public class NightModeSleepDetector extends IntentService {
             timeInterval = 1;
             Log.i(TAG, "= 1;");
         }
-        Log.i(TAG, "Time interval: " + timeInterval);
     }
 }
