@@ -83,6 +83,8 @@ public class NightModeSleepDetector extends IntentService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        mediaPlayer = null;
+        alarm = new Alarm(mediaPlayer);
         alarm.play();
     }
 
