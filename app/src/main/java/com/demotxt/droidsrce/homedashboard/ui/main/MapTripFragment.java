@@ -173,7 +173,7 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
             googleMap.addPolyline(option);
         }
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngList.get(0), 15));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(zoomPoint, 15));
         googleMap.animateCamera(CameraUpdateFactory.zoomIn());
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
         googleMap.getUiSettings().setZoomControlsEnabled(true);
