@@ -119,29 +119,42 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
         return Arrays.asList(data.toArray()).toArray(new String[data.toArray().length]);
     }
 
-    private void addMarkersWithValues(GoogleMap googleMap, File dataFile) throws FileNotFoundException {
+    private void mapEntities(GoogleMap googleMap, File dataFile) throws FileNotFoundException {
         String[] dataPoints = ReadCSV(dataFile.getAbsolutePath());
         String[] currentLine;
-        String rpm, speed, load, lat, lon, alt, time;
+        String lat, lon, sleeping, happiness;
+        LatLng prevPoint = null;
+        LatLng currentPoint;
 
         for (String dataPoint : dataPoints) {
             currentLine = dataPoint.split(",");
             lat = currentLine[4];
             lon = currentLine[5];
-            alt = currentLine[6];
-            rpm = currentLine[0];
-            speed = currentLine[1];
-            load = currentLine[3];
-            time = new Date(new Timestamp(Long.parseLong(currentLine[9])).getTime()).toString();
+            sleeping = currentLine[7];
+            happiness = currentLine[8];
 
-            if (lat.equals("N/A") || lon.equals("N/A") || alt.equals("N/A")) {
-            } else {
-                googleMap.addMarker(new MarkerOptions().position(
-                        new LatLng(Double.parseDouble(lat),
-                                Double.parseDouble(lon)))
-                        .alpha(0)
-                        .title("Current info on " + time + ": ")
-                        .snippet("speed: " + speed + " km/h rpm: " + rpm + " load: " + load + "%"));
+            addMarker(googleMap, currentLine);
+
+            if (!lat.equals("N/A") && !lon.equals("N/A")) {
+                currentPoint = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
+                zoomPoint = currentPoint;
+
+                if (prevPoint != null) {
+
+                    if (!sleeping.equals("N/A") && !happiness.equals("N/A")) {
+                        if (sleeping.equals("1") || Double.parseDouble(happiness) < 0.05) {
+                            addPolyline(prevPoint, currentPoint, Color.RED);
+                        } else {
+                            addPolyline(prevPoint, currentPoint, Color.BLACK);
+                        }
+
+                    } else {
+                        addPolyline(prevPoint, currentPoint, Color.BLACK);
+                    }
+                }
+
+                prevPoint = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
+
             }
         }
     }
@@ -156,7 +169,7 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
             e.printStackTrace();
         }
 
-        for (PolylineOptions option : setColoredPolylinesOnTheMap(latLngList)) {
+        for (PolylineOptions option : getColoredPolylineOptions()) {
             googleMap.addPolyline(option);
         }
 
