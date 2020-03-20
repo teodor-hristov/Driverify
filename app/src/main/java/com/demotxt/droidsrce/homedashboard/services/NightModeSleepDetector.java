@@ -39,7 +39,7 @@ public class NightModeSleepDetector extends IntentService {
             String action = intent.getAction();
             long stopTimestamp;
             switch (action) {
-                case "click":
+                case Constants.NIGHT_MODE_ACTION_CLICK:
                     stopTimestamp = intent.getLongExtra("clickTime", 0);
                     manageSleepPreventionInterval(stopTimestamp);
                     alarm.pause();
@@ -53,7 +53,7 @@ public class NightModeSleepDetector extends IntentService {
         Log.i(TAG, NightModeSleepDetector.class.getSimpleName() + " started...");
         Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
         alarm = new Alarm(mediaPlayer);
-        registerReceiver(receiver, new IntentFilter("click"));
+        registerReceiver(receiver, new IntentFilter(Constants.NIGHT_MODE_ACTION_CLICK));
 
         timeChecker();
     }

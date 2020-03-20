@@ -37,5 +37,6 @@ public class Constants {
     public static final double FUEL_ECONOMY_CONSTANT = 88.4;
     public static final int STARTING_TIME_INTERVAL_NIGHT_DRIVE = 40;
     public static final int SAMPLING_PERIOD_PROXIMITY_SENSOR = 5000;
+    public static final String NIGHT_MODE_ACTION_CLICK = "click";
 
 }
