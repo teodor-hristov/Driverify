@@ -39,9 +39,12 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
     private Bundle arguments;
     private String filePath = null;
     private File dataFile = null;
+    private List<PolylineOptions> coloredPolylineOptions;
+    private LatLng zoomPoint;
 
     public MapTripFragment() {
         // Required empty public constructor
+        coloredPolylineOptions = new ArrayList<>();
     }
 
     @Override
@@ -104,38 +107,6 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
         return date;
     }
 
-    private List<LatLng> LatLongReadCSV(String path) throws FileNotFoundException {
-        File file = new File(path);
-        Scanner fileReader = new Scanner(file);
-        List<LatLng> customDataEntries = new ArrayList<>();
-        String lat, lon;
-
-        fileReader.nextLine();
-        while (fileReader.hasNextLine()) {
-            String[] array = fileReader.nextLine().split(",");
-            lat = array[4];
-            lon = array[5];
-            if (!lat.equals("N/A") && !lon.equals("N/A"))
-                customDataEntries.add(new LatLng(Double.parseDouble(lat), Double.parseDouble(lon)));
-        }
-        fileReader.close();
-        return customDataEntries;
-    }
-
-    private List<PolylineOptions> setColoredPolylinesOnTheMap(List<LatLng> points) {
-        List<PolylineOptions> polylines = new ArrayList<>();
-
-        for (int i = 1; i < points.size(); i++) {
-//            if (i % 2 == 0) {
-//                polylines.add(new PolylineOptions().add(points.get(i), points.get(i - 1)).color(Color.RED));
-//            } else {
-            polylines.add(new PolylineOptions().add(points.get(i), points.get(i - 1)).color(Color.BLACK));
-            //}
-        }
-
-        return polylines;
-    }
-
     private String[] ReadCSV(String path) throws FileNotFoundException {
         File file = new File(path);
         Scanner fileReader = new Scanner(file);
@@ -180,8 +151,7 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
         List<LatLng> latLngList = null;
 
         try {
-            addMarkersWithValues(googleMap, dataFile);
-            latLngList = LatLongReadCSV(dataFile.getAbsolutePath());
+            mapEntities(googleMap, dataFile);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -194,6 +164,36 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
         googleMap.animateCamera(CameraUpdateFactory.zoomIn());
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
         googleMap.getUiSettings().setZoomControlsEnabled(true);
+    }
+
+    private void addPolyline(LatLng firstPoint, LatLng secondPoint, int color) {
+        this.coloredPolylineOptions.add(new PolylineOptions().add(secondPoint, firstPoint).color(color));
+    }
+
+    public List<PolylineOptions> getColoredPolylineOptions() {
+        return this.coloredPolylineOptions;
+    }
+
+    public void addMarker(GoogleMap googleMap, String[] currentLine) {
+        String rpm, speed, load, lat, lon, alt, time;
+
+        lat = currentLine[4];
+        lon = currentLine[5];
+        alt = currentLine[6];
+        rpm = currentLine[0];
+        speed = currentLine[1];
+        load = currentLine[3];
+        time = new Date(new Timestamp(Long.parseLong(currentLine[9])).getTime()).toString();
+
+        if (lat.equals("N/A") || lon.equals("N/A") || alt.equals("N/A")) {
+        } else {
+            googleMap.addMarker(new MarkerOptions().position(
+                    new LatLng(Double.parseDouble(lat),
+                            Double.parseDouble(lon)))
+                    .alpha(0)
+                    .title("Current info on " + time + ": ")
+                    .snippet("speed: " + speed + " km/h rpm: " + rpm + " load: " + load + "%"));
+        }
     }
 }
 
