@@ -44,10 +44,10 @@ public class DataSynchronizer {
     public ArrayList<String> getSynchronizedData() {
         StringBuilder builder = new StringBuilder();
         ArrayList arrayList = new ArrayList<String>();
-        String[] obdLine = null;
-        String[] locationLine = null;
-        String[] faceLine = null;
-        String obdPart = null, locPart = null, facePart = null;
+        String[] obdLine;
+        String[] locationLine;
+        String[] faceLine;
+        String obdPart, locPart, facePart;
 
         while (true) {
             if (obdDataQueue.isEmpty() && locationQueue.isEmpty() && faceDataQueue.isEmpty()) {
