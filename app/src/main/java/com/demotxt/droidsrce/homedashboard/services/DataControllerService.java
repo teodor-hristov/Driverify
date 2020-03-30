@@ -28,7 +28,7 @@ public class DataControllerService extends Service {
     private static final int ASSERTED_COMMANDS_COUNT = 4;
     private static final int ASSERTED_LOCATION_DATA_COUNT = 3;
     private final String TAG = "DataControllerService";
-    private CSVWriter bluetoothWriter, locationWriter, faceDataWriter;
+    DataSynchronizer csvData;
     private String[] actions = {
             Constants.CONNECTED,
             Constants.DISCONNECTED,
@@ -42,6 +42,9 @@ public class DataControllerService extends Service {
     };
     private CSVWriter bluetoothWriter;
     private SimpleDateFormat formatter;
+
+    public DataControllerService() {
+    }
 
     @Nullable
     @Override
@@ -157,22 +160,11 @@ public class DataControllerService extends Service {
         if (data == null || data.split(" ").length != 2) {
             return;
         }
-
-        if (faceDataWriter == null) {
-            try {
-                faceDataWriter = new CSVWriter(Constants.FACE_DATA_PATH);
-                faceDataWriter.append(Constants.FACE_DATA_HEADER);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.i(TAG, "Problem with writing face data.");
-            }
-        } else {
-            try {
-                for (String str : data.split(" ")) {
-                    sb.append(str);
-                    sb.append(" ");
-                }
-                sb.append(System.currentTimeMillis());
+        for (String str : data.split(" ")) {
+            sb.append(str);
+            sb.append(" ");
+        }
+        sb.append(System.currentTimeMillis());
 
         csvData.appendFaceData(sb.toString());
     }
@@ -183,55 +175,23 @@ public class DataControllerService extends Service {
             return;
         }
 
-        if (locationWriter == null) {
-            try {
-                locationWriter = new CSVWriter(Constants.LOCATON_LIVE_DATA_PATH);
-                locationWriter.append(Constants.LOCATION_HEADER_CSV);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.i(TAG, "Problem with writing location.");
-            }
-        } else {
-            try {
-                for (String str : gpsExtraString.split(" ")) {
-                    sb.append(str);
-                    sb.append(" ");
-                }
+        for (String str : gpsExtraString.split(" ")) {
+            sb.append(str);
+            sb.append(" ");
+        }
 
-                sb.append(System.currentTimeMillis());
+        sb.append(System.currentTimeMillis());
 
         csvData.appendLocation(sb.toString());
 
-                if (pesho.Length() >= 5) {
-                    for (String str : pesho.getSynchronizedData())
-                        bluetoothWriter.append(str);
-                }
-
-                locationWriter.append(sb.toString());
-                autoSave(locationWriter);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.i(TAG, "Could not write to file");
-            }
-        }
     }
 
     private void locationDisabled() {
         Log.i(TAG, "Location disabled");
-        try {
-            if (locationWriter != null)
-                locationWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void locationEnabled() {
-        try {
-            locationWriter = new CSVWriter(Constants.DATA_LOG_PATH + "Location/");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     private void filterAddActions(IntentFilter filter, String[] actions) {
