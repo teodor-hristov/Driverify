@@ -127,6 +127,7 @@ public final class Drive extends AppCompatActivity {
     private Sensor proximitySensor;
     private SensorEventListener proximitySensorEventListener;
 
+    private MenuItem startButton, stopButton;
 
     //==============================================================================================
     // Activity Methods
@@ -303,8 +304,10 @@ public final class Drive extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         actionBarMenu = menu;
-        return super.onCreateOptionsMenu(menu);
+        startButton = menu.getItem(2);
+        stopButton = menu.getItem(3);
 
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -397,6 +400,8 @@ public final class Drive extends AppCompatActivity {
         if (!isRegistered) {
             registerReceiver(liveDataReceiver, filter);
         }
+        startButton.setEnabled(false);
+        stopButton.setEnabled(true);
         makeSnackbar("Live data started.");
     }
 
@@ -405,6 +410,8 @@ public final class Drive extends AppCompatActivity {
             unregisterReceiver(liveDataReceiver);
             isRegistered = false;
         }
+        startButton.setEnabled(true);
+        stopButton.setEnabled(false);
         stopServices(services);
         clearViewItems(driveItems, progressBars);
     }
