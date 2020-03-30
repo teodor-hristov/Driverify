@@ -40,7 +40,7 @@ public class DataControllerService extends Service {
             Constants.GPS_PUT_EXTRA,
             Constants.FACE_DATA
     };
-    DataSynchronizer pesho;
+    private CSVWriter bluetoothWriter;
     private SimpleDateFormat formatter;
 
     @Nullable
@@ -137,10 +137,10 @@ public class DataControllerService extends Service {
                 }
                 sb.append(System.currentTimeMillis());
 
-                pesho.appendObdData(sb.toString());
+                csvData.appendObdData(sb.toString());
 
-                if (pesho.Length() >= 5) {
-                    for (String str : pesho.getSynchronizedData())
+                if (csvData.Length() >= 5) {
+                    for (String str : csvData.getSynchronizedData())
                         bluetoothWriter.append(str);
                 }
 
@@ -174,15 +174,7 @@ public class DataControllerService extends Service {
                 }
                 sb.append(System.currentTimeMillis());
 
-                pesho.appendFaceData(sb.toString());
-
-                faceDataWriter.append(sb.toString());
-                autoSave(faceDataWriter);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.i(TAG, "Could not write to file");
-            }
-        }
+        csvData.appendFaceData(sb.toString());
     }
 
     private void handleLocationLiveData(String gpsExtraString) {
@@ -208,7 +200,7 @@ public class DataControllerService extends Service {
 
                 sb.append(System.currentTimeMillis());
 
-                pesho.appendLocation(sb.toString());
+        csvData.appendLocation(sb.toString());
 
                 if (pesho.Length() >= 5) {
                     for (String str : pesho.getSynchronizedData())
