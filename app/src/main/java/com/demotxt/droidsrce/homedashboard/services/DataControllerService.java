@@ -90,7 +90,7 @@ public class DataControllerService extends Service {
         filterAddActions(filter, actions);
         registerReceiver(liveDataReceiver, filter);
         formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        pesho = new DataSynchronizer(new LinkedList<String>(), new LinkedList<String>(), new LinkedList<String>());
+        csvData = new DataSynchronizer(new LinkedList<String>(), new LinkedList<String>(), new LinkedList<String>());
     }
 
     @Override
@@ -100,7 +100,7 @@ public class DataControllerService extends Service {
         unregisterReceiver(liveDataReceiver);
         stopLocation();
         try {
-            closeWriters(bluetoothWriter, locationWriter, faceDataWriter);
+            closeWriters(bluetoothWriter);
         } catch (IOException e) {
             e.printStackTrace();
         }
