@@ -14,23 +14,16 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/bluetoothSearch"
-        android:icon="@drawable/ic_settings"
+        android:id="@+id/start_live_data"
+        android:title="@string/start_live_data"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/stop_live_data"
+        android:title="@string/stop_live_data"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/driveSettings"
         android:title="@string/settings_dialog"
-        app:showAsAction="ifRoom">
-        <menu>
-            <item
-                android:id="@+id/start_live_data"
-                android:title="@string/start_live_data"
-                app:showAsAction="never" />
-            <item
-                android:id="@+id/stop_live_data"
-                android:title="@string/stop_live_data"
-                app:showAsAction="never" />
-            <item
-                android:id="@+id/driveSettings"
-                android:title="@string/settings_dialog"
-                app:showAsAction="never" />
-        </menu>
-    </item>
+        app:showAsAction="never" />
+
 </menu>
