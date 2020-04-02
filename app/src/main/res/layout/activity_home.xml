@@ -3,17 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="5dp">
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/ll"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="#fcfcfc"
-android:gravity="center"
-android:orientation="vertical"
-android:padding="10dp"
-tools:context="com.demotxt.droidsrce.homedashboard.Home">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fcfcfc"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp"
+        tools:context="com.demotxt.droidsrce.homedashboard.Home">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -240,7 +240,7 @@ tools:context="com.demotxt.droidsrce.homedashboard.Home">
                     android:layout_height="64dp"
                     android:background="@drawable/cerclebackgroundpurple"
                     android:padding="10dp"
-                    android:src="@drawable/ic_computer_black_24dp" />
+                    android:src="@drawable/ic_directions_run_black_24dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
