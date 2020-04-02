@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -66,11 +64,10 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        troubleCodes = new Intent(this, TroubleCodes.class);
         troubleView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(troubleCodes);
+                finishAndRemoveTask();
             }
         });
 
@@ -105,22 +102,5 @@ public class Home extends AppCompatActivity {
         if (!checkPermission(this, permissions)) {
             ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.home_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.exit:
-                finishAndRemoveTask();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
