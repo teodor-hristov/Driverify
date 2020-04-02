@@ -321,6 +321,7 @@ public final class Drive extends AppCompatActivity {
             isRegistered = false;
         }
         stopServices(services);
+        stopServices(NightModeSleepDetector.class);
     }
 
     @Override
