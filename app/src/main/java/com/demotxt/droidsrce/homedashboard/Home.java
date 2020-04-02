@@ -14,6 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 
+import com.demotxt.droidsrce.homedashboard.Utils.Constants;
+import com.demotxt.droidsrce.homedashboard.services.BlackBox;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 
 public class Home extends AppCompatActivity {
     public static final int PERMISSION_ALL = 1;
@@ -26,8 +30,8 @@ public class Home extends AppCompatActivity {
             Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION};
-    CardView troubleView, tipsView, driveView;
-    Intent drive, tips, troubleCodes;
+    CardView troubleView, tipsView, driveView, blackBoxView;
+    Intent drive, tips, troubleCodes, blackBox;
     LinearLayout ll;
 
     @Override
@@ -44,6 +48,7 @@ public class Home extends AppCompatActivity {
         driveView = findViewById(R.id.driveId);
         tipsView = findViewById(R.id.tipsId);
         troubleView = findViewById(R.id.troubleCodes);
+        blackBoxView = findViewById(R.id.blackBoxId);
 
         drive = new Intent(this, Drive.class);
         driveView.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +71,20 @@ public class Home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(troubleCodes);
+            }
+        });
+
+        blackBox = new Intent(this, BlackBox.class);
+        blackBoxView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startService(blackBox);
+
+                new MaterialAlertDialogBuilder(Home.this)
+                        .setTitle("Black Box")
+                        .setMessage("All log files are now compressed. You can go to file location.\nFile location is: \n" + Constants.BLACK_BOX_DIRECTORY)
+                        .setNegativeButton("Close", null)
+                        .show();
             }
         });
     }
