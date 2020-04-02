@@ -20,8 +20,8 @@
     <string name="homeTipsInfo">Graphs and tips for safe and economical driving.</string>
     <string name="homeBlackBox">Black box</string>
     <string name="homeBlackBoxInfo">The information stored in this can be used by police in case of crash.</string>
-    <string name="homeFaultCodes">Fault codes</string>
-    <string name="homeFaultCodesInfo">Information about fault codes in the vehicle.</string>
+    <string name="homeFaultCodes">Exit</string>
+    <string name="homeFaultCodesInfo">Hope you enjoyed the app!</string>
 
     <!--    DRIVE_SETTINGS-->
     <string name="settings_dialog">Settings</string>
