@@ -52,7 +52,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingTop="10dp"
-                            android:text="1h 40m"
+                            android:text="0h 0m"
                             android:textColor="#679b9b"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -77,7 +77,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingTop="10dp"
-                            android:text="1205 km"
+                            android:text="0 km"
                             android:textColor="#679b9b"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -102,7 +102,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingTop="10dp"
-                            android:text=" 5 times"
+                            android:text=" 0 times"
                             android:textColor="#b80d57"
                             android:textSize="14sp"
                             android:textStyle="bold" />
