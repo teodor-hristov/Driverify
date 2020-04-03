@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +27,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +39,10 @@ import java.util.Scanner;
 public class MapTripFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     private Bundle arguments;
+    private int badDrivingSituations = 0;
+    private double distance = 0;
+    private long duration = 0;
+    private TextView badSituationsView, distanceView, durationView;
     private String filePath = null;
     private File dataFile = null;
     private List<PolylineOptions> coloredPolylineOptions;
@@ -56,7 +62,11 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_map_trip, container, false);
+        View view = inflater.inflate(R.layout.fragment_map_trip, container, false);
+        badSituationsView = view.findViewById(R.id.badDrivingId);
+        distanceView = view.findViewById(R.id.distanceTextId);
+        durationView = view.findViewById(R.id.durationTextId);
+        return view;
     }
 
     @Override
@@ -121,8 +131,9 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
 
     private void mapEntities(GoogleMap googleMap, File dataFile) throws FileNotFoundException {
         String[] dataPoints = ReadCSV(dataFile.getAbsolutePath());
+        long startTime = 0, endTime = 0;
         String[] currentLine;
-        String lat, lon, sleeping, happiness;
+        String lat, lon, sleeping, happiness, time;
         LatLng prevPoint = null;
         LatLng currentPoint;
 
@@ -132,18 +143,27 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
             lon = currentLine[5];
             sleeping = currentLine[7];
             happiness = currentLine[8];
+            time = currentLine[9];
 
             addMarker(googleMap, currentLine);
+
+            if (dataPoint.equals(dataPoints[0])) {
+                startTime = Long.parseLong(time);
+            } else {
+                endTime = Long.parseLong(time);
+            }
 
             if (!lat.equals("N/A") && !lon.equals("N/A")) {
                 currentPoint = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
                 zoomPoint = currentPoint;
 
                 if (prevPoint != null) {
+                    distance += calculateDistanceBetweenTwoPoints(prevPoint, currentPoint);
 
                     if (!sleeping.equals("N/A") && !happiness.equals("N/A")) {
                         if (sleeping.equals("1") || Double.parseDouble(happiness) < 0.05) {
                             addPolyline(prevPoint, currentPoint, Color.RED);
+                            badDrivingSituations++;
                         } else {
                             addPolyline(prevPoint, currentPoint, Color.BLACK);
                         }
@@ -157,12 +177,11 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
 
             }
         }
+        duration = endTime - startTime;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        List<LatLng> latLngList = null;
-
         try {
             mapEntities(googleMap, dataFile);
         } catch (FileNotFoundException e) {
@@ -172,6 +191,10 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
         for (PolylineOptions option : getColoredPolylineOptions()) {
             googleMap.addPolyline(option);
         }
+
+        durationView.setText(String.format("%.2fh", duration * 2.77777778 * Math.pow(10, -7)));
+        distanceView.setText(String.format("%.2f km", distance));
+        badSituationsView.setText(String.format(badDrivingSituations + " time(s)"));
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(zoomPoint, 15));
         googleMap.animateCamera(CameraUpdateFactory.zoomIn());
