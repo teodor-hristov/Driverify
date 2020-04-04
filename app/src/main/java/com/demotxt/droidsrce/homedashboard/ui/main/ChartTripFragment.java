@@ -1,38 +1,39 @@
 package com.demotxt.droidsrce.homedashboard.ui.main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.anychart.AnyChart;
-import com.anychart.AnyChartView;
-import com.anychart.chart.common.dataentry.DataEntry;
-import com.anychart.chart.common.dataentry.ValueDataEntry;
-import com.anychart.charts.Cartesian;
-import com.anychart.core.cartesian.series.Line;
-import com.anychart.data.Mapping;
-import com.anychart.data.Set;
-import com.anychart.enums.Anchor;
-import com.anychart.enums.MarkerType;
-import com.anychart.enums.TooltipPositionMode;
-import com.anychart.graphics.vector.Stroke;
 import com.demotxt.droidsrce.homedashboard.R;
-import com.demotxt.droidsrce.homedashboard.Utils.Constants;
+import com.demotxt.droidsrce.homedashboard.io.CustomMarkerView;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.EntryXComparator;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.Collections;
 
-public class ChartTripFragment extends Fragment {
+public class ChartTripFragment extends Fragment implements SeekBar.OnSeekBarChangeListener,
+        OnChartValueSelectedListener {
+    private LineChart chart;
+    private SeekBar seekBarX, seekBarY;
+    private TextView tvX, tvY;
+
     public ChartTripFragment() {
         // Required empty public constructor
     }
@@ -42,40 +43,41 @@ public class ChartTripFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    private List<DataEntry> ReadCSV(String path) throws FileNotFoundException {
-        File file = new File(path);
-        Scanner fileReader = new Scanner(file);
-        List<DataEntry> customDataEntries = new ArrayList<>();
-
-        fileReader.nextLine();
-
-        String prevLine = null;
-        String currentLine;
-        String[] currLineArray;
-        String[] prevLineArray;
-        while (fileReader.hasNextLine()) {
-            currentLine = fileReader.nextLine();
-            if (prevLine != null) {
-                currLineArray = currentLine.split(",");
-                prevLineArray = prevLine.split(",");
-                if (!currLineArray[0].equals("N/A") && !prevLineArray.equals("N/A")) {
-                    customDataEntries.add(new CustomDataEntry(currLineArray[9],
-                            Double.parseDouble(currLineArray[1]) - Double.parseDouble(prevLineArray[1]),
-                            Double.parseDouble(currLineArray[3]) / 10,
-                            (Double.parseDouble(currLineArray[1]) - Double.parseDouble(prevLineArray[1])) *
-                                    Double.parseDouble(currLineArray[3])
-                    ));
-                }
-            }
-
-            prevLine = currentLine;
-        }
-        return customDataEntries;
-    }
+//    private List<DataEntry> ReadCSV(String path) throws FileNotFoundException {
+//        File file = new File(path);
+//        Scanner fileReader = new Scanner(file);
+//        List<DataEntry> customDataEntries = new ArrayList<>();
+//
+//        fileReader.nextLine();
+//
+//        String prevLine = null;
+//        String currentLine;
+//        String[] currLineArray;
+//        String[] prevLineArray;
+//        while (fileReader.hasNextLine()) {
+//            currentLine = fileReader.nextLine();
+//            if (prevLine != null) {
+//                currLineArray = currentLine.split(",");
+//                prevLineArray = prevLine.split(",");
+//                if (!currLineArray[0].equals("N/A") && !prevLineArray.equals("N/A")) {
+//                    customDataEntries.add(new CustomDataEntry(currLineArray[9],
+//                            Double.parseDouble(currLineArray[1]) - Double.parseDouble(prevLineArray[1]),
+//                            Double.parseDouble(currLineArray[3]) / 10,
+//                            (Double.parseDouble(currLineArray[1]) - Double.parseDouble(prevLineArray[1])) *
+//                                    Double.parseDouble(currLineArray[3])
+//                    ));
+//                }
+//            }
+//
+//            prevLine = currentLine;
+//        }
+//        return customDataEntries;
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_chart_trip, container, false);
     }
 
@@ -89,104 +91,128 @@ public class ChartTripFragment extends Fragment {
             filePath = bundle.getString("file_name", "");
         }
 
-        AnyChartView anyChartView = view.findViewById(R.id.any_chart_view2);
-        anyChartView.setProgressBar(view.findViewById(R.id.progress_bar2));
+        tvX = view.findViewById(R.id.tvXMax);
+        tvY = view.findViewById(R.id.tvYMax);
 
-        Cartesian cartesian = AnyChart.line();
+        seekBarX = view.findViewById(R.id.seekBar1);
+        seekBarY = view.findViewById(R.id.seekBar2);
 
-        cartesian.animation(true);
+        seekBarY.setOnSeekBarChangeListener(this);
+        seekBarX.setOnSeekBarChangeListener(this);
 
-        cartesian.padding(10d, 20d, 5d, 20d);
+        chart = view.findViewById(R.id.chart1);
+        chart.setOnChartValueSelectedListener(this);
+        chart.setDrawGridBackground(false);
 
-        cartesian.crosshair().enabled(true);
-        cartesian.crosshair()
-                .yLabel(true)
-                .yStroke((Stroke) null, null, null, (String) null, (String) null);
+        // no description text
+        chart.getDescription().setEnabled(false);
 
-        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+        // enable touch gestures
+        chart.setTouchEnabled(true);
 
-        cartesian.title("Data: " + new File(filePath).getName());
+        // enable scaling and dragging
+        chart.setDragEnabled(true);
+        chart.setScaleEnabled(true);
 
-        cartesian.yAxis(0).title("Load & Acceleration");
-        cartesian.xAxis(0).labels().padding(5d, 5d, 5d, 5d);
+        // if disabled, scaling can be done on x- and y-axis separately
+        chart.setPinchZoom(true);
 
-        Set set = Set.instantiate();
-        try {
-            set.data(ReadCSV(filePath));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'value' }");
-        Mapping series2Mapping = set.mapAs("{ x: 'x', value: 'value2' }");
-        Mapping series3Mapping = set.mapAs("{ x: 'x', value: 'value3' }");
-        Mapping series4Mapping = set.mapAs("{ x: 'x', value: 'value4' }");
+        // set an alternative background color
+        // chart.setBackgroundColor(Color.GRAY);
 
+        // create a custom MarkerView (extend MarkerView) and specify the layout
+        // to use for it
+        CustomMarkerView mv = new CustomMarkerView(getActivity(), R.layout.custom_marker_view);
+        mv.setChartView(chart); // For bounds control
+        chart.setMarker(mv); // Set the marker to the chart
 
-        Line series1 = cartesian.line(series1Mapping);
-        series1.name("Acceleration");
-        series1.hovered().markers().enabled(true);
-        series1.hovered().markers()
-                .type(MarkerType.CIRCLE)
-                .size(4d);
-        series1.tooltip()
-                .position("right")
-                .anchor(Anchor.LEFT_CENTER)
-                .offsetX(5d)
-                .offsetY(5d);
+        XAxis xl = chart.getXAxis();
+        xl.setAvoidFirstLastClipping(true);
+        xl.setAxisMinimum(0f);
 
-        Line series2 = cartesian.line(series2Mapping);
-        series2.name("Engine load / 10 ");
-        series2.hovered().markers().enabled(true);
-        series2.hovered().markers()
-                .type(MarkerType.CIRCLE)
-                .size(4d);
-        series2.tooltip()
-                .position("right")
-                .anchor(Anchor.LEFT_CENTER)
-                .offsetX(5d)
-                .offsetY(5d);
+        YAxis leftAxis = chart.getAxisLeft();
+        leftAxis.setInverted(true);
+        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
-        Line series3 = cartesian.line(series3Mapping);
-        series3.name("Fuel economy border");
-        series3.hovered().markers().enabled(true);
-        series3.hovered().markers()
-                .type(MarkerType.CIRCLE)
-                .size(4d);
-        series3.tooltip()
-                .position("right")
-                .anchor(Anchor.LEFT_CENTER)
-                .offsetX(5d)
-                .offsetY(5d);
+        YAxis rightAxis = chart.getAxisRight();
+        rightAxis.setEnabled(false);
 
-        Line series4 = cartesian.line(series4Mapping);
-        series4.name("Current fuel economy");
-        series4.hovered().markers().enabled(true);
-        series4.hovered().markers()
-                .type(MarkerType.CIRCLE)
-                .size(4d);
-        series4.tooltip()
-                .position("right")
-                .anchor(Anchor.LEFT_CENTER)
-                .offsetX(5d)
-                .offsetY(5d);
+        // add data
+        seekBarX.setProgress(25);
+        seekBarY.setProgress(50);
 
-        cartesian.legend().enabled(true);
-        cartesian.legend().fontSize(13d);
-        cartesian.xScroller(true);
-        cartesian.legend().padding(0d, 0d, 10d, 0d);
+        // // restrain the maximum scale-out factor
+        // chart.setScaleMinima(3f, 3f);
+        //
+        // // center the view to a specific position inside the chart
+        // chart.centerViewPort(10, 50);
 
-        anyChartView.setZoomEnabled(true);
-        anyChartView.setChart(cartesian);
-    }
+        // get the legend (only possible after setting data)
+        Legend l = chart.getLegend();
 
-    private class CustomDataEntry extends ValueDataEntry {
+        // modify the legend ...
+        l.setForm(Legend.LegendForm.LINE);
 
-        CustomDataEntry(String x, Number value, Number value2, Number value4) {
-            super(new Date(new Timestamp(Long.parseLong(x)).getTime()).toString(), value);
-            setValue("value2", value2);
-            setValue("value3", Constants.FUEL_ECONOMY_CONSTANT);
-            setValue("value4", value4);
-        }
+        // don't forget to refresh the drawing
+        chart.invalidate();
 
     }
+
+    private void setData(int count, float range) {
+
+        ArrayList<Entry> entries = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+            float xVal = (float) (Math.random() * range);
+            float yVal = (float) (Math.random() * range);
+            entries.add(new Entry(xVal, yVal));
+        }
+
+        // sort by x-value
+        Collections.sort(entries, new EntryXComparator());
+
+        // create a dataset and give it a type
+        LineDataSet set1 = new LineDataSet(entries, "DataSet 1");
+
+        set1.setLineWidth(1.5f);
+        set1.setCircleRadius(4f);
+
+        // create a data object with the data sets
+        LineData data = new LineData(set1);
+
+        // set data
+        chart.setData(data);
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+        tvX.setText(String.valueOf(seekBarX.getProgress()));
+        tvY.setText(String.valueOf(seekBarY.getProgress()));
+
+        setData(seekBarX.getProgress(), seekBarY.getProgress());
+
+        // redraw
+        chart.invalidate();
+    }
+
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        Log.i("VAL SELECTED",
+                "Value: " + e.getY() + ", xIndex: " + e.getX()
+                        + ", DataSet index: " + h.getDataSetIndex());
+    }
+
+    @Override
+    public void onNothingSelected() {
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+    }
+
 }
