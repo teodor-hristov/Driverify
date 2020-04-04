@@ -3,7 +3,8 @@
 
 ![Driverify logo](https://i.ibb.co/RNJkdPP/Screenshot-8.png)
 
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
+### Travis CI build status:
+[![Build Status](https://travis-ci.com/teodtedo771/Driverify.svg?branch=master)](https://travis-ci.com/teodtedo771/Driverify)
 
 # BG
 
