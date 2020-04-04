@@ -51,6 +51,7 @@ public class MapTripFragment extends Fragment implements OnMapReadyCallback {
     public MapTripFragment() {
         // Required empty public constructor
         coloredPolylineOptions = new ArrayList<>();
+        zoomPoint = new LatLng(0, 0);
     }
 
     @Override
