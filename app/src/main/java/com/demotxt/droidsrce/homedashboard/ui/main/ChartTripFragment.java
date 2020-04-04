@@ -33,6 +33,11 @@ public class ChartTripFragment extends Fragment implements SeekBar.OnSeekBarChan
     private LineChart chart;
     private SeekBar seekBarX, seekBarY;
     private TextView tvX, tvY;
+    private ArrayList<Entry> acceleration = new ArrayList<>();
+    private ArrayList<Entry> timestamp = new ArrayList<>();
+    private ArrayList<Entry> load = new ArrayList<>();
+    private ArrayList<Entry> fuelEconomyCoef = new ArrayList<>();
+    private String filePath = null;
 
     public ChartTripFragment() {
         // Required empty public constructor
