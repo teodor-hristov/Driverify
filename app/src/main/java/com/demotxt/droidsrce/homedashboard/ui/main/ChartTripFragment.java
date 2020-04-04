@@ -158,6 +158,37 @@ public class ChartTripFragment extends Fragment implements SeekBar.OnSeekBarChan
 
     }
 
+    private void ReadCSV(String path) throws FileNotFoundException {
+        int count = 0;
+        File file = new File(path);
+        Scanner fileReader = new Scanner(file);
+
+        fileReader.nextLine();
+
+        String prevLine = null;
+        String currentLine;
+        String[] currLineArray;
+        String[] prevLineArray;
+        while (fileReader.hasNextLine()) {
+            currentLine = fileReader.nextLine();
+            if (prevLine != null) {
+                currLineArray = currentLine.split(",");
+                prevLineArray = prevLine.split(",");
+                if (!currLineArray[0].equals("N/A") && !prevLineArray.equals("N/A")) {
+
+                    timestamp.add(new Entry(count, Long.parseLong(currLineArray[9])));
+                    acceleration.add(new Entry(count, Float.parseFloat(currLineArray[1]) - Float.parseFloat(prevLineArray[1])));
+                    load.add(new Entry(count, Float.parseFloat(currLineArray[3])));
+                    fuelEconomyCoef.add(new Entry(count, Float.parseFloat(currLineArray[1]) - Float.parseFloat(prevLineArray[1]) *
+                            Float.parseFloat(currLineArray[3])));
+                }
+            }
+            count++;
+            prevLine = currentLine;
+        }
+
+    }
+
     private void setData(int count, float range) {
 
         ArrayList<Entry> entries = new ArrayList<>();
