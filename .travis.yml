@@ -1,7 +1,6 @@
 language: android
 jdk: oraclejdk8
 os:
-  - windows
   - linux
   - osx
 env:
@@ -38,5 +37,4 @@ before_script:
   - chmod +x gradlew
 
 script:
-  - ./gradlew clean build
-  - ./gradlew test
+  - ./gradlew build --stacktrace
