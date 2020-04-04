@@ -85,7 +85,6 @@ public class ChartTripFragment extends Fragment implements SeekBar.OnSeekBarChan
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Bundle bundle = this.getArguments();
-        String filePath = null;
 
         if (bundle != null) {
             filePath = bundle.getString("file_name", "");
@@ -95,14 +94,13 @@ public class ChartTripFragment extends Fragment implements SeekBar.OnSeekBarChan
         tvY = view.findViewById(R.id.tvYMax);
 
         seekBarX = view.findViewById(R.id.seekBar1);
-        seekBarY = view.findViewById(R.id.seekBar2);
-
-        seekBarY.setOnSeekBarChangeListener(this);
         seekBarX.setOnSeekBarChangeListener(this);
+
+        seekBarY = view.findViewById(R.id.seekBar2);
+        seekBarY.setOnSeekBarChangeListener(this);
 
         chart = view.findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
-        chart.setDrawGridBackground(false);
 
         // no description text
         chart.getDescription().setEnabled(false);
@@ -110,52 +108,70 @@ public class ChartTripFragment extends Fragment implements SeekBar.OnSeekBarChan
         // enable touch gestures
         chart.setTouchEnabled(true);
 
+        chart.setDragDecelerationFrictionCoef(0.9f);
+
         // enable scaling and dragging
         chart.setDragEnabled(true);
         chart.setScaleEnabled(true);
+        chart.setDrawGridBackground(false);
+        chart.setHighlightPerDragEnabled(true);
 
         // if disabled, scaling can be done on x- and y-axis separately
         chart.setPinchZoom(true);
 
         // set an alternative background color
-        // chart.setBackgroundColor(Color.GRAY);
+        chart.setBackgroundColor(Color.WHITE);
 
-        // create a custom MarkerView (extend MarkerView) and specify the layout
-        // to use for it
-        CustomMarkerView mv = new CustomMarkerView(getActivity(), R.layout.custom_marker_view);
-        mv.setChartView(chart); // For bounds control
-        chart.setMarker(mv); // Set the marker to the chart
-
-        XAxis xl = chart.getXAxis();
-        xl.setAvoidFirstLastClipping(true);
-        xl.setAxisMinimum(0f);
-
-        YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setInverted(true);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-        YAxis rightAxis = chart.getAxisRight();
-        rightAxis.setEnabled(false);
-
+        try {
+            ReadCSV(filePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         // add data
-        seekBarX.setProgress(25);
-        seekBarY.setProgress(50);
+        seekBarX.setMax(timestamp.size() - 1);
+        seekBarX.setProgress(20);
+        seekBarY.setMax(1000);
+        seekBarY.setProgress(500);
 
-        // // restrain the maximum scale-out factor
-        // chart.setScaleMinima(3f, 3f);
-        //
-        // // center the view to a specific position inside the chart
-        // chart.centerViewPort(10, 50);
+        chart.animateX(1500);
+
+        CustomMarkerView customMarkerView = new CustomMarkerView(getActivity(), R.layout.custom_marker_view);
+        customMarkerView.setChartView(chart); // For bounds control
+        chart.setMarker(customMarkerView); // Set the marker to the chart
 
         // get the legend (only possible after setting data)
         Legend l = chart.getLegend();
 
         // modify the legend ...
         l.setForm(Legend.LegendForm.LINE);
+        l.setTextSize(11f);
+        l.setTextColor(Color.parseColor("#758184"));
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDrawInside(false);
+//        l.setYOffset(11f);
 
-        // don't forget to refresh the drawing
-        chart.invalidate();
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setTextSize(11f);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawAxisLine(false);
 
+        YAxis leftAxis = chart.getAxisLeft();
+        leftAxis.setTextColor(ColorTemplate.getHoloBlue());
+        leftAxis.setAxisMaximum(100f);
+        leftAxis.setAxisMinimum(-500f);
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setGranularityEnabled(true);
+
+        YAxis rightAxis = chart.getAxisRight();
+        rightAxis.setTextColor(Color.RED);
+        rightAxis.setAxisMaximum(200);
+        rightAxis.setAxisMinimum(-200);
+        rightAxis.setDrawGridLines(false);
+        rightAxis.setDrawZeroLine(false);
+        rightAxis.setGranularityEnabled(false);
     }
 
     private void ReadCSV(String path) throws FileNotFoundException {
