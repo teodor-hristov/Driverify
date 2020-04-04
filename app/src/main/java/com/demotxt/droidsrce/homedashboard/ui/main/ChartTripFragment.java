@@ -1,5 +1,6 @@
 package com.demotxt.droidsrce.homedashboard.ui.main;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,10 +24,13 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.EntryXComparator;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
 
 public class ChartTripFragment extends Fragment implements SeekBar.OnSeekBarChangeListener,
         OnChartValueSelectedListener {
@@ -47,37 +51,6 @@ public class ChartTripFragment extends Fragment implements SeekBar.OnSeekBarChan
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
-//    private List<DataEntry> ReadCSV(String path) throws FileNotFoundException {
-//        File file = new File(path);
-//        Scanner fileReader = new Scanner(file);
-//        List<DataEntry> customDataEntries = new ArrayList<>();
-//
-//        fileReader.nextLine();
-//
-//        String prevLine = null;
-//        String currentLine;
-//        String[] currLineArray;
-//        String[] prevLineArray;
-//        while (fileReader.hasNextLine()) {
-//            currentLine = fileReader.nextLine();
-//            if (prevLine != null) {
-//                currLineArray = currentLine.split(",");
-//                prevLineArray = prevLine.split(",");
-//                if (!currLineArray[0].equals("N/A") && !prevLineArray.equals("N/A")) {
-//                    customDataEntries.add(new CustomDataEntry(currLineArray[9],
-//                            Double.parseDouble(currLineArray[1]) - Double.parseDouble(prevLineArray[1]),
-//                            Double.parseDouble(currLineArray[3]) / 10,
-//                            (Double.parseDouble(currLineArray[1]) - Double.parseDouble(prevLineArray[1])) *
-//                                    Double.parseDouble(currLineArray[3])
-//                    ));
-//                }
-//            }
-//
-//            prevLine = currentLine;
-//        }
-//        return customDataEntries;
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
