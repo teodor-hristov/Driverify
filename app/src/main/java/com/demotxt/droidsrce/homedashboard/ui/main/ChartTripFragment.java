@@ -190,29 +190,83 @@ public class ChartTripFragment extends Fragment implements SeekBar.OnSeekBarChan
     }
 
     private void setData(int count, float range) {
-
-        ArrayList<Entry> entries = new ArrayList<>();
+        List<Entry> accelerationData = new ArrayList<>(),
+                loadData = new ArrayList<>(),
+                fuelEconomy = new ArrayList<>();
+        Entry tempAcceleration, tempLoad, tempFuelEconomy;
 
         for (int i = 0; i < count; i++) {
-            float xVal = (float) (Math.random() * range);
-            float yVal = (float) (Math.random() * range);
-            entries.add(new Entry(xVal, yVal));
+            tempAcceleration = acceleration.get(i);
+            tempLoad = load.get(i);
+            tempFuelEconomy = fuelEconomyCoef.get(i);
+
+            if (tempAcceleration.getY() < range && tempLoad.getY() < range && tempFuelEconomy.getY() < range) {
+                accelerationData.add(tempAcceleration);
+                loadData.add(tempLoad);
+                fuelEconomy.add(tempFuelEconomy);
+            }
         }
 
-        // sort by x-value
-        Collections.sort(entries, new EntryXComparator());
+        LineDataSet set1, set2, set3, set4;
 
-        // create a dataset and give it a type
-        LineDataSet set1 = new LineDataSet(entries, "DataSet 1");
+        if (chart.getData() != null &&
+                chart.getData().getDataSetCount() > 0) {
+            set1 = (LineDataSet) chart.getData().getDataSetByIndex(0);
+            set2 = (LineDataSet) chart.getData().getDataSetByIndex(1);
+            set3 = (LineDataSet) chart.getData().getDataSetByIndex(2);
 
-        set1.setLineWidth(1.5f);
-        set1.setCircleRadius(4f);
+            set1.setValues(accelerationData);
+            set2.setValues(loadData);
+            set3.setValues(fuelEconomy);
 
-        // create a data object with the data sets
-        LineData data = new LineData(set1);
+            chart.getData().notifyDataChanged();
+            chart.notifyDataSetChanged();
+        } else {
+            // create a dataset and give it a type
+            set1 = new LineDataSet(acceleration, "Acceleration");
 
-        // set data
-        chart.setData(data);
+            set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+            set1.setColor(ColorTemplate.getHoloBlue());
+            set1.setCircleColor(Color.parseColor("#4cd3c2"));
+            set1.setLineWidth(2f);
+            set1.setCircleRadius(1f);
+            set1.setFillAlpha(65);
+            set1.setFillColor(ColorTemplate.getHoloBlue());
+            set1.setHighLightColor(Color.rgb(244, 117, 117));
+            set1.setDrawCircleHole(false);
+
+            // create a dataset and give it a type
+            set2 = new LineDataSet(load, "Engine load");
+            set2.setAxisDependency(YAxis.AxisDependency.LEFT);
+            set2.setColor(Color.RED);
+            set2.setCircleColor(Color.parseColor("#d7385e"));
+            set2.setLineWidth(2f);
+            set2.setCircleRadius(1f);
+            set2.setFillAlpha(65);
+            set2.setFillColor(Color.RED);
+            set2.setDrawCircleHole(false);
+            set2.setHighLightColor(Color.rgb(244, 117, 117));
+            //set2.setFillFormatter(new MyFillFormatter(900f));
+
+            set3 = new LineDataSet(timestamp, "Fuel economy coefficient");
+            set3.setAxisDependency(YAxis.AxisDependency.RIGHT);
+            set3.setColor(Color.YELLOW);
+            set3.setCircleColor(Color.parseColor("#f2ed6f"));
+            set3.setLineWidth(2f);
+            set3.setCircleRadius(1f);
+            set3.setFillAlpha(65);
+            set3.setFillColor(ColorTemplate.colorWithAlpha(Color.YELLOW, 200));
+            set3.setDrawCircleHole(false);
+            set3.setHighLightColor(Color.rgb(244, 117, 117));
+
+            // create a data object with the data sets
+            LineData data = new LineData(set1, set2, set3);
+            data.setValueTextColor(Color.WHITE);
+            data.setValueTextSize(9f);
+
+            // set data
+            chart.setData(data);
+        }
     }
 
     @Override
