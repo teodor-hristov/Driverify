@@ -1,8 +1,8 @@
 language: android
-jdk: oraclejdk9
+jdk: oraclejdk8
+dist: trusty
 os:
   - linux
-  - osx
 
 android:
   components:
@@ -10,7 +10,7 @@ android:
     - tools
 
     - build-tools-28.0.3
-    - android-27
+    - android-28
 
     # Support library
     - extra-android-support
@@ -27,6 +27,5 @@ cache:
   - $HOME/.android/build-cache
 
 script:
-  - yes | sdkmanager --licenses --no_https
   - chmod +x ./gradlew
   - ./gradlew build --stacktrace
