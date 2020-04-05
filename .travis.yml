@@ -27,6 +27,5 @@ cache:
   - $HOME/.android/build-cache
 
 script:
-  - yes | sdkmanager --no_https
   - chmod +x ./gradlew
   - ./gradlew build --stacktrace
